@@ -544,7 +544,7 @@ async def on_message(message):
 
     #Call Prime Claim functions and print results for all functions + total
     if message.content.lower() == '.prime claims' or message.content.lower() == '.prime claim':
-        ctx = await message.channel.send("`Processing. Command is finished when total is printed, please be patient.`")
+        ctx = await message.channel.send("`Processing, please be patient.`")
         primeEventClaimTotal = primeEventClaim()
         primeKeyClaimTotal = primeKeyClaim()
         primeSetClaimTotal = primeSetClaim()
@@ -552,6 +552,10 @@ async def on_message(message):
         primeCoreClaimTotal = primeCoreClaim()
         primeMPClaimTotal = primeMPClaim()
         claimTotal = round(primeEventClaimTotal + primeKeyClaimTotal + primeSetClaimTotal + primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal, 3)
+        payload = int(Payloadcall())
+        artigraphtotal = int(Artigraphcall())
+        totalsink = payload + artigraphtotal
+        claimedsunk = round((totalsink / claimTotal) * 100, 2)
         await message.channel.send(f"`Prime Event claims - {primeEventClaimTotal:,}`")
         await message.channel.send(f"`Prime Key claims - {primeKeyClaimTotal:,}`")
         await message.channel.send(f"`Prime Set claims - {primeSetClaimTotal:,}`")
@@ -559,7 +563,10 @@ async def on_message(message):
         await message.channel.send(f"`Prime Core claims - {primeCoreClaimTotal:,}`")
         await message.channel.send(f"`Prime MP claims - {primeMPClaimTotal:,}`")
         await message.channel.send(f"`Total Prime claimed - {claimTotal:,}`")
-        await message.channel.send("`Note that this data is indexed and cached. It will be somewhat delayed and is intended as an estimate only.`")
+        await message.channel.send("`--------------------------`")
+        await message.channel.send(f"`Total Prime sunk - {totalsink:,}`")
+        await message.channel.send(f"`Percent of claimed Prime sunk - {claimedsunk:,}%`")
+        await message.channel.send("`Note that claims data is indexed and cached. It will be somewhat delayed and is intended as an estimate only.`")
         await ctx.edit(content="`Results:`")
 
     #Call Sink functions and print simplified results for all + total
