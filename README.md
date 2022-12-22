@@ -1,0 +1,13 @@
+# PRIME bot
+### Video Demo:  <URL HERE>
+#### Description: PRIME is a discord bot that pulls data from various smart contracts and APIs related to the Parallel TCG and outputs data in a usable form
+
+PRIME is a Discord bot (written in Python) that grabs data from various sources related to Parallel (a TCG in development) and the ERC-20 token PRIME. It then analyzes/outputs that data in a format friendly to users. Some of the data it provides includes daily emissions of the token, current number of assets locked in smart contracts, amount of PRIME spent through various means, and more. This might not mean much to people not familiar with this project at all but for those of us involved the data is highly useful and now is easily accessible.
+
+Some of this data was already available to users via fansites and various spreadsheets, but the data was clumsily organized and required users to leave Discord to access it. Discord is the main community focal point as of now so I thought that having this data easily and quickly accessible to users would prove useful. The bot currently resides on a server with ~900 members and the data is actively shared with the game's main Discord server (~40k members).
+
+When I originally wrote the bot it was very simple - it created variables, assigned their values based on pulled data, and then would print out those variables when requested by Discord users. This quickly proved inadequate as the variables were only updated when the bot was first run. Live data was needed and so I had to rewrite much of the code and turn those defined variables into unique functions. Those functions now get called each time a user requests specific data so the data is always live and accurate.
+
+The bot resides on an AWS server for nominal uptime and so far has not had any issues. It's been live for a little over a week now and a number of features have been added since its first release. I plan to continue adding user-requested features and supporting the bot as needed.
+
+While creating the bot I've had to make many revisions to my initial code for efficiency and reliability. Certain early methods used returned results that were correct, but they weren't sustainable or efficient. Some of my initial code had functions being called multiple times when they could have been called just once, for example. The effort was very brute force at first but since revision is much lighter. It's far from perfect but it is now in a place where I'd call it functional and reliable. It does rely on free APIs and has already hit some rate limiting so that will be something I have to deal with in the future. This one project has taught me so much framework for future projects, it's been very exciting and fun to make this and learn!
