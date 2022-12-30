@@ -2,6 +2,7 @@ import os
 import json
 import discord
 import requests
+from datetime import date
 from web3 import Web3
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -17,8 +18,8 @@ INFURA_API_KEY = os.getenv('API_KEY')
 alchemyurl = os.getenv('ALCHEMY_API')
 
 #Set global variables and contract addresses/ABIs
-client = discord.Client(intents=intents)
 #bot = commands.Bot(command_prefix='$', intents=intents)
+client = discord.Client(intents=intents)
 infura_url = INFURA_API_KEY
 web3 = Web3(Web3.HTTPProvider(infura_url))
 
@@ -74,7 +75,18 @@ def PKcall():
     PKtotalCached = pkinfo[3]
     PKprimePerSecond = pkcontract.functions.primeAmountPerSecond().call()
     PK = ((PKprimePerSecond / 1000000000000000000000000000000000000) * 60 * 60 * 24) / PKtotalCached
-    return PKtotalCached, PK
+    cachestartdate = date(2022, 7, 18)
+    currentdate = date.today()
+    dayspassed = currentdate - cachestartdate
+    totalpkprime = 12222222
+    if dayspassed.days < 365:
+        dayspassedpercentage = float(dayspassed.days / 365)
+    else:
+        dayspassedpercentage = 1
+    totalpkprimeemitted = round((totalpkprime * dayspassedpercentage), 1)
+    pkprimeleft = round((totalpkprime - totalpkprimeemitted), 1)
+    pkpercentageleft = 100 - (round((dayspassedpercentage * 100), 1))
+    return PKtotalCached, PK, totalpkprime, totalpkprimeemitted, dayspassedpercentage, pkprimeleft, pkpercentageleft
 
 #Core
 def Corecall():
@@ -542,6 +554,16 @@ def primeMPClaim():
 @client.event
 async def on_message(message):
 
+    #define user variables for replying/mentioning users later on
+    user = str(message.author)
+    userstart, seperator, userend = user.partition('#')
+
+    # we do not want the bot to reply to itself
+    if message.author == client.user:
+        return
+
+
+
     #Call Prime Claim functions and print results for all functions + total
     if message.content.lower() == '.prime claims' or message.content.lower() == '.prime claim':
         ctx = await message.channel.send("`Processing, please be patient.`")
@@ -566,7 +588,7 @@ async def on_message(message):
         await message.channel.send("`--------------------------`")
         await message.channel.send(f"`Total Prime sunk - {totalsink:,}`")
         await message.channel.send(f"`Percent of claimed Prime sunk - {claimedsunk:,}%`")
-        await message.channel.send("`Note that claims data is indexed and cached. It will be somewhat delayed and is intended as an estimate only.`")
+        await message.channel.send("`Please note claims data is indexed and cached. It will be somewhat delayed and is intended as an estimate only.`")
         await ctx.edit(content="`Results:`")
 
     #Call Sink functions and print simplified results for all + total
@@ -592,9 +614,16 @@ async def on_message(message):
         await message.channel.send(f"`Artigraph Prime to be redistributed to sink schedule - {artigraphsinkdistro:,}`")
 
     if message.content.lower() == '.prime pk':
-        PKtotalCached, PK = PKcall()
+        PKtotalCached, PK, totalpkprime, totalpkprimeemitted, dayspassedpercentage, pkprimeleft, pkpercentageleft = PKcall()
+        ctx = await message.channel.send("`Processing, please be patient.`")
         await message.channel.send(f"`Total PKs cached - {PKtotalCached}`")
         await message.channel.send(f"`PK daily rewards - {round(PK, 3)}`")
+        await message.channel.send("`--------------------------`")
+        await message.channel.send(f"`Total Prime in PK pool: {totalpkprime:,}`")
+        await message.channel.send(f"`Total Prime emitted from PK pool: {totalpkprimeemitted:,} ({round((dayspassedpercentage * 100), 1)}%)`")
+        await message.channel.send(f"`Total Prime left in PK pool: {pkprimeleft:,} ({pkpercentageleft}%)`")
+        await message.channel.send("`Please note Prime pool data is an estimate only`")
+        await ctx.edit(content="`Results:`")
 
     if message.content.lower() == '.prime core':
         coreTotalCached, core = Corecall()
@@ -681,7 +710,7 @@ async def on_message(message):
         await message.channel.send(f"`Total PD3 SE sets cached - {PD3setotalCached}`")
         await message.channel.send(f"`PD3 SE daily rewards - {round(PD3se, 3)}`")
 
-    if message.content.lower() == '.prime ps15':
+    if message.content.lower() == '.prime ps15' or message.content.lower() == '.prime ps15fe':
         PS15totalCached, PS15 = PS15call()
         await message.channel.send(f"`Total PS15 sets cached - {PS15totalCached}`")
         await message.channel.send(f"`PS15 daily rewards - {round(PS15, 3)}`")
@@ -838,6 +867,9 @@ async def on_message(message):
 
     if message.content.lower() == '.sonk':
         await message.channel.send("`Sink Sonk Sunk Sank...Senk?`")
+
+    if message.content == 'gm' or message.content == 'gm!' or message.content == '.gm':
+        await message.reply(f'`gm {userstart}!`  <a:primebounce:1058114534189043782>', mention_author=False)
 
 client.run(TOKEN)
 
