@@ -1,5 +1,5 @@
 # PRIME bot
-### Video Demo:  <URL HERE>
+### Video Demo:  <https://youtu.be/E4HI1kFg6vw>
 #### Description: PRIME is a discord bot that pulls data from various smart contracts and APIs related to the Parallel TCG and outputs data in a usable form
 
 PRIME is a Discord bot (written in Python) that grabs data from various sources related to Parallel (a TCG in development) and the ERC-20 token PRIME. It then analyzes/outputs that data in a format friendly to users. Some of the data it provides includes daily emissions of the token, current number of assets locked in smart contracts, amount of PRIME spent through various means, and more. This might not mean much to people not familiar with this project at all but for those of us involved the data is highly useful and now is easily accessible.
