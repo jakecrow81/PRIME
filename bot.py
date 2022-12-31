@@ -587,8 +587,6 @@ async def on_message(message):
         await message.channel.send(f"`Total Prime emissions to date - {currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted:,}`")
         await message.channel.send("`Please note Prime emissions data is an estimate only`")
 
-    currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted
-
     #Call Prime Claim functions and print results for all functions + total
     if message.content.lower() == '.prime claims' or message.content.lower() == '.prime claim':
         ctx = await message.channel.send("`Processing, please be patient.`")
