@@ -891,7 +891,7 @@ async def on_message(message):
     if message.content.lower() == '.sonk':
         await message.channel.send("`Sink Sonk Sunk Sank...Senk?`")
 
-    if message.content == 'gm' or message.content == 'gm!' or message.content == '.gm':
+    if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm':
         await message.reply(f'`gm {userstart}!`  <a:primebounce:1058114534189043782>', mention_author=False)
 
 client.run(TOKEN)
