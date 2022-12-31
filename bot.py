@@ -48,6 +48,26 @@ coreabi = json.loads('[{"inputs":[{"internalType":"contract IERC20","name":"_pri
 coreaddress = '0xa0Cd986F53cBF8B8Fb7bF6fB14791e31aeB9E449'
 corecontract = web3.eth.contract(address=coreaddress, abi=coreabi)
 
+#Current Prime emissions
+def emitCall():
+    cachestartdate = date(2022, 7, 18)
+    currentdate = date.today()
+    dayspassed = currentdate - cachestartdate
+    #totaleada (save for after PE5) = 6666666, totalsetclaim (save for after PE5) = 3333333
+    #currentEada = 5555555, currentSetClaim = 2777777
+    currentPeClaim = 8333332
+    totalpkprime = 12222222    
+    totalCornerstone = 1222222
+    totalSetCaching = 2222222
+    if dayspassed.days < 365:
+        dayspassedpercentage = float(dayspassed.days / 365)
+    else:
+        dayspassedpercentage = 1
+    totalpkprimeemitted = round((totalpkprime * dayspassedpercentage), 1)
+    currentCornerstoneEmitted = round((totalCornerstone * dayspassedpercentage), 1)
+    currentSetCachingEmitted = round((totalSetCaching * dayspassedpercentage), 1)
+    return currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted
+
 #Payload Sink
 def Payloadcall():
     payload = primecontract.functions.balanceOf('0x5b4d1Db05981E2D68A412A663865C0d546249219').call() / 1000000000000000000
@@ -561,8 +581,13 @@ async def on_message(message):
     # we do not want the bot to reply to itself
     if message.author == client.user:
         return
+    
+    if message.content.lower() == '.prime emit' or message.content.lower() == '.prime emissions':
+        currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted = emitCall()
+        await message.channel.send(f"`Total Prime emissions to date - {currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted:,}`")
+        await message.channel.send("`Please note Prime emissions data is an estimate only`")
 
-
+    currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted
 
     #Call Prime Claim functions and print results for all functions + total
     if message.content.lower() == '.prime claims' or message.content.lower() == '.prime claim':
@@ -588,7 +613,7 @@ async def on_message(message):
         await message.channel.send("`--------------------------`")
         await message.channel.send(f"`Total Prime sunk - {totalsink:,}`")
         await message.channel.send(f"`Percent of claimed Prime sunk - {claimedsunk:,}%`")
-        await message.channel.send("`Please note claims data is indexed and cached. It will be somewhat delayed and is intended as an estimate only.`")
+        await message.channel.send("`Please note Prime claims data is an estimate only`")
         await ctx.edit(content="`Results:`")
 
     #Call Sink functions and print simplified results for all + total
