@@ -914,6 +914,6 @@ async def on_message(message):
         await message.reply(f'`gm {userstart}!`  <a:primebounce:1058114534189043782>', mention_author=False)
 
     if message.content.lower() == '.wen dkoogf' or message.content.lower() == '.dkoogf':
-        await message.channel.send("lolnever :upside_down:")
+        await message.channel.send("||`forever redacted`|| :upside_down:")
 
 client.run(TOKEN)
