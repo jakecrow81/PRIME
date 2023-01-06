@@ -52,7 +52,7 @@ corecontract = web3.eth.contract(address=coreaddress, abi=coreabi)
 
 #PD6 countdown function
 def pd6countdown():
-    then = datetime(2023, 1, 14, 16)
+    then = datetime(2023, 1, 14, 22)
     now = datetime.now()
     duration = then - now
     duration_in_s = duration.total_seconds()
