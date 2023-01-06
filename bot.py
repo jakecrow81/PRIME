@@ -2,6 +2,7 @@ import os
 import json
 import discord
 import requests
+import asyncio
 from datetime import date
 from web3 import Web3
 from dotenv import load_dotenv
@@ -575,8 +576,9 @@ def primeMPClaim():
 async def on_message(message):
 
     #define user variables for replying/mentioning users later on
-    user = str(message.author)
-    userstart, seperator, userend = user.partition('#')
+    userstart, userend = str(message.author).split("#")
+    #partition code, unneeded for now
+    #userstart seperator, userend = user.partition('#')
 
     # we do not want the bot to reply to itself
     if message.author == client.user:
@@ -889,10 +891,29 @@ async def on_message(message):
         await message.channel.send(f"`REDACTED`")
 
     if message.content.lower() == '.sonk':
-        await message.channel.send("`Sink Sonk Sunk Sank...Senk?`")
+        await message.channel.send("https://imgur.com/SePhHyV")
+
+    if message.content.lower() == '.6thparallel' or message.content.lower() == '.sixthparallel':
+        ctx = await message.channel.send("`Shh, I have something to show you anon. Keep this quiet!`")
+        await asyncio.sleep(2)
+        ctx2 = await message.channel.send("https://media.discordapp.net/attachments/985481962498191411/1027591301769732096/parallel-dogs.png")
+        await asyncio.sleep(4)
+        await ctx.delete()
+        await ctx2.edit(content="`Nothing to see here, move along Big Parallel`")
+
+    if message.content == '.dave':
+        await message.channel.send("`Did you type .Dave? Looks like you didn't. Capitalization is important, anon.`")
+
+    if message.content == '.Dave':
+        await message.channel.send(f'<a:dave:1060734205467824249>')
+
+    if message.content.lower() == '.pavel':
+        await message.channel.send("`Should I randomly timeout Nayn for no real reason other than the sheer joy of it?`")
 
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm':
         await message.reply(f'`gm {userstart}!`  <a:primebounce:1058114534189043782>', mention_author=False)
 
-client.run(TOKEN)
+    if message.content.lower() == '.wen dkoogf' or message.content.lower() == '.dkoogf':
+        await message.channel.send("lolnever :upside_down:")
 
+client.run(TOKEN)
