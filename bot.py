@@ -619,7 +619,7 @@ async def on_message(message):
         \n-\u001b[0m----\
         \n\u001b[0;33mTotal Prime in sinks - {totalsink:,}\u001b[0m      |   \u001b[1;33m{claimedsunk:,}% sunk\
         ```")
-        await ctx.edit(content="**`Prime overview:`**")
+        await ctx.edit(content="**`Prime overview: (please note this data is intended as an estimate only)`**")
 
     if message.content.lower() == '.prime emit' or message.content.lower() == '.prime emissions':
         currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted = emitCall()
