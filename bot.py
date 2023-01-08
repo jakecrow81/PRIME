@@ -592,7 +592,35 @@ async def on_message(message):
     # we do not want the bot to reply to itself
     if message.author == client.user:
         return
-    
+
+    if message.content.lower() == '.prime':
+        #currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted = emitCall()
+        #await message.channel.send(f"```ansi\n\u001b[0;40;31mTotal Prime emissions to date - {currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted:,}\u001b[2;42;35mtest text\n```")
+        ctx = await message.channel.send("`Processing, please be patient.`")
+        primeEventClaimTotal = primeEventClaim()
+        primeKeyClaimTotal = primeKeyClaim()
+        primeSetClaimTotal = primeSetClaim()
+        primeCDClaimTotal = primeCDClaim()
+        primeCoreClaimTotal = primeCoreClaim()
+        primeMPClaimTotal = primeMPClaim()
+        claimTotal = round(primeEventClaimTotal + primeKeyClaimTotal + primeSetClaimTotal + primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal, 3)
+        currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted = emitCall()
+        emitTotal = currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted
+        payload = int(Payloadcall())
+        artigraphtotal = int(Artigraphcall())
+        totalsink = payload + artigraphtotal
+        claimedsunk = round((totalsink / claimTotal) * 100, 2)
+        await message.channel.send(f"```ansi\n\u001b[0;37mPrime Event emissions - {round(currentPeClaim):,}\u001b[0m   |   \u001b[0;34mPrime Event claims - {round(primeEventClaimTotal):,}\u001b[0m   |   \u001b[2;32m{round((primeEventClaimTotal / currentPeClaim) * 100, 2)}% claimed\
+        \n\u001b[0;37mPrime Key emissions - {round(totalpkprimeemitted):,}\u001b[0m     |   \u001b[0;34mPrime Key claims - {round(primeKeyClaimTotal):,}\u001b[0m     |   \u001b[1;32m{round((primeKeyClaimTotal / totalpkprimeemitted) * 100, 2)}% claimed\
+        \n\u001b[0;37mPrime Set emissions - {round(currentSetCachingEmitted):,}\u001b[0m     |   \u001b[0;34mPrime Set claims - {round(primeSetClaimTotal):,}\u001b[0m       |   \u001b[1;32m{round((primeSetClaimTotal / currentSetCachingEmitted) * 100, 2)}% claimed\
+        \n\u001b[0;37mCornerstone emissions - {round(currentCornerstoneEmitted):,}\u001b[0m     |   \u001b[0;34mCornerstone claims - {round(primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal):,}\u001b[0m     |   \u001b[1;32m{round(((primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal) / currentCornerstoneEmitted) * 100, 2)}% claimed\
+        \n\u001b[0m-----\
+        \n\u001b[0;37mTotal emissions - {round(emitTotal):,}\u001b[0m        |   \u001b[0;34mTotal claims - {round(claimTotal):,}\u001b[0m         |   \u001b[1;32m{round((claimTotal / emitTotal) * 100, 2)}% claimed\
+        \n-\u001b[0m----\
+        \n\u001b[0;33mTotal Prime in sinks - {totalsink:,}\u001b[0m      |   \u001b[1;33m{claimedsunk:,}% sunk\
+        ```")
+        await ctx.edit(content="**`Prime overview:`**")
+
     if message.content.lower() == '.prime emit' or message.content.lower() == '.prime emissions':
         currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted = emitCall()
         await message.channel.send(f"`Total Prime emissions to date - {currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted:,}`")
@@ -623,7 +651,7 @@ async def on_message(message):
         await message.channel.send(f"`Total Prime sunk - {totalsink:,}`")
         await message.channel.send(f"`Percent of claimed Prime sunk - {claimedsunk:,}%`")
         await message.channel.send("`Please note Prime claims data is an estimate only`")
-        await ctx.edit(content="`Results:`")
+        await ctx.edit(content="**`Results:`**")
 
     #Call Sink functions and print simplified results for all + total
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink':
@@ -657,7 +685,7 @@ async def on_message(message):
         await message.channel.send(f"`Total Prime emitted from PK pool: {totalpkprimeemitted:,} ({round((dayspassedpercentage * 100), 1)}%)`")
         await message.channel.send(f"`Total Prime left in PK pool: {pkprimeleft:,} ({pkpercentageleft}%)`")
         await message.channel.send("`Please note Prime pool data is an estimate only`")
-        await ctx.edit(content="`Results:`")
+        await ctx.edit(content="**`Results:`**")
 
     if message.content.lower() == '.prime core':
         coreTotalCached, core = Corecall()
@@ -910,14 +938,11 @@ async def on_message(message):
         await ctx.delete()
         await ctx2.edit(content="`Nothing to see here, move along Big Parallel`")
 
-    if message.content == '.dave':
-        await message.channel.send("`Did you type .Dave? Looks like you didn't. Capitalization is important, anon.`")
-
     if message.content == '.Dave':
         await message.channel.send(f'<a:dave:1060734205467824249>')
 
     if message.content.lower() == '.pavel':
-        await message.channel.send("`*times out Nayn for no reason at all*`")
+        await message.channel.send("`*times out Nayn*`")
 
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm':
         await message.reply(f'`gm {userstart}!`  <a:primebounce:1058114534189043782>', mention_author=False)
