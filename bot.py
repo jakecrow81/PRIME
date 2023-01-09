@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import os
 import json
 import discord
@@ -591,7 +592,11 @@ def primeMPClaim():
 async def on_message(message):
 
     #define user variables for replying/mentioning users later on
-    userstart, userend = str(message.author).split("#")
+    nick = (message.author.display_name)
+
+    #unused, display_name solves the issues
+    #userstart, userend = str(message.author).split("#")
+
     #partition code, unneeded for now
     #userstart seperator, userend = user.partition('#')
 
@@ -946,7 +951,7 @@ async def on_message(message):
         await message.channel.send("`*times out Nayn*`")
 
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm':
-        await message.reply(f'`gm {userstart}!`  <a:primebounce:1058114534189043782>', mention_author=False)
+        await message.reply(f'`gm {nick}!`  <a:primebounce:1058114534189043782>', mention_author=False)
 
     if message.content.lower() == '.wen dkoogf' or message.content.lower() == '.dkoogf':
         await message.channel.send("||`forever redacted`|| :upside_down:")
