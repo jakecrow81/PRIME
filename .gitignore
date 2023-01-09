@@ -364,3 +364,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /extra files
 /sonk.jpg
+/copy of older text-based PRIME table output, before embed.py

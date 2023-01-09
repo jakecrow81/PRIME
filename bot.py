@@ -50,6 +50,12 @@ coreabi = json.loads('[{"inputs":[{"internalType":"contract IERC20","name":"_pri
 coreaddress = '0xa0Cd986F53cBF8B8Fb7bF6fB14791e31aeB9E449'
 corecontract = web3.eth.contract(address=coreaddress, abi=coreabi)
 
+def manifestPacks():
+    response = requests.post('https://api.ethplorer.io/getAddressInfo/0xd97a0a7c55b335cef440d7a33c5bf5b6ee2af9e2?apiKey=freekey&showETHTotals=true').json()
+    packEth = response['ETH']['totalIn']
+    packsSold = packEth / .195
+    return int(packsSold)
+
 #PD6 countdown function
 def pd6countdown():
     then = datetime(2023, 1, 14, 22)
@@ -594,8 +600,6 @@ async def on_message(message):
         return
 
     if message.content.lower() == '.prime':
-        #currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted = emitCall()
-        #await message.channel.send(f"```ansi\n\u001b[0;40;31mTotal Prime emissions to date - {currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted:,}\u001b[2;42;35mtest text\n```")
         ctx = await message.channel.send("`Processing, please be patient.`")
         primeEventClaimTotal = primeEventClaim()
         primeKeyClaimTotal = primeKeyClaim()
@@ -610,22 +614,19 @@ async def on_message(message):
         artigraphtotal = int(Artigraphcall())
         totalsink = payload + artigraphtotal
         claimedsunk = round((totalsink / claimTotal) * 100, 2)
-        await message.channel.send(f"```ansi\n\u001b[0;37mPrime Event emissions - {round(currentPeClaim):,}\u001b[0m   |   \u001b[0;34mPrime Event claims - {round(primeEventClaimTotal):,}\u001b[0m   |   \u001b[2;32m{round((primeEventClaimTotal / currentPeClaim) * 100, 2)}% claimed\
-        \n\u001b[0;37mPrime Key emissions - {round(totalpkprimeemitted):,}\u001b[0m     |   \u001b[0;34mPrime Key claims - {round(primeKeyClaimTotal):,}\u001b[0m     |   \u001b[1;32m{round((primeKeyClaimTotal / totalpkprimeemitted) * 100, 2)}% claimed\
-        \n\u001b[0;37mPrime Set emissions - {round(currentSetCachingEmitted):,}\u001b[0m     |   \u001b[0;34mPrime Set claims - {round(primeSetClaimTotal):,}\u001b[0m       |   \u001b[1;32m{round((primeSetClaimTotal / currentSetCachingEmitted) * 100, 2)}% claimed\
-        \n\u001b[0;37mCornerstone emissions - {round(currentCornerstoneEmitted):,}\u001b[0m     |   \u001b[0;34mCornerstone claims - {round(primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal):,}\u001b[0m     |   \u001b[1;32m{round(((primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal) / currentCornerstoneEmitted) * 100, 2)}% claimed\
-        \n\u001b[0m-----\
-        \n\u001b[0;37mTotal emissions - {round(emitTotal):,}\u001b[0m        |   \u001b[0;34mTotal claims - {round(claimTotal):,}\u001b[0m         |   \u001b[1;32m{round((claimTotal / emitTotal) * 100, 2)}% claimed\
-        \n-\u001b[0m----\
-        \n\u001b[0;33mTotal Prime in sinks - {totalsink:,}\u001b[0m      |   \u001b[1;33m{claimedsunk:,}% sunk\
-        ```")
-        await ctx.edit(content="**`Prime overview: (please note this data is intended as an estimate only)`**")
-
-    if message.content.lower() == '.prime emit' or message.content.lower() == '.prime emissions':
-        currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted = emitCall()
-        await message.channel.send(f"`Total Prime emissions to date - {currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted:,}`")
-        await message.channel.send("`Please note Prime emissions data is an estimate only`")
-
+        embed=discord.Embed(title="Overview of Prime", color=discord.Color.yellow())
+        #embed.set_author(name="Jake", url="https://echelon.io", icon_url="https://cdn.discordapp.com/emojis/935663412023812156.png")
+        #embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/935663412023812156.png")
+        embed.add_field(name="Prime Events", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(currentPeClaim, int(primeEventClaimTotal), round((primeEventClaimTotal / currentPeClaim) * 100, 2)), inline=False)
+        embed.add_field(name="Prime Keys", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(totalpkprimeemitted), int(primeKeyClaimTotal), round((primeKeyClaimTotal / totalpkprimeemitted) * 100, 2)), inline=False)
+        embed.add_field(name="Prime Sets", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(currentSetCachingEmitted), int(primeSetClaimTotal), round((primeSetClaimTotal / currentSetCachingEmitted) * 100, 2)), inline=False)
+        embed.add_field(name="Cornerstone", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(currentCornerstoneEmitted), int(primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal), round(((primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal) / currentCornerstoneEmitted) * 100, 2)), inline=False)
+        embed.add_field(name="Totals", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(emitTotal), int(claimTotal), round((claimTotal / emitTotal) * 100, 2)), inline=False)
+        embed.add_field(name="Sinks", value="```ansi\n\u001b[0;32mPrime in sinks: {:,}\n{}% sunk```".format(int(totalsink), (claimedsunk)), inline=False)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
+        await ctx.delete()
+        
     #Call Prime Claim functions and print results for all functions + total
     if message.content.lower() == '.prime claims' or message.content.lower() == '.prime claim':
         ctx = await message.channel.send("`Processing, please be patient.`")
@@ -938,7 +939,7 @@ async def on_message(message):
         await ctx.delete()
         await ctx2.edit(content="`Nothing to see here, move along Big Parallel`")
 
-    if message.content == '.Dave':
+    if message.content.lower() == '.Dave':
         await message.channel.send(f'<a:dave:1060734205467824249>')
 
     if message.content.lower() == '.pavel':
@@ -953,5 +954,9 @@ async def on_message(message):
     if message.content.lower() == '.pd6':
         pd6minsleft = int(pd6countdown() / 60)
         await message.channel.send(f"`There are {pd6minsleft:,} minutes left until PD6!`")
+
+    if message.content.lower() == '.manifest' or message.content.lower() == '.maxpax':
+        packsSold = manifestPacks()
+        await message.channel.send(f"`{packsSold} Manifest packs sold!`")
 
 client.run(TOKEN)
