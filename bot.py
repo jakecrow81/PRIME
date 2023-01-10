@@ -55,7 +55,38 @@ def manifestPacks():
     response = requests.post('https://api.ethplorer.io/getAddressInfo/0xd97a0a7c55b335cef440d7a33c5bf5b6ee2af9e2?apiKey=freekey&showETHTotals=true').json()
     packEth = response['ETH']['totalIn']
     packsSold = packEth / .195
-    return int(packsSold)
+    payload = {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "alchemy_getAssetTransfers",
+    "params": [
+        {
+            "fromBlock": "0xF97A68",
+            "category": ["external"],
+            "toAddress": "0xd97A0a7c55b335ceF440d7A33c5BF5b6eE2Af9E2"
+        }
+    ]
+    }
+    headers = {
+        "accept": "application/json",
+        "content-type": "application/json"
+    }
+    onePack = 0
+    twoPack = 0
+    maxPax = 0
+    while True:
+        response = requests.post(alchemyurl, json=payload, headers=headers).json()
+        for i in range(len(response["result"]["transfers"])):
+            if response["result"]["transfers"][i]["value"] == 0.195:
+                onePack = onePack + 1
+            if response["result"]["transfers"][i]["value"] == 0.39:
+                twoPack = twoPack + 1
+            if response["result"]["transfers"][i]["value"] == 0.585:
+                maxPax = maxPax + 1
+        if not 'pageKey' in response["result"]:
+                break
+        payload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    return onePack, twoPack, maxPax, int(packsSold)
 
 #PD6 countdown function
 def pd6countdown():
@@ -596,7 +627,6 @@ async def on_message(message):
 
     #unused, display_name solves the issues
     #userstart, userend = str(message.author).split("#")
-
     #partition code, unneeded for now
     #userstart seperator, userend = user.partition('#')
 
@@ -604,6 +634,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    #prime overview, embed
     if message.content.lower() == '.prime':
         ctx = await message.channel.send("`Processing, please be patient.`")
         primeEventClaimTotal = primeEventClaim()
@@ -944,7 +975,7 @@ async def on_message(message):
         await ctx.delete()
         await ctx2.edit(content="`Nothing to see here, move along Big Parallel`")
 
-    if message.content.lower() == '.Dave':
+    if message.content.lower() == '.dave':
         await message.channel.send(f'<a:dave:1060734205467824249>')
 
     if message.content.lower() == '.pavel':
@@ -961,7 +992,15 @@ async def on_message(message):
         await message.channel.send(f"`There are {pd6minsleft:,} minutes left until PD6!`")
 
     if message.content.lower() == '.manifest' or message.content.lower() == '.maxpax':
-        packsSold = manifestPacks()
-        await message.channel.send(f"`{packsSold} Manifest packs sold!`")
+        onePack, twoPack, maxPax, packsSold = manifestPacks()
+        embed=discord.Embed(title="Manifest overview", color=discord.Color.yellow())
+        #embed.set_author(name="Jake", url="https://echelon.io", icon_url="https://cdn.discordapp.com/emojis/935663412023812156.png")
+        #embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/935663412023812156.png")
+        embed.add_field(name="Total packs sold", value="```ansi\n\u001b[0;32m{:,}```".format(packsSold), inline=False)
+        embed.add_field(name="MAX PAX", value="```ansi\n\u001b[0;32m{:,}```".format(maxPax), inline=False)
+        embed.add_field(name="Double pack buys", value="```ansi\n\u001b[0;32m{:,}```".format(twoPack), inline=False)
+        embed.add_field(name="Single pack buys", value="```ansi\n\u001b[0;32m{:,}```".format(onePack), inline=False)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
 
 client.run(TOKEN)
