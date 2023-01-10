@@ -52,9 +52,9 @@ coreaddress = '0xa0Cd986F53cBF8B8Fb7bF6fB14791e31aeB9E449'
 corecontract = web3.eth.contract(address=coreaddress, abi=coreabi)
 
 def manifestPacks():
-    response = requests.post('https://api.ethplorer.io/getAddressInfo/0xd97a0a7c55b335cef440d7a33c5bf5b6ee2af9e2?apiKey=freekey&showETHTotals=true').json()
-    packEth = response['ETH']['totalIn']
-    packsSold = packEth / .195
+    #response = requests.post('https://api.ethplorer.io/getAddressInfo/0xd97a0a7c55b335cef440d7a33c5bf5b6ee2af9e2?apiKey=freekey&showETHTotals=true').json()
+    #packEth = response['ETH']['totalIn']
+    #packsSold = packEth / .195
     payload = {
     "id": 1,
     "jsonrpc": "2.0",
@@ -74,9 +74,11 @@ def manifestPacks():
     onePack = 0
     twoPack = 0
     maxPax = 0
+    packEth = 0
     while True:
         response = requests.post(alchemyurl, json=payload, headers=headers).json()
         for i in range(len(response["result"]["transfers"])):
+            packEth = packEth + response["result"]["transfers"][i]["value"]
             if response["result"]["transfers"][i]["value"] == 0.195:
                 onePack = onePack + 1
             if response["result"]["transfers"][i]["value"] == 0.39:
@@ -86,6 +88,7 @@ def manifestPacks():
         if not 'pageKey' in response["result"]:
                 break
         payload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    packsSold = packEth / .195
     return onePack, twoPack, maxPax, int(packsSold)
 
 #PD6 countdown function
@@ -993,10 +996,11 @@ async def on_message(message):
 
     if message.content.lower() == '.manifest' or message.content.lower() == '.maxpax':
         onePack, twoPack, maxPax, packsSold = manifestPacks()
+        packPercent = round((packsSold / 6588) * 100, 1)
         embed=discord.Embed(title="Manifest overview", color=discord.Color.yellow())
         #embed.set_author(name="Jake", url="https://echelon.io", icon_url="https://cdn.discordapp.com/emojis/935663412023812156.png")
         #embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/935663412023812156.png")
-        embed.add_field(name="Total packs sold", value="```ansi\n\u001b[0;32m{:,}```".format(packsSold), inline=False)
+        embed.add_field(name="Total packs sold", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(packsSold, packPercent), inline=False)
         embed.add_field(name="MAX PAX", value="```ansi\n\u001b[0;32m{:,}```".format(maxPax), inline=False)
         embed.add_field(name="Double pack buys", value="```ansi\n\u001b[0;32m{:,}```".format(twoPack), inline=False)
         embed.add_field(name="Single pack buys", value="```ansi\n\u001b[0;32m{:,}```".format(onePack), inline=False)
