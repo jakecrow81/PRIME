@@ -997,13 +997,16 @@ async def on_message(message):
     if message.content.lower() == '.manifest' or message.content.lower() == '.maxpax':
         onePack, twoPack, maxPax, packsSold = manifestPacks()
         packPercent = round((packsSold / 6588) * 100, 1)
+        participatingWallets = onePack + twoPack + maxPax
+        totalWallets = 2196
         embed=discord.Embed(title="Manifest overview", color=discord.Color.yellow())
         #embed.set_author(name="Jake", url="https://echelon.io", icon_url="https://cdn.discordapp.com/emojis/935663412023812156.png")
         #embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/935663412023812156.png")
         embed.add_field(name="Total packs sold", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(packsSold, packPercent), inline=False)
-        embed.add_field(name="MAX PAX", value="```ansi\n\u001b[0;32m{:,}```".format(maxPax), inline=False)
-        embed.add_field(name="Double pack buys", value="```ansi\n\u001b[0;32m{:,}```".format(twoPack), inline=False)
-        embed.add_field(name="Single pack buys", value="```ansi\n\u001b[0;32m{:,}```".format(onePack), inline=False)
+        embed.add_field(name="Participating wallets", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(participatingWallets, round(float((totalWallets / 6588) * 100), 1)), inline=False)
+        embed.add_field(name="MAX PAX", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(maxPax, round(float((maxPax / participatingWallets) * 100), 1)), inline=False)
+        embed.add_field(name="Double pack buys", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(twoPack, round(float((twoPack / participatingWallets) * 100), 1)), inline=False)
+        embed.add_field(name="Single pack buys", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(onePack, round(float((onePack / participatingWallets) * 100), 1)), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
