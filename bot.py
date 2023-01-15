@@ -1036,7 +1036,7 @@ async def on_message(message):
         embed=discord.Embed(title="PD6 overview", color=discord.Color.yellow())
         #embed.set_author(name="Jake", url="https://echelon.io", icon_url="https://cdn.discordapp.com/emojis/935663412023812156.png")
         #embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/935663412023812156.png")
-        embed.add_field(name="Total packs sold", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(packsSold, packPercent), inline=False)
+        embed.add_field(name="Total packs paid for", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(packsSold, packPercent), inline=False)
         embed.add_field(name="Participating wallets", value="```ansi\n\u001b[0;32m{:,}```".format(participatingWallets), inline=False)
         embed.add_field(name="MAX PAX", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(maxPax, round(float((maxPax / participatingWallets) * 100), 1)), inline=False)
         embed.add_field(name="Double pack buys", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(twoPack, round(float((twoPack / participatingWallets) * 100), 1)), inline=False)
