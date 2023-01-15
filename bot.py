@@ -122,7 +122,36 @@ def emitCall():
 #Payload Sink
 def Payloadcall():
     payload = primecontract.functions.balanceOf('0x5b4d1Db05981E2D68A412A663865C0d546249219').call() / 1000000000000000000
-    return payload
+    jsonpayload = {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "alchemy_getAssetTransfers",
+    "params": [
+        {
+            "fromBlock": "0x0",
+            "toBlock": "latest",
+            "category": ["erc20"],
+            "withMetadata": False,
+            "excludeZeroValue": True,
+            "maxCount": "0x3e8",
+            "toAddress": "0x5b4d1Db05981E2D68A412A663865C0d546249219"
+        }
+    ]
+    }
+    headers = {
+    "accept": "application/json",
+    "content-type": "application/json"
+    }
+    payloadHits = []
+    while True:
+        response = requests.post(alchemyurl, json=jsonpayload, headers=headers).json()
+        for i in range(len(response["result"]["transfers"])):
+            payloadHits.append(response["result"]["transfers"][i]["from"])
+        if not 'pageKey' in response["result"]:
+            break
+        jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    payloadUnique = set(payloadHits)
+    return int(payload), payloadHits, payloadUnique
 
 #Artigraph Sink
 def Artigraphcall():
@@ -706,8 +735,10 @@ async def on_message(message):
 
     #Begin blocks for individual sinks/sets/etc calls
     if message.content.lower() == '.prime payload':
-        payload = int(Payloadcall())
+        payload, payloadHits, payloadUnique = Payloadcall()
         await message.channel.send(f"`Payload Prime - {payload:,}`")
+        await message.channel.send(f"`Total Payload hits - {len(payloadHits):,}`")
+        await message.channel.send(f"`Unique wallets used - {len(payloadUnique):,}`")
 
     if message.content.lower() == '.prime artigraph':
         artigraphtotal = int(Artigraphcall())
@@ -990,20 +1021,23 @@ async def on_message(message):
     if message.content.lower() == '.wen dkoogf' or message.content.lower() == '.dkoogf':
         await message.channel.send("||`forever redacted`|| :upside_down:")
 
-    if message.content.lower() == '.pd6':
-        pd6minsleft = int(pd6countdown() / 60)
-        await message.channel.send(f"`There are {pd6minsleft:,} minutes left until PD6!`")
+    #if message.content.lower() == '.pd6':
+        #pd6minsleft = int(pd6countdown() / 60)
+        #await message.channel.send(f"`There are {pd6minsleft:,} minutes left until PD6!`")
 
-    if message.content.lower() == '.manifest' or message.content.lower() == '.maxpax':
+    if message.content.lower() == '.manifest':
+        await message.channel.send(f"`Please use .pd6 for an overview of the drop`")
+
+    if message.content.lower() == '.pd6':
+        totalWallets = 6692
         onePack, twoPack, maxPax, packsSold = manifestPacks()
-        packPercent = round((packsSold / 6588) * 100, 1)
+        packPercent = round((packsSold / totalWallets) * 100, 1)
         participatingWallets = onePack + twoPack + maxPax
-        totalWallets = 2196
-        embed=discord.Embed(title="Manifest overview", color=discord.Color.yellow())
+        embed=discord.Embed(title="PD6 overview", color=discord.Color.yellow())
         #embed.set_author(name="Jake", url="https://echelon.io", icon_url="https://cdn.discordapp.com/emojis/935663412023812156.png")
         #embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/935663412023812156.png")
         embed.add_field(name="Total packs sold", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(packsSold, packPercent), inline=False)
-        embed.add_field(name="Participating wallets", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(participatingWallets, round(float((totalWallets / 6588) * 100), 1)), inline=False)
+        embed.add_field(name="Participating wallets", value="```ansi\n\u001b[0;32m{:,}```".format(participatingWallets), inline=False)
         embed.add_field(name="MAX PAX", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(maxPax, round(float((maxPax / participatingWallets) * 100), 1)), inline=False)
         embed.add_field(name="Double pack buys", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(twoPack, round(float((twoPack / participatingWallets) * 100), 1)), inline=False)
         embed.add_field(name="Single pack buys", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(onePack, round(float((onePack / participatingWallets) * 100), 1)), inline=False)
