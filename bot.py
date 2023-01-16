@@ -678,7 +678,7 @@ async def on_message(message):
         claimTotal = round(primeEventClaimTotal + primeKeyClaimTotal + primeSetClaimTotal + primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal, 3)
         currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted = emitCall()
         emitTotal = currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted
-        payload = int(Payloadcall())
+        payload, payloadHits, payloadUnique = Payloadcall()
         artigraphtotal = int(Artigraphcall())
         totalsink = payload + artigraphtotal
         claimedsunk = round((totalsink / claimTotal) * 100, 2)
@@ -705,7 +705,7 @@ async def on_message(message):
         primeCoreClaimTotal = primeCoreClaim()
         primeMPClaimTotal = primeMPClaim()
         claimTotal = round(primeEventClaimTotal + primeKeyClaimTotal + primeSetClaimTotal + primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal, 3)
-        payload = int(Payloadcall())
+        payload, payloadHits, payloadUnique = Payloadcall()
         artigraphtotal = int(Artigraphcall())
         totalsink = payload + artigraphtotal
         claimedsunk = round((totalsink / claimTotal) * 100, 2)
@@ -724,7 +724,7 @@ async def on_message(message):
 
     #Call Sink functions and print simplified results for all + total
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink':
-        payload = int(Payloadcall())
+        payload, payloadHits, payloadUnique = Payloadcall()
         artigraphtotal = int(Artigraphcall())
         totalsink = payload + artigraphtotal
         sinkdistro = (artigraphtotal * .89) + payload
