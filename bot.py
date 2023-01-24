@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 import os
 import json
 import discord
@@ -51,6 +50,38 @@ coreabi = json.loads('[{"inputs":[{"internalType":"contract IERC20","name":"_pri
 coreaddress = '0xa0Cd986F53cBF8B8Fb7bF6fB14791e31aeB9E449'
 corecontract = web3.eth.contract(address=coreaddress, abi=coreabi)
 
+#pd6 faucet
+def faucet():
+    #response = requests.post('https://api.ethplorer.io/getAddressInfo/0xd97a0a7c55b335cef440d7a33c5bf5b6ee2af9e2?apiKey=freekey&showETHTotals=true').json()
+    #packEth = response['ETH']['totalIn']
+    #packsSold = packEth / .195
+    payload = {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "alchemy_getAssetTransfers",
+    "params": [
+        {
+            "fromBlock": "0xF97A68",
+            "category": ["erc1155"],
+            #"toAddress": "0x9B6bf20ca2b5a4Fdec681E75cfa9A7A5315Bf36F"
+            "fromAddress": "0xba35ae1bbb43c48d9f4c24595d6fc30bc87a6087"
+        }
+    ]
+    }
+    headers = {
+        "accept": "application/json",
+        "content-type": "application/json"
+    }
+    txncount = 0
+    while True:
+        response = requests.post(alchemyurl, json=payload, headers=headers).json()
+        for i in range(len(response["result"]["transfers"])):
+            txncount = txncount + 1
+        if not 'pageKey' in response["result"]:
+                break
+        payload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    return txncount
+
 def manifestPacks():
     #response = requests.post('https://api.ethplorer.io/getAddressInfo/0xd97a0a7c55b335cef440d7a33c5bf5b6ee2af9e2?apiKey=freekey&showETHTotals=true').json()
     #packEth = response['ETH']['totalIn']
@@ -92,12 +123,12 @@ def manifestPacks():
     return onePack, twoPack, maxPax, int(packsSold)
 
 #PD6 countdown function
-def pd6countdown():
-    then = datetime(2023, 1, 14, 22)
-    now = datetime.now()
-    duration = then - now
-    duration_in_s = duration.total_seconds()
-    return duration_in_s
+#def pd6countdown():
+    #then = datetime(2023, 1, 14, 22)
+    #now = datetime.now()
+    #duration = then - now
+    #duration_in_s = duration.total_seconds()
+    #return duration_in_s
 
 #Current Prime emissions
 def emitCall():
@@ -1031,7 +1062,7 @@ async def on_message(message):
     if message.content.lower() == '.pd6':
         totalWallets = 6692
         onePack, twoPack, maxPax, packsSold = manifestPacks()
-        packPercent = round((packsSold / totalWallets) * 100, 1)
+        #packPercent = round((packsSold / totalWallets) * 100, 1)
         participatingWallets = onePack + twoPack + maxPax
         embed=discord.Embed(title="PD6 overview", color=discord.Color.yellow())
         #embed.set_author(name="Jake", url="https://echelon.io", icon_url="https://cdn.discordapp.com/emojis/935663412023812156.png")
@@ -1043,5 +1074,10 @@ async def on_message(message):
         embed.add_field(name="Single pack buys", value="```ansi\n\u001b[0;32m{:,} | {}%```".format(onePack, round(float((onePack / participatingWallets) * 100), 1)), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
+
+    if message.content.lower() == '.faucet':
+        txncount = faucet()
+        await message.channel.send(f"`Total faucet pulls : {txncount}`")
+
 
 client.run(TOKEN)
