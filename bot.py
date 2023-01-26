@@ -804,141 +804,6 @@ async def on_message(message):
         await message.channel.send(f"`Total MPs cached - {mpcount}`")
         await message.channel.send(f"`MP daily rewards - {round(MP, 3)}`")
 
-    if message.content.lower() == '.prime pd2fe':
-        PD2totalCached, PD2 = PD2call()
-        await message.channel.send(f"`Total PD2 FE sets cached - {PD2totalCached}`")
-        await message.channel.send(f"`PD2 FE daily rewards - {round(PD2, 3)}`")
-
-    if message.content.lower() == '.prime pd3fe':
-        PD3totalCached, PD3 = PD3call()
-        await message.channel.send(f"`Total PD3 FE sets cached - {PD3totalCached}`")
-        await message.channel.send(f"`PD3 FE daily rewards - {round(PD3, 3)}`")
-
-    if message.content.lower() == '.prime pd1fe':
-        PD1totalCached, PD1 = PD1call()
-        await message.channel.send(f"`Total PD1 FE sets cached - {PD1totalCached}`")
-        await message.channel.send(f"`PD1 FE daily rewards - {round(PD1, 3)}`")
-
-    if message.content.lower() == '.prime pd1art':
-        PD1arttotalCached, PD1art = PD1artcall()
-        await message.channel.send(f"`Total PD1 Art Card sets cached - {PD1arttotalCached}`")
-        await message.channel.send(f"`PD1 Art Card daily rewards - {round(PD1art, 3)}`")
-
-    if message.content.lower() == '.prime pd1cb':
-        PD1cbtotalCached, PD1cb = PD1cbcall()
-        await message.channel.send(f"`Total PD1 CB sets cached - {PD1cbtotalCached}`")
-        await message.channel.send(f"`PD1 CB daily rewards - {round(PD1cb, 3)}`")
-
-    if message.content.lower() == '.prime pd1se':
-        PD1setotalCached, PD1se = PD1secall()
-        await message.channel.send(f"`Total PD1 SE sets cached - {PD1setotalCached}`")
-        await message.channel.send(f"`PD1 SE daily rewards - {round(PD1se, 3)}`")
-
-    if message.content.lower() == '.prime pd2art':
-        PD2arttotalCached, PD2art = PD2artcall()
-        await message.channel.send(f"`Total PD2 Art Card sets cached - {PD2arttotalCached}`")
-        await message.channel.send(f"`PD2 Art Card daily rewards - {round(PD2art, 3)}`")
-
-    if message.content.lower() == '.prime pd2cb':
-        PD2cbtotalCached, PD2cb = PD2cbcall()
-        await message.channel.send(f"`Total PD2 CB sets cached - {PD2cbtotalCached}`")
-        await message.channel.send(f"`PD2 CB daily rewards - {round(PD2cb, 3)}`")
-
-    if message.content.lower() == '.prime pd2pl':
-        PD2pltotalCached, PD2pl = PD2plcall()
-        await message.channel.send(f"`Total PD2 PL sets cached - {PD2pltotalCached}`")
-        await message.channel.send(f"`PD2 PL daily rewards - {round(PD2pl, 3)}`")
-
-    if message.content.lower() == '.prime pd2se':
-        PD2setotalCached, PD2se = PD2secall()
-        await message.channel.send(f"`Total PD2 SE sets cached - {PD2setotalCached}`")
-        await message.channel.send(f"`PD2 SE daily rewards - {round(PD2se, 3)}`")
-
-    if message.content.lower() == '.prime pd3art':
-        PD3arttotalCached, PD3art = PD3artcall()
-        await message.channel.send(f"`Total PD3 Art Card sets cached - {PD3arttotalCached}`")
-        await message.channel.send(f"`PD3 Art Card daily rewards - {round(PD3art, 3)}`")
-
-    if message.content.lower() == '.prime pd3cb':
-        PD3cbtotalCached, PD3cb = PD3cbcall()
-        await message.channel.send(f"`Total PD3 CB sets cached - {PD3cbtotalCached}`")
-        await message.channel.send(f"`PD3 CB daily rewards - {round(PD3cb, 3)}`")
-
-    if message.content.lower() == '.prime pd3pl':
-        PD3pltotalCached, PD3pl = PD3plcall()
-        await message.channel.send(f"`Total PD3 PL sets cached - {PD3pltotalCached}`")
-        await message.channel.send(f"`PD3 PL daily rewards - {round(PD3pl, 3)}`")
-
-    if message.content.lower() == '.prime pd3se':
-        PD3setotalCached, PD3se = PD3secall()
-        await message.channel.send(f"`Total PD3 SE sets cached - {PD3setotalCached}`")
-        await message.channel.send(f"`PD3 SE daily rewards - {round(PD3se, 3)}`")
-
-    if message.content.lower() == '.prime ps15' or message.content.lower() == '.prime ps15fe':
-        PS15totalCached, PS15 = PS15call()
-        await message.channel.send(f"`Total PS15 sets cached - {PS15totalCached}`")
-        await message.channel.send(f"`PS15 daily rewards - {round(PS15, 3)}`")
-
-    if message.content.lower() == '.prime ps15art':
-        PS15arttotalCached, PS15art = PS15artcall()
-        await message.channel.send(f"`Total PS15 Art Card sets cached - {PS15arttotalCached}`")
-        await message.channel.send(f"`PS15 Art Card daily rewards - {round(PS15art, 3)}`")
-
-    if message.content.lower() == '.prime ps15cb':
-        PS15cbtotalCached, PS15cb = PS15cbcall()
-        await message.channel.send(f"`Total PS15 CB sets cached - {PS15cbtotalCached}`")
-        await message.channel.send(f"`PS15 CB daily rewards - {round(PS15cb, 3)}`")
-
-    if message.content.lower() == '.prime ps15se':
-        PS15setotalCached, PS15se = PS15secall()
-        await message.channel.send(f"`Total PS15 SE sets cached - {PS15setotalCached}`")
-        await message.channel.send(f"`PS15 SE daily rewards - {round(PS15se, 3)}`")
-
-    if message.content.lower() == '.prime pd4art':
-        PD4arttotalCached, PD4art = PD4artcall()
-        await message.channel.send(f"`Total PD4 Art Card sets cached - {PD4arttotalCached}`")
-        await message.channel.send(f"`PD4 Art Card daily rewards - {round(PD4art, 3)}`")
-
-    if message.content.lower() == '.prime pd4cb':
-        PD4cbtotalCached, PD4cb = PD4cbcall()
-        await message.channel.send(f"`Total PD4 CB sets cached - {PD4cbtotalCached}`")
-        await message.channel.send(f"`PD4 CB daily rewards - {round(PD4cb, 3)}`")
-
-    if message.content.lower() == '.prime pd4fe':
-        PD4totalCached, PD4 = PD4call()
-        await message.channel.send(f"`Total PD4 FE sets cached - {PD4totalCached}`")
-        await message.channel.send(f"`PD4 FE daily rewards - {round(PD4, 3)}`")
-
-    if message.content.lower() == '.prime pd4se':
-        PD4setotalCached, PD4se = PD4secall()
-        await message.channel.send(f"`Total PD4 SE sets cached - {PD4setotalCached}`")
-        await message.channel.send(f"`PD4 SE daily rewards - {round(PD4se, 3)}`")
-
-    if message.content.lower() == '.prime pd5fe':
-        PD5totalCached, PD5 = PD5call()
-        await message.channel.send(f"`Total PD5 FE sets cached - {PD5totalCached}`")
-        await message.channel.send(f"`PD5 FE daily rewards - {round(PD5, 3)}`")
-
-    if message.content.lower() == '.prime pd5se':
-        PD5setotalCached, PD5se = PD5secall()
-        await message.channel.send(f"`Total PD5 SE sets cached - {PD5setotalCached}`")
-        await message.channel.send(f"`PD5 SE daily rewards - {round(PD5se, 3)}`")
-
-    if message.content.lower() == '.prime pd5pl':
-        PD5pltotalCached, PD5pl = PD5plcall()
-        await message.channel.send(f"`Total PD5 PL sets cached - {PD5pltotalCached}`")
-        await message.channel.send(f"`PD5 PL daily rewards - {round(PD5pl, 3)}`")
-
-    if message.content.lower() == '.prime pd5cb':
-        PD5cbtotalCached, PD5cb = PD5cbcall()
-        await message.channel.send(f"`Total PD5 CB sets cached - {PD5cbtotalCached}`")
-        await message.channel.send(f"`PD5 CB daily rewards - {round(PD5cb, 3)}`")
-
-    if message.content.lower() == '.prime pd5art':
-        PD5arttotalCached, PD5art = PD5artcall()
-        await message.channel.send(f"`Total PD5 Art Card sets cached - {PD5arttotalCached}`")
-        await message.channel.send(f"`PD5 Art Card daily rewards - {round(PD5art, 3)}`")
-
     #Block for ALL CB sets, returns a line for each set with emissions only
     if message.content.lower() == '.prime cb':
         PD1cbtotalCached, PD1cb = PD1cbcall()
@@ -947,13 +812,15 @@ async def on_message(message):
         PD4cbtotalCached, PD4cb = PD4cbcall()
         PD5cbtotalCached, PD5cb = PD5cbcall()
         PS15cbtotalCached, PS15cb = PS15cbcall()
-        await message.channel.send(f"`All CB set daily rewards:`")
-        await message.channel.send(f"`PS15 - {round(PS15cb, 3)}`")
-        await message.channel.send(f"`PD1 - {round(PD1cb, 3)}`")
-        await message.channel.send(f"`PD2 - {round(PD2cb, 3)}`")
-        await message.channel.send(f"`PD3 - {round(PD3cb, 3)}`")
-        await message.channel.send(f"`PD4 - {round(PD4cb, 3)}`")
-        await message.channel.send(f"`PD5 - {round(PD5cb, 3)}`")
+        embed=discord.Embed(title="CB sets cached  |  daily emissions", color=discord.Color.yellow())
+        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15cbtotalCached, round(PS15cb, 3)), inline=False)
+        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD1cbtotalCached, round(PD1cb, 3)), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2cbtotalCached, round(PD2cb, 3)), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3cbtotalCached, round(PD3cb, 3)), inline=False)
+        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD4cbtotalCached, round(PD4cb, 3)), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5cbtotalCached, round(PD5cb, 3)), inline=False)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
 
     #Block for ALL SE sets, returns a line for each set with emissions only
     if message.content.lower() == '.prime se':
@@ -963,23 +830,27 @@ async def on_message(message):
         PD4setotalCached, PD4se = PD4secall()
         PD5setotalCached, PD5se = PD5secall()
         PS15setotalCached, PS15se = PS15secall()
-        await message.channel.send(f"`All SE set daily rewards:`")
-        await message.channel.send(f"`PS15 - {round(PS15se, 3)}`")
-        await message.channel.send(f"`PD1 - {round(PD1se, 3)}`")
-        await message.channel.send(f"`PD2 - {round(PD2se, 3)}`")
-        await message.channel.send(f"`PD3 - {round(PD3se, 3)}`")
-        await message.channel.send(f"`PD4 - {round(PD4se, 3)}`")
-        await message.channel.send(f"`PD5 - {round(PD5se, 3)}`")
+        embed=discord.Embed(title="SE sets cached  |  daily emissions", color=discord.Color.yellow())
+        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15setotalCached, round(PS15se, 3)), inline=False)
+        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD1setotalCached, round(PD1se, 3)), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2setotalCached, round(PD2se, 3)), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3setotalCached, round(PD3se, 3)), inline=False)
+        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD4setotalCached, round(PD4se, 3)), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5setotalCached, round(PD5se, 3)), inline=False)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
 
     #Block for ALL PL sets, returns a line for each set with emissions only
     if message.content.lower() == '.prime pl':
         PD2pltotalCached, PD2pl = PD2plcall()
         PD3pltotalCached, PD3pl = PD3plcall()
         PD5pltotalCached, PD5pl = PD5plcall()
-        await message.channel.send(f"`All PL set daily rewards:`")
-        await message.channel.send(f"`PD2 - {round(PD2pl, 3)}`")
-        await message.channel.send(f"`PD3 - {round(PD3pl, 3)}`")
-        await message.channel.send(f"`PD5 - {round(PD5pl, 3)}`")
+        embed=discord.Embed(title="PL sets cached  |  daily emissions", color=discord.Color.yellow())
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2pltotalCached, round(PD2pl, 3)), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3pltotalCached, round(PD3pl, 3)), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5pltotalCached, round(PD5pl, 3)), inline=False)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
 
     #Block for ALL FE sets, returns a line for each set with emissions only
     if message.content.lower() == '.prime fe':
@@ -989,13 +860,15 @@ async def on_message(message):
         PD4totalCached, PD4 = PD4call()
         PD5totalCached, PD5 = PD5call()
         PS15totalCached, PS15 = PS15call()
-        await message.channel.send(f"`All FE set daily rewards:`")
-        await message.channel.send(f"`PS15 - {round(PS15, 3)}`")
-        await message.channel.send(f"`PD1 - {round(PD1, 3)}`")
-        await message.channel.send(f"`PD2 - {round(PD2, 3)}`")
-        await message.channel.send(f"`PD3 - {round(PD3, 3)}`")
-        await message.channel.send(f"`PD4 - {round(PD4, 3)}`")
-        await message.channel.send(f"`PD5 - {round(PD5, 3)}`")
+        embed=discord.Embed(title="FE sets cached  |  daily emissions", color=discord.Color.yellow())
+        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15totalCached, round(PS15, 3)), inline=False)
+        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD1totalCached, round(PD1, 3)), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2totalCached, round(PD2, 3)), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3totalCached, round(PD3, 3)), inline=False)
+        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD4totalCached, round(PD4, 3)), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5totalCached, round(PD5, 3)), inline=False)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
 
     #Block for ALL Art sets, returns a line for each set with emissions only
     if message.content.lower() == '.prime art':
@@ -1005,13 +878,15 @@ async def on_message(message):
         PD4arttotalCached, PD4art = PD4artcall()
         PD5arttotalCached, PD5art = PD5artcall()
         PS15arttotalCached, PS15art = PS15artcall()
-        await message.channel.send(f"`All Art Card set daily rewards:`")
-        await message.channel.send(f"`PS15 - {round(PS15art, 3)}`")
-        await message.channel.send(f"`PD1 - {round(PD1art, 3)}`")
-        await message.channel.send(f"`PD2 - {round(PD2art, 3)}`")
-        await message.channel.send(f"`PD3 - {round(PD3art, 3)}`")
-        await message.channel.send(f"`PD4 - {round(PD4art, 3)}`")
-        await message.channel.send(f"`PD5 - {round(PD5art, 3)}`")
+        embed=discord.Embed(title="Art sets cached  |  daily emissions", color=discord.Color.yellow())
+        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15arttotalCached, round(PS15art, 3)), inline=False)
+        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD1arttotalCached, round(PD1art, 3)), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2arttotalCached, round(PD2art, 3)), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3arttotalCached, round(PD3art, 3)), inline=False)
+        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD4arttotalCached, round(PD4art, 3)), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5arttotalCached, round(PD5art, 3)), inline=False)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
 
     #easter egg block for silly responses
     if message.content.lower() == '.prime pd6fe':
@@ -1032,7 +907,7 @@ async def on_message(message):
     if message.content.lower() == '.sonk':
         await message.channel.send("https://imgur.com/SePhHyV")
 
-    if message.content.lower() == '.6thparallel' or message.content.lower() == '.sixthparallel':
+    if message.content.lower() == '.6thparallel' or message.content.lower() == '.sixthparallel' or message.content.lower() == '.barkolian':
         ctx = await message.channel.send("`Shh, I have something to show you anon. Keep this quiet!`")
         await asyncio.sleep(2)
         ctx2 = await message.channel.send("https://media.discordapp.net/attachments/985481962498191411/1027591301769732096/parallel-dogs.png")

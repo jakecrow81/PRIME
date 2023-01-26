@@ -365,3 +365,4 @@ FodyWeavers.xsd
 /extra files
 /sonk.jpg
 /copy of older text-based PRIME table output, before embed.py
+/old bot before removing many commands and changing to embeds.py
