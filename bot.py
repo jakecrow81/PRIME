@@ -750,7 +750,7 @@ async def on_message(message):
         await message.channel.send("`--------------------------`")
         await message.channel.send(f"`Total Prime sunk - {totalsink:,}`")
         await message.channel.send(f"`Percent of claimed Prime sunk - {claimedsunk:,}%`")
-        await message.channel.send("`Please note Prime claims data is an estimate only`")
+        await message.channel.send("`Please note this is intended as an estimate only`")
         await ctx.edit(content="**`Results:`**")
 
     #Call Sink functions and print simplified results for all + total
@@ -786,23 +786,20 @@ async def on_message(message):
         await message.channel.send(f"`Total Prime in PK pool: {totalpkprime:,}`")
         await message.channel.send(f"`Total Prime emitted from PK pool: {totalpkprimeemitted:,} ({round((dayspassedpercentage * 100), 1)}%)`")
         await message.channel.send(f"`Total Prime left in PK pool: {pkprimeleft:,} ({pkpercentageleft}%)`")
-        await message.channel.send("`Please note Prime pool data is an estimate only`")
+        await message.channel.send("`Please note this is intended as an estimate only`")
         await ctx.edit(content="**`Results:`**")
 
-    if message.content.lower() == '.prime core':
-        coreTotalCached, core = Corecall()
-        await message.channel.send(f"`Total Cores cached - {coreTotalCached}`")
-        await message.channel.send(f"`Core daily rewards - {round(core, 3)}`")
-
-    if message.content.lower() == '.prime cd':
-        CDtotalCached, CD = CDcall()
-        await message.channel.send(f"`Total CDs cached - {CDtotalCached}`")
-        await message.channel.send(f"`CD daily rewards - {round(CD, 3)}`")
-
-    if message.content.lower() == '.prime mp':
+    #Block for ALL Cornerstone assets, returns a line for each set with emissions only
+    if message.content.lower() == '.prime cornerstone':
         MP, mpcount = MPcall()
-        await message.channel.send(f"`Total MPs cached - {mpcount}`")
-        await message.channel.send(f"`MP daily rewards - {round(MP, 3)}`")
+        CDtotalCached, CD = CDcall()
+        coreTotalCached, core = Corecall()
+        embed=discord.Embed(title="Cornerstones cached  |  daily emissions", color=discord.Color.yellow())
+        embed.add_field(name="The Core", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(coreTotalCached, round(core, 3)), inline=False)
+        embed.add_field(name="Catalyst Drive", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(CDtotalCached, round(CD, 3)), inline=False)
+        embed.add_field(name="Masterpiece", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(mpcount, round(MP, 3)), inline=False)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
 
     #Block for ALL CB sets, returns a line for each set with emissions only
     if message.content.lower() == '.prime cb':
@@ -847,8 +844,8 @@ async def on_message(message):
         PD5pltotalCached, PD5pl = PD5plcall()
         embed=discord.Embed(title="PL sets cached  |  daily emissions", color=discord.Color.yellow())
         embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2pltotalCached, round(PD2pl, 3)), inline=False)
-        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3pltotalCached, round(PD3pl, 3)), inline=False)
-        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5pltotalCached, round(PD5pl, 3)), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3pltotalCached, round(PD3pl, 3)), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5pltotalCached, round(PD5pl, 3)), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
