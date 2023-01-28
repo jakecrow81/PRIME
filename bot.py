@@ -932,7 +932,7 @@ async def on_message(message):
         await message.channel.send(f"`Please use .pd6 for an overview of the drop`")
 
     if message.content.lower() == '.pd6':
-        totalWallets = 6692
+        #totalWallets = 6692
         onePack, twoPack, maxPax, packsSold = manifestPacks()
         #packPercent = round((packsSold / totalWallets) * 100, 1)
         participatingWallets = onePack + twoPack + maxPax
