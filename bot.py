@@ -790,7 +790,7 @@ async def on_message(message):
         await ctx.edit(content="**`Results:`**")
 
     #Block for ALL Cornerstone assets, returns a line for each set with emissions only
-    if message.content.lower() == '.prime cornerstone':
+    if message.content.lower() == '.prime cornerstone' or message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core':
         MP, mpcount = MPcall()
         CDtotalCached, CD = CDcall()
         coreTotalCached, core = Corecall()
