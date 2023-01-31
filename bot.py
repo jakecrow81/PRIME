@@ -505,6 +505,58 @@ def PD5artcall():
     PD5art = ((PD5artalloc * setPrimePerSecond * 60 * 60 * 24) / PD5arttotalCached) / 1000000000000000000000000000000000000
     return PD5arttotalCached, PD5art
 
+#PD6
+def PD6call():
+    totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    PD6setInfo = psetcontract.functions.poolInfo(27).call()
+    PD6totalCached = PD6setInfo[3]
+    PD6alloc = (PD6setInfo[1] / totalAlloc)
+    PD6 = ((PD6alloc * setPrimePerSecond * 60 * 60 * 24) / PD6totalCached) / 1000000000000000000000000000000000000
+    return PD6totalCached, PD6
+
+#PD6se
+def PD6secall():
+    totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    PD6sesetInfo = psetcontract.functions.poolInfo(28).call()
+    PD6setotalCached = PD6sesetInfo[3]
+    PD6sealloc = (PD6sesetInfo[1] / totalAlloc)
+    PD6se = ((PD6sealloc * setPrimePerSecond * 60 * 60 * 24) / PD6setotalCached) / 1000000000000000000000000000000000000
+    return PD6setotalCached, PD6se
+
+#PD6pl
+def PD6plcall():
+    totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    PD6plsetInfo = psetcontract.functions.poolInfo(29).call()
+    PD6pltotalCached = PD6plsetInfo[3]
+    PD6plalloc = (PD6plsetInfo[1] / totalAlloc)
+    PD6pl = ((PD6plalloc * setPrimePerSecond * 60 * 60 * 24) / PD6pltotalCached) / 1000000000000000000000000000000000000
+    return PD6pltotalCached, PD6pl
+
+#PD6cb
+def PD6cbcall():
+    totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    PD6cbsetInfo = psetcontract.functions.poolInfo(30).call()
+    PD6cbtotalCached = PD6cbsetInfo[3]
+    PD6cballoc = (PD6cbsetInfo[1] / totalAlloc)
+    PD6cb = ((PD6cballoc * setPrimePerSecond * 60 * 60 * 24) / PD6cbtotalCached) / 1000000000000000000000000000000000000
+    return PD6cbtotalCached, PD6cb
+
+#PD6art
+def PD6artcall():
+    totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    PD6artsetInfo = psetcontract.functions.poolInfo(31).call()
+    PD6arttotalCached = PD6artsetInfo[3]
+    PD6artalloc = (PD6artsetInfo[1] / totalAlloc)
+    PD6art = ((PD6artalloc * setPrimePerSecond * 60 * 60 * 24) / PD6arttotalCached) / 1000000000000000000000000000000000000
+    return PD6arttotalCached, PD6art
+
+
+
 #Function blocks for PRIME claim data, pulled from Alchemy API
 
 #Prime Event Claims
@@ -808,6 +860,7 @@ async def on_message(message):
         PD3cbtotalCached, PD3cb = PD3cbcall()
         PD4cbtotalCached, PD4cb = PD4cbcall()
         PD5cbtotalCached, PD5cb = PD5cbcall()
+        PD6cbtotalCached, PD6cb = PD6cbcall()
         PS15cbtotalCached, PS15cb = PS15cbcall()
         embed=discord.Embed(title="CB sets cached  |  daily emissions", color=discord.Color.yellow())
         embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15cbtotalCached, round(PS15cb, 3)), inline=False)
@@ -816,6 +869,7 @@ async def on_message(message):
         embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3cbtotalCached, round(PD3cb, 3)), inline=False)
         embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD4cbtotalCached, round(PD4cb, 3)), inline=False)
         embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5cbtotalCached, round(PD5cb, 3)), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD6cbtotalCached, round(PD6cb, 3)), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
@@ -826,6 +880,7 @@ async def on_message(message):
         PD3setotalCached, PD3se = PD3secall()
         PD4setotalCached, PD4se = PD4secall()
         PD5setotalCached, PD5se = PD5secall()
+        PD6setotalCached, PD6se = PD6secall()
         PS15setotalCached, PS15se = PS15secall()
         embed=discord.Embed(title="SE sets cached  |  daily emissions", color=discord.Color.yellow())
         embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15setotalCached, round(PS15se, 3)), inline=False)
@@ -834,6 +889,7 @@ async def on_message(message):
         embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3setotalCached, round(PD3se, 3)), inline=False)
         embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD4setotalCached, round(PD4se, 3)), inline=False)
         embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5setotalCached, round(PD5se, 3)), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD6setotalCached, round(PD6se, 3)), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
@@ -842,10 +898,12 @@ async def on_message(message):
         PD2pltotalCached, PD2pl = PD2plcall()
         PD3pltotalCached, PD3pl = PD3plcall()
         PD5pltotalCached, PD5pl = PD5plcall()
+        PD6pltotalCached, PD6pl = PD6plcall()
         embed=discord.Embed(title="PL sets cached  |  daily emissions", color=discord.Color.yellow())
         embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2pltotalCached, round(PD2pl, 3)), inline=False)
         embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3pltotalCached, round(PD3pl, 3)), inline=False)
         embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5pltotalCached, round(PD5pl, 3)), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD6pltotalCached, round(PD6pl, 3)), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
@@ -856,6 +914,7 @@ async def on_message(message):
         PD3totalCached, PD3 = PD3call()
         PD4totalCached, PD4 = PD4call()
         PD5totalCached, PD5 = PD5call()
+        PD6totalCached, PD6 = PD6call()
         PS15totalCached, PS15 = PS15call()
         embed=discord.Embed(title="FE sets cached  |  daily emissions", color=discord.Color.yellow())
         embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15totalCached, round(PS15, 3)), inline=False)
@@ -864,6 +923,7 @@ async def on_message(message):
         embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3totalCached, round(PD3, 3)), inline=False)
         embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD4totalCached, round(PD4, 3)), inline=False)
         embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5totalCached, round(PD5, 3)), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD6totalCached, round(PD6, 3)), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
@@ -874,6 +934,7 @@ async def on_message(message):
         PD3arttotalCached, PD3art = PD3artcall()
         PD4arttotalCached, PD4art = PD4artcall()
         PD5arttotalCached, PD5art = PD5artcall()
+        PD6arttotalCached, PD6art = PD6artcall()
         PS15arttotalCached, PS15art = PS15artcall()
         embed=discord.Embed(title="Art sets cached  |  daily emissions", color=discord.Color.yellow())
         embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15arttotalCached, round(PS15art, 3)), inline=False)
@@ -882,27 +943,9 @@ async def on_message(message):
         embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3arttotalCached, round(PD3art, 3)), inline=False)
         embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD4arttotalCached, round(PD4art, 3)), inline=False)
         embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5arttotalCached, round(PD5art, 3)), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD6arttotalCached, round(PD6art, 3)), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
-
-    #easter egg block for silly responses
-    if message.content.lower() == '.prime pd6fe':
-        await message.channel.send(f"`REDACTED`")
-
-    if message.content.lower() == '.prime pd6se':
-        await message.channel.send(f"`REDACTED`")
-
-    if message.content.lower() == '.prime pd6pl':
-        await message.channel.send(f"`REDACTED`")
-
-    if message.content.lower() == '.prime pd6cb':
-        await message.channel.send(f"`REDACTED`")
-
-    if message.content.lower() == '.prime pd6art':
-        await message.channel.send(f"`REDACTED`")
-
-    if message.content.lower() == '.sonk':
-        await message.channel.send("https://imgur.com/SePhHyV")
 
     if message.content.lower() == '.6thparallel' or message.content.lower() == '.sixthparallel' or message.content.lower() == '.barkolian':
         ctx = await message.channel.send("`Shh, I have something to show you anon. Keep this quiet!`")
@@ -921,15 +964,9 @@ async def on_message(message):
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm':
         await message.reply(f'`gm {nick}!`  <a:primebounce:1058114534189043782>', mention_author=False)
 
-    if message.content.lower() == '.wen dkoogf' or message.content.lower() == '.dkoogf':
-        await message.channel.send("||`forever redacted`|| :upside_down:")
-
     #if message.content.lower() == '.pd6':
         #pd6minsleft = int(pd6countdown() / 60)
         #await message.channel.send(f"`There are {pd6minsleft:,} minutes left until PD6!`")
-
-    if message.content.lower() == '.manifest':
-        await message.channel.send(f"`Please use .pd6 for an overview of the drop`")
 
     if message.content.lower() == '.pd6':
         #totalWallets = 6692
