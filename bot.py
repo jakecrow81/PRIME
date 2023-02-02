@@ -1030,14 +1030,14 @@ async def on_message(message):
         overallTotal = FeTotal + SeTotal + CbTotal + PlTotal + AcTotal
         await message.channel.send(f"```ansi\n\u001b[0;37m           PS15  |  PD1   |  PD2   |  PD3   |  PD4   |  PD5    |  PD6   |  Totals\
         \n\u001b[0;34mFE\u001b[0;37m      | \u001b[0;33m {PS15totalCached}  \u001b[0;37m | \u001b[0;33m {PD1totalCached}  \u001b[0;37m | \u001b[0;33m {PD2totalCached}  \u001b[0;37m | \u001b[0;33m {PD3totalCached}  \u001b[0;37m | \u001b[0;33m {PD4totalCached}  \u001b[0;37m | \u001b[0;33m {PD5totalCached}  \u001b[0;37m  | \u001b[0;33m {PD6totalCached} \u001b[0;37m  | \u001b[0;33m {FeTotal:,} \
-        \n\u001b[0;34mSE\u001b[0;37m      | \u001b[0;33m {PS15setotalCached}   \u001b[0;37m | \u001b[0;33m {PD1setotalCached}   \u001b[0;37m | \u001b[0;33m {PD2setotalCached}   \u001b[0;37m | \u001b[0;33m {PD3setotalCached}   \u001b[0;37m | \u001b[0;33m {PD4setotalCached}  \u001b[0;37m | \u001b[0;33m {PD5setotalCached}  \u001b[0;37m  | \u001b[0;33m {PD6setotalCached} \u001b[0;37m   | \u001b[0;33m {SeTotal:,} \
+        \n\u001b[0;34mSE\u001b[0;37m      | \u001b[0;33m {PS15setotalCached}   \u001b[0;37m | \u001b[0;33m {PD1setotalCached}   \u001b[0;37m | \u001b[0;33m {PD2setotalCached}   \u001b[0;37m | \u001b[0;33m {PD3setotalCached}   \u001b[0;37m | \u001b[0;33m {PD4setotalCached}  \u001b[0;37m | \u001b[0;33m {PD5setotalCached}  \u001b[0;37m  | \u001b[0;33m {PD6setotalCached} \u001b[0;37m  | \u001b[0;33m {SeTotal:,} \
         \n\u001b[0;34mPL\u001b[0;37m      | \u001b[0;33m 0    \u001b[0;37m | \u001b[0;33m 0    \u001b[0;37m | \u001b[0;33m {PD2pltotalCached}  \u001b[0;37m | \u001b[0;33m {PD3pltotalCached}   \u001b[0;37m | \u001b[0;33m 0    \u001b[0;37m | \u001b[0;33m {PD5pltotalCached}  \u001b[0;37m  | \u001b[0;33m {PD6pltotalCached} \u001b[0;37m  | \u001b[0;33m {PlTotal:,} \
         \n\u001b[0;34mCB\u001b[0;37m      | \u001b[0;33m {PS15cbtotalCached}   \u001b[0;37m | \u001b[0;33m {PD1cbtotalCached}   \u001b[0;37m | \u001b[0;33m {PD2cbtotalCached}   \u001b[0;37m | \u001b[0;33m {PD3cbtotalCached}   \u001b[0;37m | \u001b[0;33m {PD4cbtotalCached}   \u001b[0;37m | \u001b[0;33m {PD5cbtotalCached}   \u001b[0;37m  | \u001b[0;33m {PD6cbtotalCached} \u001b[0;37m   | \u001b[0;33m {CbTotal:,} \
         \n\u001b[0;34mART\u001b[0;37m     | \u001b[0;33m {PS15arttotalCached}    \u001b[0;37m | \u001b[0;33m {PD1arttotalCached}    \u001b[0;37m | \u001b[0;33m {PD2arttotalCached}    \u001b[0;37m | \u001b[0;33m {PD3arttotalCached}    \u001b[0;37m | \u001b[0;33m {PD4arttotalCached}    \u001b[0;37m | \u001b[0;33m {PD5arttotalCached}    \u001b[0;37m  | \u001b[0;33m {PD6arttotalCached} \u001b[0;37m    | \u001b[0;33m {AcTotal:,} \
         \n\u001b[0m-----------------------------------------------------------------\
         \n\u001b[0;34mGrand total: \u001b[1;33m{overallTotal:,}\
         ```")
-        await ctx.edit(content="**`Overview of all sets cached: (please note this data is intended as an estimate only)`**")
+        await ctx.edit(content="**`Overview of all sets cached: (please note this data is intended as an estimate only)\nThis view is meant for desktop only, it will not display properly on mobile.`**")
 
 
 client.run(TOKEN)
