@@ -778,32 +778,32 @@ async def on_message(message):
         await message.channel.send(embed=embed)
         await ctx.delete()
         
-    #Call Prime Claim functions and print results for all functions + total
-    if message.content.lower() == '.prime claims' or message.content.lower() == '.prime claim':
-        ctx = await message.channel.send("`Processing, please be patient.`")
-        primeEventClaimTotal = primeEventClaim()
-        primeKeyClaimTotal = primeKeyClaim()
-        primeSetClaimTotal = primeSetClaim()
-        primeCDClaimTotal = primeCDClaim()
-        primeCoreClaimTotal = primeCoreClaim()
-        primeMPClaimTotal = primeMPClaim()
-        claimTotal = round(primeEventClaimTotal + primeKeyClaimTotal + primeSetClaimTotal + primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal, 3)
-        payload, payloadHits, payloadUnique = Payloadcall()
-        artigraphtotal = int(Artigraphcall())
-        totalsink = payload + artigraphtotal
-        claimedsunk = round((totalsink / claimTotal) * 100, 2)
-        await message.channel.send(f"`Prime Event claims - {primeEventClaimTotal:,}`")
-        await message.channel.send(f"`Prime Key claims - {primeKeyClaimTotal:,}`")
-        await message.channel.send(f"`Prime Set claims - {primeSetClaimTotal:,}`")
-        await message.channel.send(f"`Prime CD claims - {primeCDClaimTotal:,}`")
-        await message.channel.send(f"`Prime Core claims - {primeCoreClaimTotal:,}`")
-        await message.channel.send(f"`Prime MP claims - {primeMPClaimTotal:,}`")
-        await message.channel.send(f"`Total Prime claimed - {claimTotal:,}`")
-        await message.channel.send("`--------------------------`")
-        await message.channel.send(f"`Total Prime sunk - {totalsink:,}`")
-        await message.channel.send(f"`Percent of claimed Prime sunk - {claimedsunk:,}%`")
-        await message.channel.send("`Please note this is intended as an estimate only`")
-        await ctx.edit(content="**`Results:`**")
+    ##Call Prime Claim functions and print results for all functions + total
+    #if message.content.lower() == '.prime claims' or message.content.lower() == '.prime claim':
+    #    ctx = await message.channel.send("`Processing, please be patient.`")
+    #    primeEventClaimTotal = primeEventClaim()
+    #    primeKeyClaimTotal = primeKeyClaim()
+    #    primeSetClaimTotal = primeSetClaim()
+    #    primeCDClaimTotal = primeCDClaim()
+    #    primeCoreClaimTotal = primeCoreClaim()
+    #    primeMPClaimTotal = primeMPClaim()
+    #    claimTotal = round(primeEventClaimTotal + primeKeyClaimTotal + primeSetClaimTotal + primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal, 3)
+    #    payload, payloadHits, payloadUnique = Payloadcall()
+    #    artigraphtotal = int(Artigraphcall())
+    #    totalsink = payload + artigraphtotal
+    #    claimedsunk = round((totalsink / claimTotal) * 100, 2)
+    #    await message.channel.send(f"`Prime Event claims - {primeEventClaimTotal:,}`")
+    #    await message.channel.send(f"`Prime Key claims - {primeKeyClaimTotal:,}`")
+    #    await message.channel.send(f"`Prime Set claims - {primeSetClaimTotal:,}`")
+    #    await message.channel.send(f"`Prime CD claims - {primeCDClaimTotal:,}`")
+    #    await message.channel.send(f"`Prime Core claims - {primeCoreClaimTotal:,}`")
+    #    await message.channel.send(f"`Prime MP claims - {primeMPClaimTotal:,}`")
+    #    await message.channel.send(f"`Total Prime claimed - {claimTotal:,}`")
+    #    await message.channel.send("`--------------------------`")
+    #    await message.channel.send(f"`Total Prime sunk - {totalsink:,}`")
+    #    await message.channel.send(f"`Percent of claimed Prime sunk - {claimedsunk:,}%`")
+    #    await message.channel.send("`Please note this is intended as an estimate only`")
+    #    await ctx.edit(content="**`Results:`**")
 
     #Call Sink functions and print simplified results for all + total
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink':
@@ -831,15 +831,14 @@ async def on_message(message):
 
     if message.content.lower() == '.prime pk':
         PKtotalCached, PK, totalpkprime, totalpkprimeemitted, dayspassedpercentage, pkprimeleft, pkpercentageleft = PKcall()
-        ctx = await message.channel.send("`Processing, please be patient.`")
-        await message.channel.send(f"`Total PKs cached - {PKtotalCached}`")
-        await message.channel.send(f"`PK daily rewards - {round(PK, 3)}`")
-        await message.channel.send("`--------------------------`")
-        await message.channel.send(f"`Total Prime in PK pool: {totalpkprime:,}`")
-        await message.channel.send(f"`Total Prime emitted from PK pool: {totalpkprimeemitted:,} ({round((dayspassedpercentage * 100), 1)}%)`")
-        await message.channel.send(f"`Total Prime left in PK pool: {pkprimeleft:,} ({pkpercentageleft}%)`")
-        await message.channel.send("`Please note this is intended as an estimate only`")
-        await ctx.edit(content="**`Results:`**")
+        embed=discord.Embed(title="PK overview", color=discord.Color.yellow())
+        embed.add_field(name="Cached    |    Daily emissions", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PKtotalCached, round(PK, 3)), inline=False)
+        embed.add_field(name="Total Prime in PK pool", value="```ansi\n\u001b[0;32m{:,}```".format(totalpkprime), inline=False)
+        embed.add_field(name="Prime emitted to date", value="```ansi\n\u001b[0;32m{:,}  |  {}% ```".format(int(totalpkprimeemitted), round((dayspassedpercentage * 100), 1)), inline=False)
+        embed.add_field(name="Prime left in pool", value="```ansi\n\u001b[0;32m{:,}  |  {}%```".format(int(pkprimeleft), pkpercentageleft), inline=False)
+        embed.add_field(name="Prime per PK (at currently cached #)", value="```ansi\n\u001b[0;32m{:,}```".format(int(pkprimeleft / PKtotalCached)), inline=False)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
 
     #Block for ALL Cornerstone assets, returns a line for each set with emissions only
     if message.content.lower() == '.prime cornerstone' or message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core':
