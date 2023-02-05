@@ -187,10 +187,38 @@ def Payloadcall():
 
 #Artigraph Sink
 def Artigraphcall():
-    artigraph = primecontract.functions.balanceOf('0xC3147B1aD536184AFa532Bb0a052595c08362334').call() / 1000000000000000000
-    artigraphartist = primecontract.functions.balanceOf('0xbc95fD9Ea295F6F7dA70cE25454874C03a888ee0').call() / 1000000000000000000
-    artigraphtotal = artigraph + artigraphartist
-    return artigraphtotal
+    jsonpayload = {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "alchemy_getAssetTransfers",
+    "params": [
+        {
+            "fromBlock": "0x0",
+            "toBlock": "latest",
+            "category": ["erc20"],
+            "withMetadata": False,
+            "excludeZeroValue": True,
+            "maxCount": "0x3e8",
+            "toAddress": "0xC3147B1aD536184AFa532Bb0a052595c08362334"
+        }
+    ]
+    }
+    headers = {
+    "accept": "application/json",
+    "content-type": "application/json"
+    }
+    artigraphHits = []
+    artigraphTotal = 0
+    while True:
+        response = requests.post(alchemyurl, json=jsonpayload, headers=headers).json()
+        for i in range(len(response["result"]["transfers"])):
+            artigraphHits.append(response["result"]["transfers"][i]["from"])
+            artigraphTotal = artigraphTotal + response["result"]["transfers"][i]["value"]
+        if not 'pageKey' in response["result"]:
+            break
+        jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    artigraphUnique = set(artigraphHits)
+    return int(artigraphTotal), artigraphHits, artigraphUnique
 
 #MP
 def MPcall():
@@ -763,8 +791,8 @@ async def on_message(message):
         currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted = emitCall()
         emitTotal = currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
-        artigraphtotal = int(Artigraphcall())
-        totalsink = payloadTotal + artigraphtotal
+        artigraphTotal, artigraphHits, artigraphUnique = Artigraphcall()
+        totalsink = payloadTotal + artigraphTotal
         claimedsunk = round((totalsink / claimTotal) * 100, 2)
         embed=discord.Embed(title="Overview of Prime", color=discord.Color.yellow())
         #embed.set_author(name="Jake", url="https://echelon.io", icon_url="https://cdn.discordapp.com/emojis/935663412023812156.png")
@@ -809,11 +837,11 @@ async def on_message(message):
     #Call Sink functions and print simplified results for all + total
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink':
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
-        artigraphtotal = int(Artigraphcall())
-        totalsink = payloadTotal + artigraphtotal
-        sinkdistro = (artigraphtotal * .89) + payloadTotal
+        artigraphTotal, artigraphHits, artigraphUnique = Artigraphcall()
+        totalsink = payloadTotal + artigraphTotal
+        sinkdistro = int((artigraphTotal * .89) + payloadTotal)
         await message.channel.send(f"`Payload Prime sunk - {payloadTotal:,}`")
-        await message.channel.send(f"`Artigraph Prime sunk - {artigraphtotal:,}`")
+        await message.channel.send(f"`Artigraph Prime sunk - {artigraphTotal:,}`")
         await message.channel.send(f"`Total Prime sunk - {totalsink:,}`")
         await message.channel.send(f"`Total Prime to be redistributed to sink schedule - {sinkdistro:,}`")
 
@@ -825,9 +853,11 @@ async def on_message(message):
         await message.channel.send(f"`Unique wallets used - {len(payloadUnique):,}`")
 
     if message.content.lower() == '.prime artigraph':
-        artigraphtotal = int(Artigraphcall())
-        artigraphsinkdistro = artigraphtotal * .89
-        await message.channel.send(f"`Artigraph Prime - {artigraphtotal:,}`")
+        artigraphTotal, artigraphHits, artigraphUnique = Artigraphcall()
+        artigraphsinkdistro = int(artigraphTotal * .89)
+        await message.channel.send(f"`Artigraph Prime - {artigraphTotal:,}`")
+        await message.channel.send(f"`Total Artigraph hits - {len(artigraphHits):,}`")
+        await message.channel.send(f"`Unique wallets used - {len(artigraphUnique):,}`")
         await message.channel.send(f"`Artigraph Prime to be redistributed to sink schedule - {artigraphsinkdistro:,}`")
 
     if message.content.lower() == '.prime pk':
