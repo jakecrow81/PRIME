@@ -152,7 +152,6 @@ def emitCall():
 
 #Payload Sink
 def Payloadcall():
-    payload = primecontract.functions.balanceOf('0x5b4d1Db05981E2D68A412A663865C0d546249219').call() / 1000000000000000000
     jsonpayload = {
     "id": 1,
     "jsonrpc": "2.0",
@@ -174,15 +173,17 @@ def Payloadcall():
     "content-type": "application/json"
     }
     payloadHits = []
+    payloadTotal = 0
     while True:
         response = requests.post(alchemyurl, json=jsonpayload, headers=headers).json()
         for i in range(len(response["result"]["transfers"])):
             payloadHits.append(response["result"]["transfers"][i]["from"])
+            payloadTotal = payloadTotal + response["result"]["transfers"][i]["value"]
         if not 'pageKey' in response["result"]:
             break
         jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
     payloadUnique = set(payloadHits)
-    return int(payload), payloadHits, payloadUnique
+    return int(payloadTotal), payloadHits, payloadUnique
 
 #Artigraph Sink
 def Artigraphcall():
@@ -761,9 +762,9 @@ async def on_message(message):
         claimTotal = round(primeEventClaimTotal + primeKeyClaimTotal + primeSetClaimTotal + primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal, 3)
         currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted = emitCall()
         emitTotal = currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted
-        payload, payloadHits, payloadUnique = Payloadcall()
+        payloadTotal, payloadHits, payloadUnique = Payloadcall()
         artigraphtotal = int(Artigraphcall())
-        totalsink = payload + artigraphtotal
+        totalsink = payloadTotal + artigraphtotal
         claimedsunk = round((totalsink / claimTotal) * 100, 2)
         embed=discord.Embed(title="Overview of Prime", color=discord.Color.yellow())
         #embed.set_author(name="Jake", url="https://echelon.io", icon_url="https://cdn.discordapp.com/emojis/935663412023812156.png")
@@ -807,19 +808,19 @@ async def on_message(message):
 
     #Call Sink functions and print simplified results for all + total
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink':
-        payload, payloadHits, payloadUnique = Payloadcall()
+        payloadTotal, payloadHits, payloadUnique = Payloadcall()
         artigraphtotal = int(Artigraphcall())
-        totalsink = payload + artigraphtotal
-        sinkdistro = (artigraphtotal * .89) + payload
-        await message.channel.send(f"`Payload Prime sunk - {payload:,}`")
+        totalsink = payloadTotal + artigraphtotal
+        sinkdistro = (artigraphtotal * .89) + payloadTotal
+        await message.channel.send(f"`Payload Prime sunk - {payloadTotal:,}`")
         await message.channel.send(f"`Artigraph Prime sunk - {artigraphtotal:,}`")
         await message.channel.send(f"`Total Prime sunk - {totalsink:,}`")
         await message.channel.send(f"`Total Prime to be redistributed to sink schedule - {sinkdistro:,}`")
 
     #Begin blocks for individual sinks/sets/etc calls
     if message.content.lower() == '.prime payload':
-        payload, payloadHits, payloadUnique = Payloadcall()
-        await message.channel.send(f"`Payload Prime - {payload:,}`")
+        payloadTotal, payloadHits, payloadUnique = Payloadcall()
+        await message.channel.send(f"`Payload Prime - {payloadTotal:,}`")
         await message.channel.send(f"`Total Payload hits - {len(payloadHits):,}`")
         await message.channel.send(f"`Unique wallets used - {len(payloadUnique):,}`")
 
