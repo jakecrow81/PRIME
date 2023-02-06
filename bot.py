@@ -220,6 +220,36 @@ def Artigraphcall():
             break
         jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
     artigraphUnique = set(artigraphHits)
+
+    artistPayload = {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "alchemy_getAssetTransfers",
+    "params": [
+        {
+            "fromBlock": "0x0",
+            "toBlock": "latest",
+            "category": ["erc20"],
+            "contractAddresses": ["0xb23d80f5FefcDDaa212212F028021B41DEd428CF"],
+            "withMetadata": False,
+            "excludeZeroValue": True,
+            "maxCount": "0x3e8",
+            "toAddress": "0xbc95fD9Ea295F6F7dA70cE25454874C03a888ee0"
+        }
+    ]
+    }
+    headers = {
+    "accept": "application/json",
+    "content-type": "application/json"
+    }
+    while True:
+        response = requests.post(alchemyurl, json=artistPayload, headers=headers).json()
+        for i in range(len(response["result"]["transfers"])):
+            artigraphTotal = artigraphTotal + response["result"]["transfers"][i]["value"]
+        if not 'pageKey' in response["result"]:
+            break
+        jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
+
     return int(artigraphTotal), artigraphHits, artigraphUnique
 
 #MP
