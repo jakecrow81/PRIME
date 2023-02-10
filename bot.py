@@ -213,11 +213,20 @@ def Artigraphcall():
     }
     artigraphHits = []
     artigraphTotal = 0
+    feHits = 0
+    seHits = 0
+    plHits = 0
     while True:
         response = requests.post(alchemyurl, json=jsonpayload, headers=headers).json()
         for i in range(len(response["result"]["transfers"])):
             artigraphHits.append(response["result"]["transfers"][i]["from"])
             artigraphTotal = artigraphTotal + response["result"]["transfers"][i]["value"]
+            if response["result"]["transfers"][i]["value"] == 267:
+                feHits = feHits + 1
+            if response["result"]["transfers"][i]["value"] == 400.5:
+                seHits = seHits + 1
+            if response["result"]["transfers"][i]["value"] == 427.2:
+                plHits = plHits + 1
         if not 'pageKey' in response["result"]:
             break
         jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
@@ -252,7 +261,7 @@ def Artigraphcall():
             break
         jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
 
-    return int(artigraphTotal), artigraphHits, artigraphUnique
+    return int(artigraphTotal), artigraphHits, artigraphUnique, feHits, seHits, plHits
 
 #MP
 def MPcall():
@@ -825,7 +834,7 @@ async def on_message(message):
         currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted = emitCall()
         emitTotal = currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
-        artigraphTotal, artigraphHits, artigraphUnique = Artigraphcall()
+        artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
         totalsink = payloadTotal + artigraphTotal
         claimedsunk = round((totalsink / claimTotal) * 100, 2)
         embed=discord.Embed(title="Overview of Prime", color=discord.Color.yellow())
@@ -871,7 +880,7 @@ async def on_message(message):
     #Call Sink functions and print simplified results for all + total
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink':
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
-        artigraphTotal, artigraphHits, artigraphUnique = Artigraphcall()
+        artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
         totalsink = payloadTotal + artigraphTotal
         sinkdistro = int((artigraphTotal * .89) + payloadTotal)
         await message.channel.send(f"`Payload Prime sunk - {payloadTotal:,}`")
@@ -887,12 +896,32 @@ async def on_message(message):
         await message.channel.send(f"`Unique wallets used - {len(payloadUnique):,}`")
 
     if message.content.lower() == '.prime artigraph':
-        artigraphTotal, artigraphHits, artigraphUnique = Artigraphcall()
+        artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
         artigraphsinkdistro = int(artigraphTotal * .89)
-        await message.channel.send(f"`Artigraph Prime - {artigraphTotal:,}`")
-        await message.channel.send(f"`Total Artigraph hits - {len(artigraphHits):,}`")
-        await message.channel.send(f"`Unique wallets used - {len(artigraphUnique):,}`")
-        await message.channel.send(f"`Artigraph Prime to be redistributed to sink schedule - {artigraphsinkdistro:,}`")
+        feMax = 4556
+        seMax = 1484
+        plMax = 104
+        embed=discord.Embed(title="Artigraph overview", color=discord.Color.yellow())
+        embed.add_field(name="Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphTotal, inline=True))
+        embed.add_field(name="Sink redistribution", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphsinkdistro), inline=True)
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="Unique wallets", value="```ansi\n\u001b[0;32m{:,}```".format(len(artigraphUnique)), inline=True)
+        embed.add_field(name="Avg spent per wallet", value="```ansi\n\u001b[0;32m{:,}```".format(int(artigraphTotal / len(artigraphUnique))), inline=True)
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="FE hits", value="```ansi\n\u001b[0;32m{:,}```".format(feHits, inline=True))
+        embed.add_field(name="% of max", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((feHits / feMax * 100)), inline=True)
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="SE hits", value="```ansi\n\u001b[0;32m{:,}```".format(seHits, inline=True))
+        embed.add_field(name="% of max", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((seHits / seMax * 100)), inline=True)
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="PL hits", value="```ansi\n\u001b[0;32m{:,}```".format(plHits, inline=True))
+        embed.add_field(name="% of max", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((plHits / plMax * 100)), inline=True)
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="Total hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(artigraphHits), inline=True))
+        embed.add_field(name="% of max", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((len(artigraphHits) / 6144 * 100)), inline=True)
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
 
     if message.content.lower() == '.prime pk':
         PKtotalCached, PK, totalpkprime, totalpkprimeemitted, dayspassedpercentage, pkprimeleft, pkpercentageleft = PKcall()
