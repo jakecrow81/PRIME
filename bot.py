@@ -129,7 +129,8 @@ def primeCountdown():
     duration = then - now
     days = duration.days
     hours = duration.seconds//3600
-    return days, hours
+    minutes = (duration.seconds - (hours * 3600)) // 60
+    return days, hours, minutes
 
 #Current Prime emissions
 def emitCall():
@@ -1028,8 +1029,8 @@ async def on_message(message):
         await message.reply(f'`gm {nick}!`  <a:primebounce:1058114534189043782>', mention_author=False)
 
     if message.content.lower() == '.prime countdown' or message.content.lower() == '.primetime' or message.content.lower() == '.prime unlock':
-        days, hours = primeCountdown()
-        await message.channel.send(f' <a:primebounce:1058114534189043782> `There are {days} days and {hours} hours left until Prime Day!*` <a:primebounce:1058114534189043782> ')
+        days, hours, minutes = primeCountdown()
+        await message.channel.send(f' <a:primebounce:1058114534189043782> `There are {days} days, {hours} hours, and {minutes} minutes left until Prime Day!*` <a:primebounce:1058114534189043782> ')
         await message.channel.send(f'`*Approximately. Estimated. Disclaimered. In Minecraft.`')
 
     if message.content.lower() == '.pd6':
