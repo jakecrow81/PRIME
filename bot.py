@@ -122,13 +122,14 @@ def manifestPacks():
     packsSold = packEth / .195
     return onePack, twoPack, maxPax, int(packsSold)
 
-#PD6 countdown function
-#def pd6countdown():
-    #then = datetime(2023, 1, 14, 22)
-    #now = datetime.now()
-    #duration = then - now
-    #duration_in_s = duration.total_seconds()
-    #return duration_in_s
+#Prime unlock countdown function
+def primeCountdown():
+    then = datetime(2023, 3, 1, 0)
+    now = datetime.now()
+    duration = then - now
+    days = duration.days
+    hours = duration.seconds//3600
+    return days, hours
 
 #Current Prime emissions
 def emitCall():
@@ -1026,9 +1027,10 @@ async def on_message(message):
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm':
         await message.reply(f'`gm {nick}!`  <a:primebounce:1058114534189043782>', mention_author=False)
 
-    #if message.content.lower() == '.pd6':
-        #pd6minsleft = int(pd6countdown() / 60)
-        #await message.channel.send(f"`There are {pd6minsleft:,} minutes left until PD6!`")
+    if message.content.lower() == '.prime countdown' or message.content.lower() == '.primetime' or message.content.lower() == '.prime unlock':
+        days, hours = primeCountdown()
+        await message.channel.send(f' <a:primebounce:1058114534189043782> `There are {days} days and {hours} hours left until Prime Day!*` <a:primebounce:1058114534189043782> ')
+        await message.channel.send(f'`*Approximately. Estimated. Disclaimered. In Minecraft.`')
 
     if message.content.lower() == '.pd6':
         #totalWallets = 6692
