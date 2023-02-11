@@ -212,7 +212,7 @@ def Artigraphcall():
     "content-type": "application/json"
     }
     artigraphHits = []
-    artigraphTotal = 0
+    artigraphTotal = -4
     feHits = 0
     seHits = 0
     plHits = 0
@@ -910,16 +910,16 @@ async def on_message(message):
         embed.add_field(name="\u200B", value="\u200B")  # newline
         embed.add_field(name="FE hits", value="```ansi\n\u001b[0;32m{:,}```".format(feHits, inline=True))
         embed.add_field(name="% of max", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((feHits / feMax * 100)), inline=True)
-        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="FE prime sunk", value="```ansi\n\u001b[0;32m{:,} ```".format(int((feHits / feMax) * 1366800)), inline=True)
         embed.add_field(name="SE hits", value="```ansi\n\u001b[0;32m{:,}```".format(seHits, inline=True))
         embed.add_field(name="% of max", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((seHits / seMax * 100)), inline=True)
-        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="SE prime sunk", value="```ansi\n\u001b[0;32m{:,} ```".format(int((seHits / seMax) * 667800)), inline=True)
         embed.add_field(name="PL hits", value="```ansi\n\u001b[0;32m{:,}```".format(plHits, inline=True))
         embed.add_field(name="% of max", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((plHits / plMax * 100)), inline=True)
-        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="PL prime sunk", value="```ansi\n\u001b[0;32m{:,} ```".format(int((plHits / plMax) * 49920)), inline=True)
         embed.add_field(name="Total hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(artigraphHits), inline=True))
-        embed.add_field(name="% of max", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((len(artigraphHits) / 6144 * 100)), inline=True)
-        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="% of max hits", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((len(artigraphHits) / 6144 * 100)), inline=True)
+        embed.add_field(name="% of max prime sunk", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((artigraphTotal / 2084520) * 100), inline=True)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
