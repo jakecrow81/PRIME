@@ -8,6 +8,16 @@ from datetime import datetime
 from web3 import Web3
 from dotenv import load_dotenv
 from discord.ext import commands
+import dataframe_image as dfi
+import pandas as pd
+import random
+import numpy as np
+from bs4 import BeautifulSoup
+import aiohttp
+import matplotlib.pyplot as plt
+
+pd.set_option("styler.format.thousands", ",")
+
 intents = discord.Intents.default()
 #intents.members = True
 intents.message_content = True
@@ -1021,7 +1031,7 @@ async def on_message(message):
         await message.channel.send(embed=embed)
 
     #Block for ALL Art sets, returns a line for each set with emissions only
-    if message.content.lower() == '.prime art':
+    if message.content.lower() == '.prime art' or message.content.lower() == '.prime ac':
         PD1arttotalCached, PD1art = PD1artcall()
         PD2arttotalCached, PD2art = PD2artcall()
         PD3arttotalCached, PD3art = PD3artcall()
@@ -1055,11 +1065,14 @@ async def on_message(message):
         await message.channel.send("`*times out Nayn*`")
 
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm':
-        await message.reply(f'`gm {nick}!`  <a:primebounce:1058114534189043782>', mention_author=False)
+        await message.reply(f'`gm {nick}!`  <a:Prime_Bounce:1075839184738193480>', mention_author=False)
+
+    if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm':
+        await message.reply(f'`gn {nick}!`  <a:Prime_Bounce:1075839184738193480>', mention_author=False)
 
     if message.content.lower() == '.prime countdown' or message.content.lower() == '.primetime' or message.content.lower() == '.prime unlock':
         days, hours, minutes = primeCountdown()
-        await message.channel.send(f' <a:primebounce:1058114534189043782> `There are {days} days, {hours} hours, and {minutes} minutes left until Prime Day!*` <a:primebounce:1058114534189043782> ')
+        await message.channel.send(f' <a:Prime_Bounce:1075839184738193480> `There are {days} days, {hours} hours, and {minutes} minutes left until Prime Day!*` <a:Prime_Bounce:1075839184738193480> ')
         await message.channel.send(f'`*Approximately. Estimated. Disclaimered. In Minecraft.`')
 
     if message.content.lower() == '.pd6':
@@ -1082,7 +1095,7 @@ async def on_message(message):
         txncount = faucet()
         await message.channel.send(f"`Total faucet pulls : {txncount}`")
 
-    if message.content.lower() == '.prime sets':
+    if message.content.lower() == '.prime sets -text':
         ctx = await message.channel.send("`Processing, please be patient.`")
         PD1cbtotalCached, PD1cb = PD1cbcall()
         PD2cbtotalCached, PD2cb = PD2cbcall()
@@ -1131,7 +1144,85 @@ async def on_message(message):
         \n\u001b[0m-----------------------------------------------------------------\
         \n\u001b[0;34mGrand total: \u001b[1;33m{overallTotal:,}\
         ```")
-        await ctx.edit(content="**`Overview of all sets cached: (please note this data is intended as an estimate only)\nThis view is meant for desktop only, it will not display properly on mobile.`**")
+        await ctx.edit(content="**`(This view is meant for desktop only, it will not display properly on mobile.)\nNumber of sets cached:`**")
+
+    if message.content == (".prime sets"):
+        ctx = await message.channel.send("`Processing, please be patient.`")
+        PD1cbtotalCached, PD1cb = PD1cbcall()
+        PD2cbtotalCached, PD2cb = PD2cbcall()
+        PD3cbtotalCached, PD3cb = PD3cbcall()
+        PD4cbtotalCached, PD4cb = PD4cbcall()
+        PD5cbtotalCached, PD5cb = PD5cbcall()
+        PD6cbtotalCached, PD6cb = PD6cbcall()
+        PS15cbtotalCached, PS15cb = PS15cbcall()
+        PD1setotalCached, PD1se = PD1secall()
+        PD2setotalCached, PD2se = PD2secall()
+        PD3setotalCached, PD3se = PD3secall()
+        PD4setotalCached, PD4se = PD4secall()
+        PD5setotalCached, PD5se = PD5secall()
+        PD6setotalCached, PD6se = PD6secall()
+        PS15setotalCached, PS15se = PS15secall()
+        PD2pltotalCached, PD2pl = PD2plcall()
+        PD3pltotalCached, PD3pl = PD3plcall()
+        PD5pltotalCached, PD5pl = PD5plcall()
+        PD6pltotalCached, PD6pl = PD6plcall()
+        PD1totalCached, PD1 = PD1call()
+        PD2totalCached, PD2 = PD2call()
+        PD3totalCached, PD3 = PD3call()
+        PD4totalCached, PD4 = PD4call()
+        PD5totalCached, PD5 = PD5call()
+        PD6totalCached, PD6 = PD6call()
+        PS15totalCached, PS15 = PS15call()
+        PD1arttotalCached, PD1art = PD1artcall()
+        PD2arttotalCached, PD2art = PD2artcall()
+        PD3arttotalCached, PD3art = PD3artcall()
+        PD4arttotalCached, PD4art = PD4artcall()
+        PD5arttotalCached, PD5art = PD5artcall()
+        PD6arttotalCached, PD6art = PD6artcall()
+        PS15arttotalCached, PS15art = PS15artcall()
+        FeTotal = PS15totalCached + PD1totalCached + PD2totalCached + PD3totalCached + PD4totalCached + PD5totalCached + PD6totalCached
+        SeTotal = PS15setotalCached + PD1setotalCached + PD2setotalCached + PD3setotalCached + PD4setotalCached + PD5setotalCached + PD6setotalCached
+        CbTotal = PS15cbtotalCached + PD1cbtotalCached + PD2cbtotalCached + PD3cbtotalCached + PD4cbtotalCached + PD5cbtotalCached + PD6cbtotalCached
+        PlTotal = PD2pltotalCached + PD3pltotalCached + PD5pltotalCached + PD6pltotalCached
+        AcTotal = PS15arttotalCached + PD1arttotalCached + PD2arttotalCached + PD3arttotalCached + PD4arttotalCached + PD5arttotalCached + PD6arttotalCached
+        overallTotal = FeTotal + SeTotal + CbTotal + PlTotal + AcTotal
+        
+        df2 = pd.DataFrame(np.array([[PS15totalCached, PS15setotalCached, 0, PS15cbtotalCached, PS15arttotalCached],
+        [PD1totalCached, PD1setotalCached, 0, PD1cbtotalCached, PD1arttotalCached],
+        [PD2totalCached, PD2setotalCached, PD2pltotalCached, PD2cbtotalCached, PD2arttotalCached],
+        [PD3totalCached, PD3setotalCached, PD3pltotalCached, PD3cbtotalCached, PD3arttotalCached],
+        [PD4totalCached, PD4setotalCached, 0, PD4cbtotalCached, PD4arttotalCached],
+        [PD5totalCached, PD5setotalCached, PD5pltotalCached, PD5cbtotalCached, PD5arttotalCached],
+        [PD6totalCached, PD6setotalCached, PD6pltotalCached, PD6cbtotalCached, PD6arttotalCached],
+        [FeTotal, SeTotal, PlTotal, CbTotal, AcTotal]]),
+        columns=['FE', 'SE', 'PL', 'CB', 'ART'])
+        df2.index =['PS15', 'PD1', 'PD2', 'PD3', 'PD4', 'PD5', 'PD6', 'Totals']
+        df2_styled = df2.style.set_table_styles([
+        {
+            'selector': 'th',
+            'props': [('background-color', 'black'), ('color', 'white'), ('border', '1px solid #ADB550'), ('font-size', '20px')]
+        },
+        {
+            'selector': 'tbody',
+            'props': [('color', 'white'), ('border', '1px solid #ADB550'), ('font-size', '20px')]
+        },
+        {
+            'selector': 'tbody td',
+            'props': [('color', 'white'), ('border', '1px solid #ADB550'), ('font-size', '20px')]
+        },
+        {
+            'selector': 'tbody tr:nth-child(even)',
+            'props': [('background-color', '#3D401A'), ('border', '1px solid #ADB550'), ('font-size', '20px')]
+        },
+        {
+            'selector': 'tbody tr:nth-child(odd)',
+            'props': [('background-color', '#262815'), ('border', '1px solid #ADB550'), ('font-size', '20px')]
+        }        
+        ])
+
+        dfi.export(df2_styled, 'df2_styled.png')
+        await message.channel.send(file=discord.File('df2_styled.png'))
+        await ctx.edit(content="`Number of sets cached:`")
 
 
 client.run(TOKEN)
