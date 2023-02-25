@@ -1067,9 +1067,6 @@ async def on_message(message):
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm':
         await message.reply(f'`gm {nick}!`  <a:Prime_Bounce:1075839184738193480>', mention_author=False)
 
-    if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm':
-        await message.reply(f'`gn {nick}!`  <a:Prime_Bounce:1075839184738193480>', mention_author=False)
-
     #if message.content.lower() == '.prime countdown' or message.content.lower() == '.primetime' or message.content.lower() == '.prime unlock':
     #    days, hours, minutes = primeCountdown()
     #    await message.channel.send(f' <a:Prime_Bounce:1075839184738193480> `There are {days} days, {hours} hours, and {minutes} minutes left until Prime Day!*` <a:Prime_Bounce:1075839184738193480> ')
