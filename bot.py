@@ -134,7 +134,7 @@ def manifestPacks():
 
 #Prime unlock countdown function
 def primeCountdown():
-    then = datetime(2023, 3, 1, 0)
+    then = datetime(2023, 3, 1, 17)
     now = datetime.now()
     duration = then - now
     days = duration.days
@@ -148,11 +148,12 @@ def emitCall():
     currentdate = date.today()
     dayspassed = currentdate - cachestartdate
     #totaleada (save for after PE5) = 6666666, totalsetclaim (save for after PE5) = 3333333
-    #currentEada = 5555555, currentSetClaim = 2777777
+    #currentPeClaim = 10000000 (swap this when PE5 hits)
     currentPeClaim = 8333332
     totalpkprime = 12222222    
     totalCornerstone = 1222222
     totalSetCaching = 2222222
+    launchPartners = 1200000
     if dayspassed.days < 365:
         dayspassedpercentage = float(dayspassed.days / 365)
     else:
@@ -160,7 +161,7 @@ def emitCall():
     totalpkprimeemitted = round((totalpkprime * dayspassedpercentage), 1)
     currentCornerstoneEmitted = round((totalCornerstone * dayspassedpercentage), 1)
     currentSetCachingEmitted = round((totalSetCaching * dayspassedpercentage), 1)
-    return currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted
+    return currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted, launchPartners
 
 #Payload Sink
 def Payloadcall():
@@ -841,8 +842,9 @@ async def on_message(message):
         primeCoreClaimTotal = primeCoreClaim()
         primeMPClaimTotal = primeMPClaim()
         claimTotal = round(primeEventClaimTotal + primeKeyClaimTotal + primeSetClaimTotal + primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal, 3)
-        currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted = emitCall()
+        currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted, launchPartners = emitCall()
         emitTotal = currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted
+        circulating = emitTotal + launchPartners - totalsink
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
         artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
         totalsink = payloadTotal + artigraphTotal
@@ -854,39 +856,14 @@ async def on_message(message):
         embed.add_field(name="Prime Keys", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(totalpkprimeemitted), int(primeKeyClaimTotal), round((primeKeyClaimTotal / totalpkprimeemitted) * 100, 2)), inline=False)
         embed.add_field(name="Prime Sets", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(currentSetCachingEmitted), int(primeSetClaimTotal), round((primeSetClaimTotal / currentSetCachingEmitted) * 100, 2)), inline=False)
         embed.add_field(name="Cornerstone", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(currentCornerstoneEmitted), int(primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal), round(((primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal) / currentCornerstoneEmitted) * 100, 2)), inline=False)
-        embed.add_field(name="Totals", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(emitTotal), int(claimTotal), round((claimTotal / emitTotal) * 100, 2)), inline=False)
+        embed.add_field(name="Misc emissions", value="```ansi\n\u001b[0;32mLaunch Partners: {:,}```".format(launchPartners, inline=False))
+        embed.add_field(name="Emission totals", value="```ansi\n\u001b[0;32mClaimable emissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(emitTotal), int(claimTotal), round((claimTotal / emitTotal) * 100, 2)), inline=False)
         embed.add_field(name="Sinks", value="```ansi\n\u001b[0;32mPrime in sinks: {:,}\n{}% sunk```".format(int(totalsink), (claimedsunk)), inline=False)
+        embed.add_field(name="Circulating", value="```ansi\n\u001b[0;32mCirculating supply: {:,}```".format(int(circulating), inline=False))
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
         await ctx.delete()
         
-    ##Call Prime Claim functions and print results for all functions + total
-    #if message.content.lower() == '.prime claims' or message.content.lower() == '.prime claim':
-    #    ctx = await message.channel.send("`Processing, please be patient.`")
-    #    primeEventClaimTotal = primeEventClaim()
-    #    primeKeyClaimTotal = primeKeyClaim()
-    #    primeSetClaimTotal = primeSetClaim()
-    #    primeCDClaimTotal = primeCDClaim()
-    #    primeCoreClaimTotal = primeCoreClaim()
-    #    primeMPClaimTotal = primeMPClaim()
-    #    claimTotal = round(primeEventClaimTotal + primeKeyClaimTotal + primeSetClaimTotal + primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal, 3)
-    #    payload, payloadHits, payloadUnique = Payloadcall()
-    #    artigraphtotal = int(Artigraphcall())
-    #    totalsink = payload + artigraphtotal
-    #    claimedsunk = round((totalsink / claimTotal) * 100, 2)
-    #    await message.channel.send(f"`Prime Event claims - {primeEventClaimTotal:,}`")
-    #    await message.channel.send(f"`Prime Key claims - {primeKeyClaimTotal:,}`")
-    #    await message.channel.send(f"`Prime Set claims - {primeSetClaimTotal:,}`")
-    #    await message.channel.send(f"`Prime CD claims - {primeCDClaimTotal:,}`")
-    #    await message.channel.send(f"`Prime Core claims - {primeCoreClaimTotal:,}`")
-    #    await message.channel.send(f"`Prime MP claims - {primeMPClaimTotal:,}`")
-    #    await message.channel.send(f"`Total Prime claimed - {claimTotal:,}`")
-    #    await message.channel.send("`--------------------------`")
-    #    await message.channel.send(f"`Total Prime sunk - {totalsink:,}`")
-    #    await message.channel.send(f"`Percent of claimed Prime sunk - {claimedsunk:,}%`")
-    #    await message.channel.send("`Please note this is intended as an estimate only`")
-    #    await ctx.edit(content="**`Results:`**")
-
     #Call Sink functions and print simplified results for all + total
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink':
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
@@ -898,6 +875,18 @@ async def on_message(message):
         await message.channel.send(f"`Total Prime sunk - {totalsink:,}`")
         await message.channel.send(f"`Total Prime to be redistributed to sink schedule - {sinkdistro:,}`")
 
+    #Block for ALL Cornerstone assets, returns a line for each set with emissions only
+    if message.content.lower() == '.prime cornerstone' or message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core':
+        MP, mpcount = MPcall()
+        CDtotalCached, CD = CDcall()
+        coreTotalCached, core = Corecall()
+        embed=discord.Embed(title="Cornerstones cached  |  daily emissions", color=discord.Color.yellow())
+        embed.add_field(name="The Core", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(coreTotalCached, round(core, 3)), inline=False)
+        embed.add_field(name="Catalyst Drive", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(CDtotalCached, round(CD, 3)), inline=False)
+        embed.add_field(name="Masterpiece", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(mpcount, round(MP, 3)), inline=False)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
+
     #Begin blocks for individual sinks/sets/etc calls
     if message.content.lower() == '.prime payload':
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
@@ -905,6 +894,7 @@ async def on_message(message):
         await message.channel.send(f"`Total Payload hits - {len(payloadHits):,}`")
         await message.channel.send(f"`Unique wallets used - {len(payloadUnique):,}`")
 
+    #direct artigraph block
     if message.content.lower() == '.prime artigraph':
         artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
         artigraphsinkdistro = int(artigraphTotal * .89)
@@ -933,6 +923,7 @@ async def on_message(message):
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
+    #PK block
     if message.content.lower() == '.prime pk':
         PKtotalCached, PK, totalpkprime, totalpkprimeemitted, dayspassedpercentage, pkprimeleft, pkpercentageleft = PKcall()
         embed=discord.Embed(title="PK overview", color=discord.Color.yellow())
@@ -941,18 +932,6 @@ async def on_message(message):
         embed.add_field(name="Prime emitted to date", value="```ansi\n\u001b[0;32m{:,}  |  {}% ```".format(int(totalpkprimeemitted), round((dayspassedpercentage * 100), 1)), inline=False)
         embed.add_field(name="Prime left in pool", value="```ansi\n\u001b[0;32m{:,}  |  {}%```".format(int(pkprimeleft), pkpercentageleft), inline=False)
         embed.add_field(name="Prime per PK (at currently cached #)", value="```ansi\n\u001b[0;32m{:,}```".format(int(pkprimeleft / PKtotalCached)), inline=False)
-        embed.set_footer(text="Please note this is intended as an estimate only")
-        await message.channel.send(embed=embed)
-
-    #Block for ALL Cornerstone assets, returns a line for each set with emissions only
-    if message.content.lower() == '.prime cornerstone' or message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core':
-        MP, mpcount = MPcall()
-        CDtotalCached, CD = CDcall()
-        coreTotalCached, core = Corecall()
-        embed=discord.Embed(title="Cornerstones cached  |  daily emissions", color=discord.Color.yellow())
-        embed.add_field(name="The Core", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(coreTotalCached, round(core, 3)), inline=False)
-        embed.add_field(name="Catalyst Drive", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(CDtotalCached, round(CD, 3)), inline=False)
-        embed.add_field(name="Masterpiece", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(mpcount, round(MP, 3)), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
@@ -1067,10 +1046,13 @@ async def on_message(message):
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm':
         await message.reply(f'`gm {nick}!`  <a:Prime_Bounce:1075839184738193480>', mention_author=False)
 
-    #if message.content.lower() == '.prime countdown' or message.content.lower() == '.primetime' or message.content.lower() == '.prime unlock':
-    #    days, hours, minutes = primeCountdown()
-    #    await message.channel.send(f' <a:Prime_Bounce:1075839184738193480> `There are {days} days, {hours} hours, and {minutes} minutes left until Prime Day!*` <a:Prime_Bounce:1075839184738193480> ')
-    #    await message.channel.send(f'`*Approximately. Estimated. Disclaimered. In Minecraft.`')
+    if message.content.lower() == 'gn' or message.content.lower() == 'gn!' or message.content.lower() == '.gn':
+        await message.reply(f'`gn {nick}!`  <a:Prime_Bounce:1075839184738193480>', mention_author=False)
+
+    if message.content.lower() == '.prime countdown' or message.content.lower() == '.primetime' or message.content.lower() == '.prime unlock' or message.content.lower() == '.prime timer':
+        days, hours, minutes = primeCountdown()
+        await message.channel.send(f' <a:Prime_Bounce:1075839184738193480> `There are {days} days, {hours} hours, and {minutes} minutes left until Prime Day!*` <a:Prime_Bounce:1075839184738193480> ')
+        await message.channel.send(f'`*Approximately. Estimated. Disclaimered. In Minecraft.`')
 
     if message.content.lower() == '.pd6':
         #totalWallets = 6692
