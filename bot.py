@@ -147,9 +147,7 @@ def emitCall():
     cachestartdate = date(2022, 7, 18)
     currentdate = date.today()
     dayspassed = currentdate - cachestartdate
-    #totaleada (save for after PE5) = 6666666, totalsetclaim (save for after PE5) = 3333333
-    #currentPeClaim = 10000000 (swap this when PE5 hits)
-    currentPeClaim = 8333332
+    currentPeClaim = 10000000
     totalpkprime = 12222222    
     totalCornerstone = 1222222
     totalSetCaching = 2222222
@@ -844,10 +842,10 @@ async def on_message(message):
         claimTotal = round(primeEventClaimTotal + primeKeyClaimTotal + primeSetClaimTotal + primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal, 3)
         currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted, launchPartners = emitCall()
         emitTotal = currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted
-        circulating = emitTotal + launchPartners - totalsink
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
         artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
         totalsink = payloadTotal + artigraphTotal
+        circulating = emitTotal + launchPartners - totalsink
         claimedsunk = round((totalsink / claimTotal) * 100, 2)
         embed=discord.Embed(title="Overview of Prime", color=discord.Color.yellow())
         #embed.set_author(name="Jake", url="https://echelon.io", icon_url="https://cdn.discordapp.com/emojis/935663412023812156.png")
