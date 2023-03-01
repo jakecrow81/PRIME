@@ -845,7 +845,7 @@ async def on_message(message):
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
         artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
         totalsink = payloadTotal + artigraphTotal
-        circulating = emitTotal + launchPartners - totalsink
+        circulating = claimTotal - totalsink
         claimedsunk = round((totalsink / claimTotal) * 100, 2)
         embed=discord.Embed(title="Overview of Prime", color=discord.Color.yellow())
         #embed.set_author(name="Jake", url="https://echelon.io", icon_url="https://cdn.discordapp.com/emojis/935663412023812156.png")
@@ -1029,17 +1029,13 @@ async def on_message(message):
 
     if message.content.lower() == '.6thparallel' or message.content.lower() == '.sixthparallel' or message.content.lower() == '.barkolian':
         ctx = await message.channel.send("`Shh, I have something to show you anon. Keep this quiet!`")
-        await asyncio.sleep(2)
+        shady = await message.channel.send("https://media.discordapp.net/attachments/990996012736872598/1080248593153261709/shady.jpg")
+        await asyncio.sleep(3)
         ctx2 = await message.channel.send("https://media.discordapp.net/attachments/985481962498191411/1027591301769732096/parallel-dogs.png")
         await asyncio.sleep(4)
         await ctx.delete()
+        await shady.delete()
         await ctx2.edit(content="`Nothing to see here, move along Big Parallel`")
-
-    if message.content.lower() == '.dave':
-        await message.channel.send(f'<a:dave:1060734205467824249>')
-
-    if message.content.lower() == '.pavel':
-        await message.channel.send("`*times out Nayn*`")
 
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm':
         await message.reply(f'`gm {nick}!`  <a:Prime_Bounce:1075839184738193480>', mention_author=False)
@@ -1049,7 +1045,7 @@ async def on_message(message):
 
     if message.content.lower() == '.prime countdown' or message.content.lower() == '.primetime' or message.content.lower() == '.prime unlock' or message.content.lower() == '.prime timer':
         days, hours, minutes = primeCountdown()
-        await message.channel.send(f' <a:Prime_Bounce:1075839184738193480> `There are {days} days, {hours} hours, and {minutes} minutes left until Prime Day!*` <a:Prime_Bounce:1075839184738193480> ')
+        await message.channel.send(f' <a:Prime_Bounce:1075839184738193480> `There are {days} days, {hours} hours, and {minutes} minutes left until Prime unlock!*` <a:Prime_Bounce:1075839184738193480> ')
         await message.channel.send(f'`*Approximately. Estimated. Disclaimered. In Minecraft.`')
 
     if message.content.lower() == '.pd6':
