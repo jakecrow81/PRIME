@@ -151,7 +151,7 @@ def emitCall():
     totalpkprime = 12222222    
     totalCornerstone = 1222222
     totalSetCaching = 2222222
-    launchPartners = 1200000
+    launchPartners = 1950000
     if dayspassed.days < 365:
         dayspassedpercentage = float(dayspassed.days / 365)
     else:
