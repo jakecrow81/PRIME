@@ -858,7 +858,7 @@ async def on_message(message):
         embed.add_field(name="Prime Events", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(currentPeClaim, int(primeEventClaimTotal), round((primeEventClaimTotal / currentPeClaim) * 100, 2)), inline=False)
         embed.add_field(name="Prime Keys", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(totalpkprimeemitted), int(primeKeyClaimTotal), round((primeKeyClaimTotal / totalpkprimeemitted) * 100, 2)), inline=False)
         embed.add_field(name="Prime Sets", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(currentSetCachingEmitted), int(primeSetClaimTotal), round((primeSetClaimTotal / currentSetCachingEmitted) * 100, 2)), inline=False)
-        embed.add_field(name="Cornerstone", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(currentCornerstoneEmitted), int(primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal), round(((primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal) / currentCornerstoneEmitted) * 100, 2)), inline=False)
+        embed.add_field(name="CD/MP/The Core", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(currentCornerstoneEmitted), int(primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal), round(((primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal) / currentCornerstoneEmitted) * 100, 2)), inline=False)
         embed.add_field(name="Misc emissions", value="```ansi\n\u001b[0;32mLaunch Partners: {:,}```".format(launchPartners, inline=False))
         embed.add_field(name="Emission totals", value="```ansi\n\u001b[0;32mClaimable emissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(emitTotal), int(claimTotal), round((claimTotal / emitTotal) * 100, 2)), inline=False)
         embed.add_field(name="Sinks", value="```ansi\n\u001b[0;32mPrime in sinks: {:,}\n{}% sunk```".format(int(totalsink), (claimedsunk)), inline=False)
@@ -879,11 +879,11 @@ async def on_message(message):
         await message.channel.send(f"`Total Prime to be redistributed to sink schedule - {sinkdistro:,}`")
 
     #Block for ALL Cornerstone assets, returns a line for each set with emissions only
-    if message.content.lower() == '.prime cornerstone' or message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core':
+    if message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core':
         MP, mpcount = MPcall()
         CDtotalCached, CD = CDcall()
         coreTotalCached, core = Corecall()
-        embed=discord.Embed(title="Cornerstones cached  |  daily emissions", color=discord.Color.yellow())
+        embed=discord.Embed(title="CD/MP/Core cached  |  daily emissions", color=discord.Color.yellow())
         embed.add_field(name="The Core", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(coreTotalCached, round(core, 3)), inline=False)
         embed.add_field(name="Catalyst Drive", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(CDtotalCached, round(CD, 3)), inline=False)
         embed.add_field(name="Masterpiece", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(mpcount, round(MP, 3)), inline=False)
