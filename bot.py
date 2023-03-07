@@ -60,6 +60,11 @@ coreabi = json.loads('[{"inputs":[{"internalType":"contract IERC20","name":"_pri
 coreaddress = '0xa0Cd986F53cBF8B8Fb7bF6fB14791e31aeB9E449'
 corecontract = web3.eth.contract(address=coreaddress, abi=coreabi)
 
+#prime price
+def primePrice():
+    priceResult = requests.get('https://api.coingecko.com/api/v3/simple/price?ids=echelon-prime&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true').json()
+    return priceResult
+
 #pd6 faucet
 def faucet():
     #response = requests.post('https://api.ethplorer.io/getAddressInfo/0xd97a0a7c55b335cef440d7a33c5bf5b6ee2af9e2?apiKey=freekey&showETHTotals=true').json()
@@ -1196,6 +1201,22 @@ async def on_message(message):
         dfi.export(df2_styled, 'df2_styled.png')
         await message.channel.send(file=discord.File('df2_styled.png'))
         await ctx.edit(content="`Number of sets cached:`")
+
+    if message.content == (".prime price"):
+        prime = primePrice()
+        price = prime['echelon-prime']['usd']
+        mcap = prime['echelon-prime']['usd_market_cap']
+        vol = prime['echelon-prime']['usd_24h_vol']
+        change = prime['echelon-prime']['usd_24h_change'] * 10
+        embed=discord.Embed(title="Prime market info", color=discord.Color.yellow())
+        embed.add_field(name="Price: ", value="```ansi\n\u001b[0;32m${:,.2f}```".format(price), inline=True)
+        embed.add_field(name="Market Cap: ", value="```ansi\n\u001b[0;32m${:,.2f}```".format(mcap), inline=True)
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="24h Volume: ", value="```ansi\n\u001b[0;32m${:,.2f}```".format(vol), inline=True)
+        embed.add_field(name="24h price change: ", value="```ansi\n\u001b[0;32m{:,.2f}```".format(change), inline=True)
+        embed.set_footer(text="Data provided by CoinGecko")
+        await message.channel.send(embed=embed)
+
 
 
 client.run(TOKEN)
