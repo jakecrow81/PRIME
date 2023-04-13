@@ -5,6 +5,7 @@ import requests
 import asyncio
 from datetime import date
 from datetime import datetime
+from datetime import timedelta
 from web3 import Web3
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -245,21 +246,35 @@ def Artigraphcall():
             break
         jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
     artigraphUnique = set(artigraphHits)
+    artigraphTotal = artigraphTotal / .89
+ 
+    return int(artigraphTotal), artigraphHits, artigraphUnique, feHits, seHits, plHits
 
-    artistPayload = {
+#oldblock number function, takes input of N days and returns hex code for block number from N days ago
+def oldBlock(n):
+    oldDate = datetime.now().replace(second=0, microsecond=0) - timedelta(days = n)
+    unix_time = int(oldDate.timestamp())
+    etherscanapi = f"https://api.etherscan.io/api?module=block&action=getblocknobytime&timestamp={unix_time}&closest=before&apikey=Q367IZCX5ETK5FX7UMKBBJ9WMNZZNMMUWP"
+    etherscanresponse = requests.get(etherscanapi).json()
+    oldblocknumber = hex(int(etherscanresponse["result"]))
+    return oldblocknumber
+
+#Artigraph sink with timeframe expressed in days. Takes argument block from oldBlock().
+def artigraphTimeframe(block="0x0"):
+    jsonpayload = {
     "id": 1,
     "jsonrpc": "2.0",
     "method": "alchemy_getAssetTransfers",
     "params": [
         {
-            "fromBlock": "0x0",
+            "fromBlock": block,
             "toBlock": "latest",
             "category": ["erc20"],
             "contractAddresses": ["0xb23d80f5FefcDDaa212212F028021B41DEd428CF"],
             "withMetadata": False,
             "excludeZeroValue": True,
             "maxCount": "0x3e8",
-            "toAddress": "0xbc95fD9Ea295F6F7dA70cE25454874C03a888ee0"
+            "toAddress": "0xC3147B1aD536184AFa532Bb0a052595c08362334"
         }
     ]
     }
@@ -267,15 +282,54 @@ def Artigraphcall():
     "accept": "application/json",
     "content-type": "application/json"
     }
+    artigraphHits = []
+    artigraphTotal = 0
     while True:
-        response = requests.post(alchemyurl, json=artistPayload, headers=headers).json()
+        response = requests.post(alchemyurl, json=jsonpayload, headers=headers).json()
         for i in range(len(response["result"]["transfers"])):
+            artigraphHits.append(response["result"]["transfers"][i]["from"])
             artigraphTotal = artigraphTotal + response["result"]["transfers"][i]["value"]
         if not 'pageKey' in response["result"]:
             break
         jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    artigraphTotal = artigraphTotal / .89
 
-    return int(artigraphTotal), artigraphHits, artigraphUnique, feHits, seHits, plHits
+    return int(artigraphTotal), artigraphHits
+
+#Payload sink with timeframe expressed in days. Takes argument block from oldBlock().
+def payloadTimeframe(block="0x0"):
+    jsonpayload = {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "alchemy_getAssetTransfers",
+    "params": [
+        {
+            "fromBlock": block,
+            "toBlock": "latest",
+            "category": ["erc20"],
+            "contractAddresses": ["0xb23d80f5FefcDDaa212212F028021B41DEd428CF"],
+            "withMetadata": False,
+            "excludeZeroValue": True,
+            "maxCount": "0x3e8",
+            "toAddress": "0x5b4d1Db05981E2D68A412A663865C0d546249219"
+        }
+    ]
+    }
+    headers = {
+    "accept": "application/json",
+    "content-type": "application/json"
+    }
+    payloadHits = 0
+    payloadTotal = 0
+    while True:
+        response = requests.post(alchemyurl, json=jsonpayload, headers=headers).json()
+        for i in range(len(response["result"]["transfers"])):
+            payloadHits += 1
+            payloadTotal = payloadTotal + response["result"]["transfers"][i]["value"]
+        if not 'pageKey' in response["result"]:
+            break
+        jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    return int(payloadTotal), payloadHits
 
 #MP
 def MPcall():
@@ -1216,6 +1270,27 @@ async def on_message(message):
     #    embed.add_field(name="24h price change: ", value="```ansi\n\u001b[0;32m{:,.2f}```".format(change), inline=True)
     #    embed.set_footer(text="Data provided by CoinGecko")
     #    await message.channel.send(embed=embed)
+
+    if message.content.lower().startswith('.prime sink:') or message.content.lower().startswith('.prime sinks:'):
+        if message.content.split(":", 1)[1].isnumeric() == False:
+            await message.channel.send("`Usage: .prime sink:x where x is the number of days to search back for historical sink data`")
+            return
+        days = int(message.content.split(":", 1)[1])
+        oldBlockNumber = oldBlock(days)
+        artigraphTotal, artigraphHits = artigraphTimeframe(oldBlockNumber)
+        payloadTotal, payloadHits = payloadTimeframe(oldBlockNumber)
+
+        embed=discord.Embed(title=f"Sink overview for the last {days} days", color=discord.Color.yellow())
+        embed.add_field(name="Artigraph Prime", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphTotal, inline=True))
+        embed.add_field(name="Artigraph hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(artigraphHits), inline=True))
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="Payload Prime", value="```ansi\n\u001b[0;32m{:,}```".format(payloadTotal, inline=True))
+        embed.add_field(name="Payload hits", value="```ansi\n\u001b[0;32m{:,}```".format(payloadHits, inline=True))
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphTotal + payloadTotal, inline=True))
+        embed.add_field(name="To redistribute", value="```ansi\n\u001b[0;32m{:,}```".format(int((artigraphTotal * .89) + payloadTotal), inline=True))
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
 
 
 
