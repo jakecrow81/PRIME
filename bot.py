@@ -1262,7 +1262,7 @@ async def on_message(message):
         CbTotal = PS15cbtotalCached + PD1cbtotalCached + PD2cbtotalCached + PD3cbtotalCached + PD4cbtotalCached + PD5cbtotalCached + PD6cbtotalCached
         PlTotal = PD2pltotalCached + PD3pltotalCached + PD5pltotalCached + PD6pltotalCached
         AcTotal = PS15arttotalCached + PD1arttotalCached + PD2arttotalCached + PD3arttotalCached + PD4arttotalCached + PD5arttotalCached + PD6arttotalCached
-        overallTotal = FeTotal + SeTotal + CbTotal + PlTotal + AcTotal
+        #overallTotal = FeTotal + SeTotal + CbTotal + PlTotal + AcTotal
         
         df2 = pd.DataFrame(np.array([[PS15totalCached, PS15setotalCached, 0, PS15cbtotalCached, PS15arttotalCached],
         [PD1totalCached, PD1setotalCached, 0, PD1cbtotalCached, PD1arttotalCached],
