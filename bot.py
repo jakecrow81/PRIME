@@ -203,6 +203,42 @@ def Payloadcall():
     payloadUnique = set(payloadHits)
     return int(payloadTotal), payloadHits, payloadUnique
 
+#Terminal sink
+def terminalCall():
+    jsonpayload = {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "alchemy_getAssetTransfers",
+    "params": [
+        {
+            "fromBlock": "0x0",
+            "toBlock": "latest",
+            "category": ["erc20"],
+            "contractAddresses": ["0xb23d80f5FefcDDaa212212F028021B41DEd428CF"],
+            "withMetadata": False,
+            "excludeZeroValue": True,
+            "maxCount": "0x3e8",
+            "toAddress": "0x09D87df8fbd65D3AB8C04037e71a9Dd24d3B505d"
+        }
+    ]
+    }
+    headers = {
+    "accept": "application/json",
+    "content-type": "application/json"
+    }
+    terminalHits = []
+    terminalTotal = 0
+    while True:
+        response = requests.post(alchemyurl, json=jsonpayload, headers=headers).json()
+        for i in range(len(response["result"]["transfers"])):
+            terminalHits.append(response["result"]["transfers"][i]["from"])
+            terminalTotal = terminalTotal + response["result"]["transfers"][i]["value"]
+        if not 'pageKey' in response["result"]:
+            break
+        jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    terminalUnique = set(terminalHits)
+    return int(terminalTotal), terminalUnique
+
 #Artigraph Sink
 def Artigraphcall():
     jsonpayload = {
@@ -903,7 +939,8 @@ async def on_message(message):
         emitTotal = currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
         artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
-        totalsink = payloadTotal + artigraphTotal
+        terminalTotal, terminalUnique = terminalCall()
+        totalsink = payloadTotal + artigraphTotal + terminalTotal
         circulating = claimTotal - totalsink
         claimedsunk = round((totalsink / claimTotal) * 100, 2)
         embed=discord.Embed(title="Overview of Prime", color=discord.Color.yellow())
@@ -925,10 +962,12 @@ async def on_message(message):
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink':
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
         artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
-        totalsink = payloadTotal + artigraphTotal
-        sinkdistro = int((artigraphTotal * .89) + payloadTotal)
+        terminalTotal, terminalUnique = terminalCall()
+        totalsink = payloadTotal + artigraphTotal + terminalTotal
+        sinkdistro = int((artigraphTotal * .89) + payloadTotal + terminalTotal)
         await message.channel.send(f"`Payload Prime sunk - {payloadTotal:,}`")
         await message.channel.send(f"`Artigraph Prime sunk - {artigraphTotal:,}`")
+        await message.channel.send(f"`Terminal Prime sunk - {terminalTotal:,}`")
         await message.channel.send(f"`Total Prime sunk - {totalsink:,}`")
         await message.channel.send(f"`Total Prime to be redistributed to sink schedule - {sinkdistro:,}`")
 
@@ -950,6 +989,12 @@ async def on_message(message):
         await message.channel.send(f"`Payload Prime - {payloadTotal:,}`")
         await message.channel.send(f"`Total Payload hits - {len(payloadHits):,}`")
         await message.channel.send(f"`Unique wallets used - {len(payloadUnique):,}`")
+
+    if message.content.lower().startswith('.prime terminal'):
+        terminalTotal, terminalUnique = terminalCall()
+        await message.channel.send(f"`Terminal Prime sunk - {terminalTotal:,}`")
+        await message.channel.send(f"`Total Terminals sold - {int((terminalTotal - 100) /11):,}`")
+        await message.channel.send(f"`Unique wallets used - {len(terminalUnique):,}`")
 
     #direct artigraph block
     if message.content.lower() == '.prime artigraph':
