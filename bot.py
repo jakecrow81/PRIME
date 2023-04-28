@@ -979,7 +979,7 @@ async def on_message(message):
         artigraphTotal = Artigraphcall()[0]
         terminalTotal = terminalCall()
         batteryTotal = batteryCall()
-        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryCall
+        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal
         circulating = claimTotal + launchPartners - totalsink
         claimedsunk = round((totalsink / claimTotal) * 100, 2)
         embed=discord.Embed(title="Overview of Prime", color=discord.Color.yellow())
