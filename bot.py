@@ -226,18 +226,56 @@ def terminalCall():
     "accept": "application/json",
     "content-type": "application/json"
     }
-    terminalHits = []
+    #terminalHits = []
     terminalTotal = 0
     while True:
         response = requests.post(alchemyurl, json=jsonpayload, headers=headers).json()
         for i in range(len(response["result"]["transfers"])):
-            terminalHits.append(response["result"]["transfers"][i]["from"])
-            terminalTotal = terminalTotal + response["result"]["transfers"][i]["value"]
+            if response["result"]["transfers"][i]["value"] % 11 == 0 or response["result"]["transfers"][i]["value"] == 111:
+                #terminalHits.append(response["result"]["transfers"][i]["from"])
+                terminalTotal = terminalTotal + response["result"]["transfers"][i]["value"]
         if not 'pageKey' in response["result"]:
             break
         jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
-    terminalUnique = set(terminalHits)
-    return int(terminalTotal), terminalUnique
+    #terminalUnique = set(terminalHits)
+    return int(terminalTotal)
+
+#Battery sink
+def batteryCall():
+    jsonpayload = {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "alchemy_getAssetTransfers",
+    "params": [
+        {
+            "fromBlock": "0x0",
+            "toBlock": "latest",
+            "category": ["erc20"],
+            "contractAddresses": ["0xb23d80f5FefcDDaa212212F028021B41DEd428CF"],
+            "withMetadata": False,
+            "excludeZeroValue": True,
+            "maxCount": "0x3e8",
+            "toAddress": "0x09D87df8fbd65D3AB8C04037e71a9Dd24d3B505d"
+        }
+    ]
+    }
+    headers = {
+    "accept": "application/json",
+    "content-type": "application/json"
+    }
+    #batteryHits = []
+    batteryTotal = 0
+    while True:
+        response = requests.post(alchemyurl, json=jsonpayload, headers=headers).json()
+        for i in range(len(response["result"]["transfers"])):
+            if response["result"]["transfers"][i]["value"] % 135 == 0:
+                #batteryHits.append(response["result"]["transfers"][i]["from"])
+                batteryTotal = batteryTotal + response["result"]["transfers"][i]["value"]
+        if not 'pageKey' in response["result"]:
+            break
+        jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    #batteryUnique = set(batteryHits)
+    return int(batteryTotal)
 
 #Artigraph Sink
 def Artigraphcall():
@@ -962,12 +1000,14 @@ async def on_message(message):
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink':
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
         artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
-        terminalTotal, terminalUnique = terminalCall()
+        terminalTotal = terminalCall()
+        batteryTotal = batteryCall()
         totalsink = payloadTotal + artigraphTotal + terminalTotal
-        sinkdistro = int((artigraphTotal * .89) + payloadTotal + terminalTotal)
+        sinkdistro = int((artigraphTotal * .89) + payloadTotal + terminalTotal + batteryTotal)
         await message.channel.send(f"`Payload Prime sunk - {payloadTotal:,}`")
         await message.channel.send(f"`Artigraph Prime sunk - {artigraphTotal:,}`")
         await message.channel.send(f"`Terminal Prime sunk - {terminalTotal:,}`")
+        await message.channel.send(f"`Battery Prime sunk - {batteryTotal:,}`")
         await message.channel.send(f"`Total Prime sunk - {totalsink:,}`")
         await message.channel.send(f"`Total Prime to be redistributed to sink schedule - {sinkdistro:,}`")
 
@@ -990,11 +1030,16 @@ async def on_message(message):
         await message.channel.send(f"`Total Payload hits - {len(payloadHits):,}`")
         await message.channel.send(f"`Unique wallets used - {len(payloadUnique):,}`")
 
-    if message.content.lower().startswith('.prime terminal'):
-        terminalTotal, terminalUnique = terminalCall()
+    if message.content.lower().startswith('.prime terminal') or message.content.lower().startswith('.prime battery') or message.content.lower().startswith('.prime batteries'):
+        terminalTotal = terminalCall()
+        batteryTotal = batteryCall()
         await message.channel.send(f"`Terminal Prime sunk - {terminalTotal:,}`")
-        await message.channel.send(f"`Total Terminals sold - {int((terminalTotal - 100) /11):,}`")
-        await message.channel.send(f"`Unique wallets used - {len(terminalUnique):,}`")
+        await message.channel.send(f"`Battery Prime sunk - {batteryTotal:,}`")
+        await message.channel.send(f"`Total Prime sunk - {terminalTotal + batteryTotal:,}`")
+        await message.channel.send(f"`Total Terminals sold - {int((terminalTotal - 100) / 11):,}`")
+        await message.channel.send(f"`Total Batteries created - {int(batteryTotal / 135):,}`")
+        #await message.channel.send(f"`Unique wallets used (Terminals)- {len(terminalUnique):,}`")
+
 
     #direct artigraph block
     if message.content.lower() == '.prime artigraph':
