@@ -975,10 +975,11 @@ async def on_message(message):
         claimTotal = round(primeEventClaimTotal + primeKeyClaimTotal + primeSetClaimTotal + primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal, 3)
         currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted, launchPartners = emitCall()
         emitTotal = currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted
-        payloadTotal, payloadHits, payloadUnique = Payloadcall()
-        artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
-        terminalTotal, terminalUnique = terminalCall()
-        totalsink = payloadTotal + artigraphTotal + terminalTotal
+        payloadTotal = Payloadcall()[0]
+        artigraphTotal = Artigraphcall()[0]
+        terminalTotal = terminalCall()
+        batteryTotal = batteryCall()
+        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryCall
         circulating = claimTotal + launchPartners - totalsink
         claimedsunk = round((totalsink / claimTotal) * 100, 2)
         embed=discord.Embed(title="Overview of Prime", color=discord.Color.yellow())
