@@ -996,21 +996,6 @@ async def on_message(message):
         await message.channel.send(embed=embed)
         await ctx.delete()
         
-    #Call Sink functions and print simplified results for all + total
-    if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink':
-        payloadTotal, payloadHits, payloadUnique = Payloadcall()
-        artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
-        terminalTotal = terminalCall()
-        batteryTotal = batteryCall()
-        totalsink = payloadTotal + artigraphTotal + terminalTotal
-        sinkdistro = int((artigraphTotal * .89) + payloadTotal + terminalTotal + batteryTotal)
-        await message.channel.send(f"`Payload Prime sunk - {payloadTotal:,}`")
-        await message.channel.send(f"`Artigraph Prime sunk - {artigraphTotal:,}`")
-        await message.channel.send(f"`Terminal Prime sunk - {terminalTotal:,}`")
-        await message.channel.send(f"`Battery Prime sunk - {batteryTotal:,}`")
-        await message.channel.send(f"`Total Prime sunk - {totalsink:,}`")
-        await message.channel.send(f"`Total Prime to be redistributed to sink schedule - {sinkdistro:,}`")
-
     #Block for ALL Cornerstone assets, returns a line for each set with emissions only
     if message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core':
         MP, mpcount = MPcall()
@@ -1023,22 +1008,55 @@ async def on_message(message):
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
-    #Begin blocks for individual sinks/sets/etc calls
-    if message.content.lower() == '.prime payload':
-        payloadTotal, payloadHits, payloadUnique = Payloadcall()
-        await message.channel.send(f"`Payload Prime - {payloadTotal:,}`")
-        await message.channel.send(f"`Total Payload hits - {len(payloadHits):,}`")
-        await message.channel.send(f"`Unique wallets used - {len(payloadUnique):,}`")
-
-    if message.content.lower().startswith('.prime terminal') or message.content.lower().startswith('.prime battery') or message.content.lower().startswith('.prime batteries'):
+    #Call Sink functions and print simplified results for all + total
+    if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink':
+        ctx = await message.channel.send("`Processing, please be patient.`")
+        payloadTotal = Payloadcall()[0]
+        artigraphTotal = Artigraphcall()[0]
         terminalTotal = terminalCall()
         batteryTotal = batteryCall()
-        await message.channel.send(f"`Terminal Prime sunk - {terminalTotal:,}`")
-        await message.channel.send(f"`Battery Prime sunk - {batteryTotal:,}`")
-        await message.channel.send(f"`Total Prime sunk - {terminalTotal + batteryTotal:,}`")
-        await message.channel.send(f"`Total Terminals sold - {int((terminalTotal - 100) / 11):,}`")
-        await message.channel.send(f"`Total Batteries created - {int(batteryTotal / 135):,}`")
-        #await message.channel.send(f"`Unique wallets used (Terminals)- {len(terminalUnique):,}`")
+        totalsink = payloadTotal + artigraphTotal + terminalTotal
+        sinkdistro = int((artigraphTotal * .89) + payloadTotal + terminalTotal + batteryTotal)
+        embed=discord.Embed(title="Overview of Sinks", color=discord.Color.yellow())
+        embed.add_field(name="Payload", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(payloadTotal), inline=False)
+        embed.add_field(name="Artigraph", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(artigraphTotal), inline=False)
+        embed.add_field(name="Terminals", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(terminalTotal), inline=False)
+        embed.add_field(name="Batteries", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(batteryTotal), inline=False)
+        embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(totalsink), inline=False)
+        embed.add_field(name="Total Prime to sink schedule", value="```ansi\n\u001b[0;32m{:,}```".format(sinkdistro), inline=False)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
+        await ctx.delete()
+
+    #Begin blocks for individual sinks/sets/etc calls
+    if message.content.lower() == '.prime payload':
+        ctx = await message.channel.send("`Processing, please be patient.`")
+        payloadTotal, payloadHits, payloadUnique = Payloadcall()
+        #await message.channel.send(f"`Payload Prime - {payloadTotal:,}`")
+        #await message.channel.send(f"`Total Payload hits - {len(payloadHits):,}`")
+        #await message.channel.send(f"`Unique wallets used - {len(payloadUnique):,}`")
+        embed=discord.Embed(title="Overview of Payload", color=discord.Color.yellow())
+        embed.add_field(name="Payload Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(payloadTotal), inline=False)
+        embed.add_field(name="Total Payload hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(payloadHits)), inline=False)
+        embed.add_field(name="Average Payload hit", value="```ansi\n\u001b[0;32m{:.2f}```".format(payloadTotal / len(payloadHits)), inline=False)
+        embed.add_field(name="Unique wallets used", value="```ansi\n\u001b[0;32m{:,}```".format(len(payloadUnique)), inline=False)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
+        await ctx.delete()
+
+    if message.content.lower().startswith('.prime terminal') or message.content.lower().startswith('.prime battery') or message.content.lower().startswith('.prime batteries'):
+        ctx = await message.channel.send("`Processing, please be patient.`")
+        terminalTotal = terminalCall()
+        batteryTotal = batteryCall()
+        embed=discord.Embed(title="Overview of Terminals", color=discord.Color.yellow())
+        embed.add_field(name="Terminal Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(terminalTotal), inline=False)
+        embed.add_field(name="Battery Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(batteryTotal), inline=False)
+        embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(terminalTotal + batteryTotal), inline=False)
+        embed.add_field(name="Total Terminals sold", value="```ansi\n\u001b[0;32m{:,}```".format(int((terminalTotal - 100) / 11)), inline=False)
+        embed.add_field(name="Total batteries created", value="```ansi\n\u001b[0;32m{:,}```".format(int(batteryTotal / 135)), inline=False)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
+        await ctx.delete()
 
 
     #direct artigraph block
