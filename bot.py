@@ -16,6 +16,8 @@ import numpy as np
 from bs4 import BeautifulSoup
 import aiohttp
 import matplotlib.pyplot as plt
+from gql import gql, Client
+from gql.transport.aiohttp import AIOHTTPTransport
 
 pd.set_option("styler.format.thousands", ",")
 
@@ -35,6 +37,10 @@ alchemyurl = os.getenv('ALCHEMY_API')
 client = discord.Client(intents=intents)
 infura_url = INFURA_API_KEY
 web3 = Web3(Web3.HTTPProvider(infura_url))
+
+# Initialize GraphQL variables
+transport = AIOHTTPTransport(url="https://hub.snapshot.org/graphql", headers={'Content-Type': 'application/json'})
+gqlclient = Client(transport=transport, fetch_schema_from_transport=True)
 
 pkabi = json.loads('[{"inputs":[{"internalType":"contract IERC20","name":"_prime","type":"address"},{"internalType":"contract IERC1155","name":"_parallelAlpha","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"uint256","name":"pid","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Cache","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bool","name":"cachingPaused","type":"bool"}],"name":"CachingPaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"uint256","name":"pid","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"currencyId","type":"uint256"}],"name":"Claim","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"uint256","name":"pid","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"EmergencyWithdraw","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"endTimestamp","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"currencyID","type":"uint256"}],"name":"EndTimestampUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"pid","type":"uint256"},{"indexed":false,"internalType":"uint256[]","name":"tokenIds","type":"uint256[]"}],"name":"LogPoolAddition","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"pid","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"allocPoint","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"totalAllocPoint","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"currencyId","type":"uint256"}],"name":"LogPoolSetAllocPoint","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"startTimestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"endTimestamp","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"currencyId","type":"uint256"}],"name":"LogSetPerSecond","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"pid","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"lastRewardTimestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"supply","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"accPerShare","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"currencyId","type":"uint256"}],"name":"LogUpdatePool","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"currencyID","type":"uint256"}],"name":"RewardDecrease","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"currencyID","type":"uint256"}],"name":"RewardIncrease","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"uint256","name":"pid","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Withdraw","type":"event"},{"inputs":[],"name":"ID_ETH","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"ID_PRIME","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PRIME","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_allocPoint","type":"uint256"},{"internalType":"uint256[]","name":"_tokenIds","type":"uint256[]"}],"name":"addPool","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_addPrimeAmount","type":"uint256"}],"name":"addPrimeAmount","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"cache","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"address","name":"","type":"address"}],"name":"cacheInfo","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"int256","name":"rewardDebt","type":"int256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"cachingPaused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"}],"name":"claimPrime","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_pids","type":"uint256[]"}],"name":"claimPrimePools","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"}],"name":"emergencyWithdraw","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"endTimestamp","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_pids","type":"uint256[]"},{"internalType":"address[]","name":"_addresses","type":"address[]"}],"name":"getPoolCacheAmounts","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"}],"name":"getPoolTokenIds","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"_pids","type":"uint256[]"}],"name":"massUpdatePools","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"maxNumPools","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"bytes","name":"","type":"bytes"}],"name":"onERC1155BatchReceived","outputs":[{"internalType":"bytes4","name":"","type":"bytes4"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"bytes","name":"","type":"bytes"}],"name":"onERC1155Received","outputs":[{"internalType":"bytes4","name":"","type":"bytes4"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"onReceiveLocked","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"parallelAlpha","outputs":[{"internalType":"contract IERC1155","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"},{"internalType":"address","name":"_user","type":"address"}],"name":"pendingPrime","outputs":[{"internalType":"uint256","name":"pending","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"poolInfo","outputs":[{"internalType":"uint256","name":"accPrimePerShare","type":"uint256"},{"internalType":"uint256","name":"allocPoint","type":"uint256"},{"internalType":"uint256","name":"lastRewardTimestamp","type":"uint256"},{"internalType":"uint256","name":"totalSupply","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"poolLength","outputs":[{"internalType":"uint256","name":"pools","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"primeAmount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"primeAmountPerSecond","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"primeAmountPerSecondPrecision","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"primeUpdateCutoff","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_removePrimeAmount","type":"uint256"}],"name":"removePrimeAmount","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bool","name":"_cachingPaused","type":"bool"}],"name":"setCachingPaused","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_endTimestamp","type":"uint256"}],"name":"setEndTimestamp","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_maxNumPools","type":"uint256"}],"name":"setMaxNumPools","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"},{"internalType":"uint256","name":"_allocPoint","type":"uint256"}],"name":"setPoolAllocPoint","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_startTimestamp","type":"uint256"},{"internalType":"uint256","name":"_endTimestamp","type":"uint256"},{"internalType":"uint256","name":"_primeAmount","type":"uint256"}],"name":"setPrimePerSecond","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract IERC20","name":"_prime","type":"address"}],"name":"setPrimeTokenAddress","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"startTimestamp","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"contract IERC20","name":"erc20","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"sweepERC20","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"totalAllocPoint","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"}],"name":"updatePool","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_pid","type":"uint256"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdrawAndClaimPrime","outputs":[],"stateMutability":"nonpayable","type":"function"}]')
 pkaddress = '0x3399eff96D4b6Bae8a56F4852EB55736c9C2b041'
@@ -947,6 +953,68 @@ def primeMPClaim():
     currenttotal = currenttotal + total
     return currenttotal
 
+#Snapshot query blocks, for active and closed proposals
+async def snapshotQuery(space):
+    query = gql(
+        """
+        query Proposals ($space_in: String!) {
+                proposals(
+                    where: {
+                    space_in: [$space_in],
+                    state: "active"
+                    },
+                    orderBy: "created",
+                    orderDirection: desc
+                ) {
+                    id
+                    title
+                    body
+                    choices
+                    start
+                    end
+                    snapshot
+                    scores
+                    scores_total
+                    quorum
+                    author
+                }
+                }
+            """
+        )
+    params = {"space_in": space}
+    result = await gqlclient.execute_async(query, variable_values=params)
+    return result
+
+async def snapshotClosedQuery(space):
+    query = gql(
+        """
+        query Proposals ($space_in: String!) {
+                proposals(
+                    where: {
+                    space_in: [$space_in],
+                    state: "closed"
+                    },
+                    orderBy: "created",
+                    orderDirection: desc
+                ) {
+                    id
+                    title
+                    body
+                    choices
+                    start
+                    end
+                    snapshot
+                    scores
+                    scores_total
+                    author
+                }
+                }
+            """
+        )
+    params = {"space_in": space}
+    result = await gqlclient.execute_async(query, variable_values=params)
+    return result
+
 #Begin Discord blocks, watch for specific messages, perform functions, return results
 @client.event
 async def on_message(message):
@@ -1096,7 +1164,7 @@ async def on_message(message):
         embed.add_field(name="Cached    |    Daily emissions", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PKtotalCached, round(PK, 3)), inline=False)
         embed.add_field(name="Total Prime in PK pool", value="```ansi\n\u001b[0;32m{:,}```".format(totalpkprime), inline=False)
         embed.add_field(name="Prime emitted to date", value="```ansi\n\u001b[0;32m{:,}  |  {}% ```".format(int(totalpkprimeemitted), round((dayspassedpercentage * 100), 1)), inline=False)
-        embed.add_field(name="Prime left in pool", value="```ansi\n\u001b[0;32m{:,}  |  {}%```".format(int(pkprimeleft), pkpercentageleft), inline=False)
+        embed.add_field(name="Prime left in pool", value="```ansi\n\u001b[0;32m{:,}  |  {:.2f}%```".format(int(pkprimeleft), pkpercentageleft), inline=False)
         embed.add_field(name="Prime per PK (at currently cached #)", value="```ansi\n\u001b[0;32m{:,}```".format(int(pkprimeleft / PKtotalCached)), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
@@ -1400,6 +1468,124 @@ async def on_message(message):
         embed.add_field(name="To redistribute", value="```ansi\n\u001b[0;32m{:,}```".format(int((artigraphTotal * .89) + payloadTotal), inline=True))
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
+
+    #discord commands for open votes
+    if message.content.lower() == (".snapshot"):
+        result = await snapshotQuery("echelonassembly.eth")
+
+        if result['proposals'] == []:
+            await message.channel.send(f"`No active community votes found`")
+            return
+
+        for i in range(len(result['proposals'])):
+
+            endDate = datetime.utcfromtimestamp(result['proposals'][i]['end']).strftime('%m-%d-%Y')
+
+            totalScores = result['proposals'][i]['scores_total']
+
+            quorum = result['proposals'][i]['quorum']
+
+            choices = []
+            for k in range(len(result['proposals'][i]['choices'])):
+                choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
+            choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
+            joined = '\n'.join([str(choice) for choice in choices])
+
+            embed=discord.Embed(title="Open community vote", description=f"Vote {i + 1}")
+            embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
+            embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
+            embed.add_field(name="\u200B", value="\u200B")  # newline
+            embed.add_field(name=f"Votes                           |      Needed votes             |   Quorum %", value="```ansi\n\u001b[0;32m{:<12,.0f}  |   {:<12,.0f}   |   {:6.2f}%```".format(totalScores, quorum, (totalScores / quorum) * 100), inline=True)
+            embed.add_field(name="\u200B", value="\u200B")  # newline
+            embed.add_field(name="\u200B", value="\u200B")  # newline
+            embed.add_field(name=f"Choice                                                                               |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
+            await message.channel.send(embed=embed)
+
+
+    if message.content.lower() == (".snapshot e"):
+        result = await snapshotQuery("echelon.eth")
+
+        if result['proposals'] == []:
+            await message.channel.send(f"`No active emissary votes found`")
+            return
+
+        for i in range(len(result['proposals'])):
+
+            endDate = datetime.utcfromtimestamp(result['proposals'][i]['end']).strftime('%m-%d-%Y')
+
+            totalScores = result['proposals'][i]['scores_total']
+
+            quorum = result['proposals'][i]['quorum']
+
+            choices = []
+            for k in range(len(result['proposals'][i]['choices'])):
+                choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
+            choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
+            joined = '\n'.join([str(choice) for choice in choices])
+
+            embed=discord.Embed(title="Open emissary vote", description=f"Vote {i + 1}")
+            embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
+            embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
+            embed.add_field(name="\u200B", value="\u200B")  # newline
+            embed.add_field(name=f"Votes                           |      Needed votes             |   Quorum %", value="```ansi\n\u001b[0;32m{:<12,.0f}  |   {:<12,.0f}   |   {:6.2f}%```".format(totalScores, quorum, (totalScores / quorum) * 100), inline=True)
+            embed.add_field(name="\u200B", value="\u200B")  # newline
+            embed.add_field(name="\u200B", value="\u200B")  # newline
+            embed.add_field(name=f"Choice                                                                               |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
+            await message.channel.send(embed=embed)
+
+    # Discord commands for closed votes
+    if message.content.lower() == (".snapshot closed"):
+        result = await snapshotClosedQuery("echelonassembly.eth")
+
+        if result['proposals'] == []:
+            await message.channel.send(f"`Error: No closed community votes found`")
+            return
+
+        for i in range(3):
+
+            endDate = datetime.utcfromtimestamp(result['proposals'][i]['end']).strftime('%m-%d-%Y')
+
+            totalScores = result['proposals'][i]['scores_total']
+
+            choices = []
+            for k in range(len(result['proposals'][i]['choices'])):
+                choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
+            choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
+            joined = '\n'.join([str(choice) for choice in choices])
+
+            embed=discord.Embed(title="Closed community vote", description=f"Vote {i + 1}")
+            embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
+            embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
+            embed.add_field(name="\u200B", value="\u200B")  # newline
+            embed.add_field(name=f"Choice                                                                               |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
+            await message.channel.send(embed=embed)
+
+    if message.content.lower() == (".snapshot e closed"):
+        result = await snapshotClosedQuery("echelon.eth")
+
+        if result['proposals'] == []:
+            await message.channel.send(f"`Error: No closed emissary votes found`")
+            return
+
+        for i in range(3):
+
+            endDate = datetime.utcfromtimestamp(result['proposals'][i]['end']).strftime('%m-%d-%Y')
+
+            totalScores = result['proposals'][i]['scores_total']
+
+            choices = []
+            for k in range(len(result['proposals'][i]['choices'])):
+                choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
+            choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
+            joined = '\n'.join([str(choice) for choice in choices])
+
+            embed=discord.Embed(title="Closed emissary vote", description=f"Vote {i + 1}")
+            embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
+            embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
+            embed.add_field(name="\u200B", value="\u200B")  # newline
+            embed.add_field(name=f"Choice                                                                               |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
+            await message.channel.send(embed=embed)
+
 
 
 
