@@ -21,9 +21,9 @@ from gql.transport.aiohttp import AIOHTTPTransport
 
 pd.set_option("styler.format.thousands", ",")
 
-intents = discord.Intents.default()
-#intents.members = True
-intents.message_content = True
+intents = discord.Intents.all()
+activity = discord.Activity(type=discord.ActivityType.watching, name="Prime data")
+client = discord.Client(intents=intents, activity=activity)
 
 #Get environment variables from .env file for security. No exposing API keys!
 load_dotenv()
@@ -33,8 +33,6 @@ INFURA_API_KEY = os.getenv('API_KEY')
 alchemyurl = os.getenv('ALCHEMY_API')
 
 #Set global variables and contract addresses/ABIs
-#bot = commands.Bot(command_prefix='$', intents=intents)
-client = discord.Client(intents=intents)
 infura_url = INFURA_API_KEY
 web3 = Web3(Web3.HTTPProvider(infura_url))
 
@@ -1470,7 +1468,7 @@ async def on_message(message):
         await message.channel.send(embed=embed)
 
     #discord commands for open votes
-    if message.content.lower() == (".snapshot"):
+    if message.content.lower() == (".snapshot") and message.channel.id == 1085860941935153203:
         result = await snapshotQuery("echelonassembly.eth")
 
         if result['proposals'] == []:
@@ -1491,18 +1489,18 @@ async def on_message(message):
             choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
             joined = '\n'.join([str(choice) for choice in choices])
 
-            embed=discord.Embed(title="Open community vote", description=f"Vote {i + 1}")
+            embed=discord.Embed(title=f"Open community vote {i + 1} of {len(result['proposals'])}")
             embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
             embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
             embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name=f"Votes                           |      Needed votes             |   Quorum %", value="```ansi\n\u001b[0;32m{:<12,.0f}  |   {:<12,.0f}   |   {:6.2f}%```".format(totalScores, quorum, (totalScores / quorum) * 100), inline=True)
+            embed.add_field(name=f"Votes                       |       Needed votes         |     Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f}  |   {:<10,.0f}   |   {:6.2f}%```".format(totalScores, quorum, (totalScores / quorum) * 100), inline=True)
             embed.add_field(name="\u200B", value="\u200B")  # newline
             embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name=f"Choice                                                                               |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
+            embed.add_field(name=f"Choice                                                                                   |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
             await message.channel.send(embed=embed)
 
 
-    if message.content.lower() == (".snapshot e"):
+    if message.content.lower() == (".snapshot e") and message.channel.id == 1085860941935153203:
         result = await snapshotQuery("echelon.eth")
 
         if result['proposals'] == []:
@@ -1523,18 +1521,18 @@ async def on_message(message):
             choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
             joined = '\n'.join([str(choice) for choice in choices])
 
-            embed=discord.Embed(title="Open emissary vote", description=f"Vote {i + 1}")
+            embed=discord.Embed(title=f"Open emissary vote {i + 1} of {len(result['proposals'])}")
             embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
             embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
             embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name=f"Votes                           |      Needed votes             |   Quorum %", value="```ansi\n\u001b[0;32m{:<12,.0f}  |   {:<12,.0f}   |   {:6.2f}%```".format(totalScores, quorum, (totalScores / quorum) * 100), inline=True)
+            embed.add_field(name=f"Votes                       |       Needed votes         |     Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f}  |   {:<10,.0f}   |   {:6.2f}%```".format(totalScores, quorum, (totalScores / quorum) * 100), inline=True)
             embed.add_field(name="\u200B", value="\u200B")  # newline
             embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name=f"Choice                                                                               |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
+            embed.add_field(name=f"Choice                                                                                   |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
             await message.channel.send(embed=embed)
 
     # Discord commands for closed votes
-    if message.content.lower() == (".snapshot closed"):
+    if message.content.lower() == (".snapshot closed") and message.channel.id == 1085860941935153203:
         result = await snapshotClosedQuery("echelonassembly.eth")
 
         if result['proposals'] == []:
@@ -1553,14 +1551,14 @@ async def on_message(message):
             choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
             joined = '\n'.join([str(choice) for choice in choices])
 
-            embed=discord.Embed(title="Closed community vote", description=f"Vote {i + 1}")
+            embed=discord.Embed(title=f"Closed community vote {i + 1} of 3")
             embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
             embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
             embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name=f"Choice                                                                               |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
+            embed.add_field(name=f"Choice                                                                                  |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
             await message.channel.send(embed=embed)
 
-    if message.content.lower() == (".snapshot e closed"):
+    if message.content.lower() == (".snapshot e closed") and message.channel.id == 1085860941935153203:
         result = await snapshotClosedQuery("echelon.eth")
 
         if result['proposals'] == []:
@@ -1579,14 +1577,12 @@ async def on_message(message):
             choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
             joined = '\n'.join([str(choice) for choice in choices])
 
-            embed=discord.Embed(title="Closed emissary vote", description=f"Vote {i + 1}")
+            embed=discord.Embed(title=f"Closed emissary vote {i + 1} of 3")
             embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
             embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
             embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name=f"Choice                                                                               |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
+            embed.add_field(name=f"Choice                                                                                  |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
             await message.channel.send(embed=embed)
-
-
 
 
 client.run(TOKEN)
