@@ -157,7 +157,7 @@ def emitCall():
     cachestartdate = date(2022, 7, 18)
     currentdate = date.today()
     dayspassed = currentdate - cachestartdate
-    currentPeClaim = 10000000
+    currentPeClaim = 7894941
     totalpkprime = 12222222    
     totalCornerstone = 1222222
     totalSetCaching = 2222222
