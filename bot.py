@@ -778,33 +778,33 @@ def PD6artcall():
 #Function blocks for PRIME claim data, pulled from Alchemy API
 
 #Prime Event Claims
-def primeEventClaim():
-    payload = {
-    "id": 1,
-    "jsonrpc": "2.0",
-    "method": "alchemy_getAssetTransfers",
-    "params": [
-        {
-            "category": ["erc20"],
-            "fromAddress": "0x10Db8EEc5C366AA766cD67E4DB0b75fB4c072478",
-        }
-    ]
-    }
-    headers = {
-    "accept": "application/json",
-    "content-type": "application/json"
-    }
-    currenttotal = 0
-    total = 0
-    while True:
-        response = requests.post(alchemyurl, json=payload, headers=headers).json()
-        for i in range(len(response["result"]["transfers"])):
-            total = round(total + float(response["result"]["transfers"][i]["value"]), 3)
-        if not 'pageKey' in response["result"]:
-            break
-        payload["params"][0]["pageKey"] = response["result"]["pageKey"]
-    currenttotal = currenttotal + total
-    return currenttotal
+#def primeEventClaim():
+#    payload = {
+#    "id": 1,
+#    "jsonrpc": "2.0",
+#    "method": "alchemy_getAssetTransfers",
+#    "params": [
+#        {
+#            "category": ["erc20"],
+#            "fromAddress": "0x10Db8EEc5C366AA766cD67E4DB0b75fB4c072478",
+#        }
+#    ]
+#    }
+#    headers = {
+#    "accept": "application/json",
+#    "content-type": "application/json"
+#    }
+#    currenttotal = 0
+#    total = 0
+#    while True:
+#        response = requests.post(alchemyurl, json=payload, headers=headers).json()
+#        for i in range(len(response["result"]["transfers"])):
+#            total = round(total + float(response["result"]["transfers"][i]["value"]), 3)
+#        if not 'pageKey' in response["result"]:
+#            break
+#        payload["params"][0]["pageKey"] = response["result"]["pageKey"]
+#    currenttotal = currenttotal + total
+#    return currenttotal
 
 #Prime Key Claims
 def primeKeyClaim():
@@ -1032,7 +1032,7 @@ async def on_message(message):
     #prime overview, embed
     if message.content.lower() == '.prime':
         ctx = await message.channel.send("`Processing, please be patient.`")
-        primeEventClaimTotal = primeEventClaim()
+        primeEventClaimTotal = 7894941
         primeKeyClaimTotal = primeKeyClaim()
         primeSetClaimTotal = primeSetClaim()
         primeCDClaimTotal = primeCDClaim()
