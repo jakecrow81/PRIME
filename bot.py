@@ -141,7 +141,7 @@ async def on_message(message):
         circulating = claimTotal + launchPartners - totalsink
         percentSunk = round(totalsink / (claimTotal + launchPartners) * 100, 2)
         dailyEmit = 42695
-        embed=discord.Embed(title="Overview of Prime", color=discord.Color.yellow())
+        embed=discord.Embed(title="Overview of Prime", color=0xDEF141)
         #embed.set_author(name="Jake", url="https://echelon.io", icon_url="https://cdn.discordapp.com/emojis/935663412023812156.png")
         #embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/935663412023812156.png")
         embed.add_field(name="Prime Events", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(currentPeClaim, int(primeEventClaimTotal), round((primeEventClaimTotal / currentPeClaim) * 100, 2)), inline=False)
@@ -162,7 +162,7 @@ async def on_message(message):
         MP, mpcount = MPcall()
         CDtotalCached, CD = CDcall()
         coreTotalCached, core = Corecall()
-        embed=discord.Embed(title="CD/MP/Core cached  |  daily emissions", color=discord.Color.yellow())
+        embed=discord.Embed(title="CD/MP/Core cached  |  daily emissions", color=0xDEF141)
         embed.add_field(name="The Core", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(coreTotalCached, round(core, 3)), inline=False)
         embed.add_field(name="Catalyst Drive", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(CDtotalCached, round(CD, 3)), inline=False)
         embed.add_field(name="Masterpiece", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(mpcount, round(MP, 3)), inline=False)
@@ -178,7 +178,7 @@ async def on_message(message):
         batteryTotal = batteryCall()
         totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal
         sinkdistro = int((artigraphTotal * .89) + payloadTotal + terminalTotal + batteryTotal)
-        embed=discord.Embed(title="Overview of Sinks", color=discord.Color.yellow())
+        embed=discord.Embed(title="Overview of Sinks", color=0xDEF141)
         embed.add_field(name="Payload", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(payloadTotal), inline=False)
         embed.add_field(name="Artigraph", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(artigraphTotal), inline=False)
         embed.add_field(name="Terminals", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(terminalTotal), inline=False)
@@ -196,7 +196,7 @@ async def on_message(message):
         #await message.channel.send(f"`Payload Prime - {payloadTotal:,}`")
         #await message.channel.send(f"`Total Payload hits - {len(payloadHits):,}`")
         #await message.channel.send(f"`Unique wallets used - {len(payloadUnique):,}`")
-        embed=discord.Embed(title="Overview of Payload", color=discord.Color.yellow())
+        embed=discord.Embed(title="Overview of Payload", color=0xDEF141)
         embed.add_field(name="Payload Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(payloadTotal), inline=False)
         embed.add_field(name="Total Payload hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(payloadHits)), inline=False)
         embed.add_field(name="Average Payload hit", value="```ansi\n\u001b[0;32m{:.2f}```".format(payloadTotal / len(payloadHits)), inline=False)
@@ -210,7 +210,7 @@ async def on_message(message):
         ctx = await message.channel.send("`Processing, please be patient.`")
         terminalTotal = terminalCall()
         batteryTotal = batteryCall()
-        embed=discord.Embed(title="Overview of Terminals", color=discord.Color.yellow())
+        embed=discord.Embed(title="Overview of Terminals", color=0xDEF141)
         embed.add_field(name="Terminal Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(terminalTotal), inline=False)
         embed.add_field(name="Battery Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(batteryTotal), inline=False)
         embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(terminalTotal + batteryTotal), inline=False)
@@ -228,7 +228,7 @@ async def on_message(message):
         feMax = 4556
         seMax = 1484
         plMax = 104
-        embed=discord.Embed(title="Artigraph overview", color=discord.Color.yellow())
+        embed=discord.Embed(title="Artigraph overview", color=0xDEF141)
         embed.add_field(name="Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphTotal, inline=True))
         embed.add_field(name="Sink redistribution", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphsinkdistro), inline=True)
         embed.add_field(name="\u200B", value="\u200B")  # newline
@@ -253,7 +253,7 @@ async def on_message(message):
     #PK block
     if message.content.lower() == '.prime pk' and message.channel.id != 1085860941935153203:
         PKtotalCached, PK, totalpkprime, totalpkprimeemitted, dayspassedpercentage, pkprimeleft, pkpercentageleft = PKcall()
-        embed=discord.Embed(title="PK overview", color=discord.Color.yellow())
+        embed=discord.Embed(title="PK overview", color=0xDEF141)
         embed.add_field(name="Cached    |    Daily emissions", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PKtotalCached, round(PK, 3)), inline=False)
         embed.add_field(name="Total Prime in PK pool", value="```ansi\n\u001b[0;32m{:,}```".format(totalpkprime), inline=False)
         embed.add_field(name="Prime emitted to date", value="```ansi\n\u001b[0;32m{:,}  |  {}% ```".format(int(totalpkprimeemitted), round((dayspassedpercentage * 100), 1)), inline=False)
@@ -271,7 +271,7 @@ async def on_message(message):
         PD5cbtotalCached, PD5cb = PD5cbcall()
         PD6cbtotalCached, PD6cb = PD6cbcall()
         PS15cbtotalCached, PS15cb = PS15cbcall()
-        embed=discord.Embed(title="CB sets cached  |  daily emissions", color=discord.Color.yellow())
+        embed=discord.Embed(title="CB sets cached  |  daily emissions", color=0xDEF141)
         embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15cbtotalCached, round(PS15cb, 3)), inline=False)
         embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD1cbtotalCached, round(PD1cb, 3)), inline=False)
         embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2cbtotalCached, round(PD2cb, 3)), inline=False)
@@ -291,7 +291,7 @@ async def on_message(message):
         PD5setotalCached, PD5se = PD5secall()
         PD6setotalCached, PD6se = PD6secall()
         PS15setotalCached, PS15se = PS15secall()
-        embed=discord.Embed(title="SE sets cached  |  daily emissions", color=discord.Color.yellow())
+        embed=discord.Embed(title="SE sets cached  |  daily emissions", color=0xDEF141)
         embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15setotalCached, round(PS15se, 3)), inline=False)
         embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD1setotalCached, round(PD1se, 3)), inline=False)
         embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2setotalCached, round(PD2se, 3)), inline=False)
@@ -308,7 +308,7 @@ async def on_message(message):
         PD3pltotalCached, PD3pl = PD3plcall()
         PD5pltotalCached, PD5pl = PD5plcall()
         PD6pltotalCached, PD6pl = PD6plcall()
-        embed=discord.Embed(title="PL sets cached  |  daily emissions", color=discord.Color.yellow())
+        embed=discord.Embed(title="PL sets cached  |  daily emissions", color=0xDEF141)
         embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2pltotalCached, round(PD2pl, 3)), inline=False)
         embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3pltotalCached, round(PD3pl, 3)), inline=False)
         embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5pltotalCached, round(PD5pl, 3)), inline=False)
@@ -325,7 +325,7 @@ async def on_message(message):
         PD5totalCached, PD5 = PD5call()
         PD6totalCached, PD6 = PD6call()
         PS15totalCached, PS15 = PS15call()
-        embed=discord.Embed(title="FE sets cached  |  daily emissions", color=discord.Color.yellow())
+        embed=discord.Embed(title="FE sets cached  |  daily emissions", color=0xDEF141)
         embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15totalCached, round(PS15, 3)), inline=False)
         embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD1totalCached, round(PD1, 3)), inline=False)
         embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2totalCached, round(PD2, 3)), inline=False)
@@ -345,7 +345,7 @@ async def on_message(message):
         PD5arttotalCached, PD5art = PD5artcall()
         PD6arttotalCached, PD6art = PD6artcall()
         PS15arttotalCached, PS15art = PS15artcall()
-        embed=discord.Embed(title="Art sets cached  |  daily emissions", color=discord.Color.yellow())
+        embed=discord.Embed(title="Art sets cached  |  daily emissions", color=0xDEF141)
         embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15arttotalCached, round(PS15art, 3)), inline=False)
         embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD1arttotalCached, round(PD1art, 3)), inline=False)
         embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2arttotalCached, round(PD2art, 3)), inline=False)
@@ -445,7 +445,7 @@ async def on_message(message):
         artigraphTotal, artigraphHits = artigraphTimeframe(oldBlockNumber)
         payloadTotal, payloadHits = payloadTimeframe(oldBlockNumber)
 
-        embed=discord.Embed(title=f"Sink overview for the last {days} days", color=discord.Color.yellow())
+        embed=discord.Embed(title=f"Sink overview for the last {days} days", color=0xDEF141)
         embed.add_field(name="Artigraph Prime", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphTotal, inline=True))
         embed.add_field(name="Artigraph hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(artigraphHits), inline=True))
         embed.add_field(name="\u200B", value="\u200B")  # newline
