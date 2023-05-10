@@ -66,9 +66,9 @@ coreaddress = '0xa0Cd986F53cBF8B8Fb7bF6fB14791e31aeB9E449'
 corecontract = web3.eth.contract(address=coreaddress, abi=coreabi)
 
 #prime price
-def primePrice():
-    priceResult = requests.get('https://api.coingecko.com/api/v3/simple/price?ids=echelon-prime&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true').json()
-    return priceResult
+#def primePrice():
+#    priceResult = requests.get('https://api.coingecko.com/api/v3/simple/price?ids=echelon-prime&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true').json()
+#    return priceResult
 
 #pd6 faucet
 def faucet():
@@ -142,15 +142,15 @@ def manifestPacks():
     packsSold = packEth / .195
     return onePack, twoPack, maxPax, int(packsSold)
 
-#Prime unlock countdown function
-def primeCountdown():
-    then = datetime(2023, 3, 1, 17)
-    now = datetime.now()
-    duration = then - now
-    days = duration.days
-    hours = duration.seconds//3600
-    minutes = (duration.seconds - (hours * 3600)) // 60
-    return days, hours, minutes
+##Prime unlock countdown function
+#def primeCountdown():
+#    then = datetime(2023, 3, 1, 17)
+#    now = datetime.now()
+#    duration = then - now
+#    days = duration.days
+#    hours = duration.seconds//3600
+#    minutes = (duration.seconds - (hours * 3600)) // 60
+#    return days, hours, minutes
 
 #Current Prime emissions
 def emitCall():
@@ -412,7 +412,8 @@ def payloadTimeframe(block="0x0"):
 #MP
 def MPcall():
     MPtotalCached = mpcontract.functions.totalAllocPoint().call()
-    MPprimePerSecond = mpcontract.functions.primeAmountPerSecond().call()
+    MPprimePerSecond = 27129488331049498824880339814933997
+    #MPprimePerSecond = mpcontract.functions.primeAmountPerSecond().call()
     MP = ((MPprimePerSecond / 1000000000000000000000000000000000000) * 60 * 60 * 24) / MPtotalCached
     mpresp = requests.get(mpcacheurl).json()
     mpcount = mpresp[0]["owned_asset_count"]
@@ -422,7 +423,8 @@ def MPcall():
 def PKcall():
     pkinfo = pkcontract.functions.poolInfo(0).call()
     PKtotalCached = pkinfo[3]
-    PKprimePerSecond = pkcontract.functions.primeAmountPerSecond().call()
+    PKprimePerSecond = 387564123023331587868822905731939440
+    #PKprimePerSecond = pkcontract.functions.primeAmountPerSecond().call()
     PK = ((PKprimePerSecond / 1000000000000000000000000000000000000) * 60 * 60 * 24) / PKtotalCached
     cachestartdate = date(2022, 7, 18)
     currentdate = date.today()
@@ -441,7 +443,8 @@ def PKcall():
 def Corecall():
     coreInfo = corecontract.functions.poolInfo(0).call()
     coreTotalCached = coreInfo[3]
-    corePrimePerSecond = corecontract.functions.primeAmountPerSecond().call()
+    corePrimePerSecond = 5813461859379159434329206765294179
+    #corePrimePerSecond = corecontract.functions.primeAmountPerSecond().call()
     core = ((corePrimePerSecond / 1000000000000000000000000000000000000) * 60 * 60 * 24) / coreTotalCached
     return coreTotalCached, core
 
@@ -449,14 +452,17 @@ def Corecall():
 def CDcall():
     CDinfo = cdcontract.functions.poolInfo(0).call()
     CDtotalCached = CDinfo[3]
-    CDprimePerSecond = cdcontract.functions.primeAmountPerSecond().call()
+    CDprimePerSecond = 5813461859379159434329206765294179
+    #CDprimePerSecond = cdcontract.functions.primeAmountPerSecond().call()
     CD = ((CDprimePerSecond / 1000000000000000000000000000000000000) * 60 * 60 * 24) / CDtotalCached
     return CDtotalCached, CD
 
 #PD2
 def PD2call():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD2setInfo = psetcontract.functions.poolInfo(0).call()
     PD2totalCached = PD2setInfo[3]
     PD2alloc = (PD2setInfo[1] / totalAlloc)
@@ -465,8 +471,10 @@ def PD2call():
 
 #PD3
 def PD3call():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD3setInfo = psetcontract.functions.poolInfo(1).call()
     PD3totalCached = PD3setInfo[3]
     PD3alloc = (PD3setInfo[1] / totalAlloc)
@@ -475,8 +483,10 @@ def PD3call():
 
 #PD1
 def PD1call():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD1setInfo = psetcontract.functions.poolInfo(2).call()
     PD1totalCached = PD1setInfo[3]
     PD1alloc = (PD1setInfo[1] / totalAlloc)
@@ -485,8 +495,10 @@ def PD1call():
 
 #PD1art
 def PD1artcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD1artsetInfo = psetcontract.functions.poolInfo(3).call()
     PD1arttotalCached = PD1artsetInfo[3]
     PD1artalloc = (PD1artsetInfo[1] / totalAlloc)
@@ -495,8 +507,10 @@ def PD1artcall():
 
 #PD1cb
 def PD1cbcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD1cbsetInfo = psetcontract.functions.poolInfo(4).call()
     PD1cbtotalCached = PD1cbsetInfo[3]
     PD1cballoc = (PD1cbsetInfo[1] / totalAlloc)
@@ -505,8 +519,10 @@ def PD1cbcall():
 
 #PD1se
 def PD1secall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD1sesetInfo = psetcontract.functions.poolInfo(5).call()
     PD1setotalCached = PD1sesetInfo[3]
     PD1sealloc = (PD1sesetInfo[1] / totalAlloc)
@@ -515,8 +531,10 @@ def PD1secall():
 
 #PD2art
 def PD2artcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD2artsetInfo = psetcontract.functions.poolInfo(6).call()
     PD2arttotalCached = PD2artsetInfo[3]
     PD2artalloc = (PD2artsetInfo[1] / totalAlloc)
@@ -525,8 +543,10 @@ def PD2artcall():
 
 #PD2cb
 def PD2cbcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD2cbsetInfo = psetcontract.functions.poolInfo(7).call()
     PD2cbtotalCached = PD2cbsetInfo[3]
     PD2cballoc = (PD2cbsetInfo[1] / totalAlloc)
@@ -535,8 +555,10 @@ def PD2cbcall():
 
 #PD2pl
 def PD2plcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD2plsetInfo = psetcontract.functions.poolInfo(8).call()
     PD2pltotalCached = PD2plsetInfo[3]
     PD2plalloc = (PD2plsetInfo[1] / totalAlloc)
@@ -545,8 +567,10 @@ def PD2plcall():
 
 #PD2se
 def PD2secall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD2sesetInfo = psetcontract.functions.poolInfo(9).call()
     PD2setotalCached = PD2sesetInfo[3]
     PD2sealloc = (PD2sesetInfo[1] / totalAlloc)
@@ -555,8 +579,10 @@ def PD2secall():
 
 #PD3art
 def PD3artcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD3artsetInfo = psetcontract.functions.poolInfo(10).call()
     PD3arttotalCached = PD3artsetInfo[3]
     PD3artalloc = (PD3artsetInfo[1] / totalAlloc)
@@ -565,8 +591,10 @@ def PD3artcall():
 
 #PD3cb
 def PD3cbcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD3cbsetInfo = psetcontract.functions.poolInfo(11).call()
     PD3cbtotalCached = PD3cbsetInfo[3]
     PD3cballoc = (PD3cbsetInfo[1] / totalAlloc)
@@ -575,8 +603,10 @@ def PD3cbcall():
 
 #PD3pl
 def PD3plcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD3plsetInfo = psetcontract.functions.poolInfo(12).call()
     PD3pltotalCached = PD3plsetInfo[3]
     PD3plalloc = (PD3plsetInfo[1] / totalAlloc)
@@ -585,8 +615,10 @@ def PD3plcall():
 
 #PD3se
 def PD3secall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD3sesetInfo = psetcontract.functions.poolInfo(13).call()
     PD3setotalCached = PD3sesetInfo[3]
     PD3sealloc = (PD3sesetInfo[1] / totalAlloc)
@@ -595,8 +627,10 @@ def PD3secall():
 
 #PS15
 def PS15call():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PS15setInfo = psetcontract.functions.poolInfo(14).call()
     PS15totalCached = PS15setInfo[3]
     PS15alloc = (PS15setInfo[1] / totalAlloc)
@@ -605,8 +639,10 @@ def PS15call():
 
 #PS15art
 def PS15artcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PS15artsetInfo = psetcontract.functions.poolInfo(15).call()
     PS15arttotalCached = PS15artsetInfo[3]
     PS15artalloc = (PS15artsetInfo[1] / totalAlloc)
@@ -615,8 +651,10 @@ def PS15artcall():
 
 #PS15cb
 def PS15cbcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PS15cbsetInfo = psetcontract.functions.poolInfo(16).call()
     PS15cbtotalCached = PS15cbsetInfo[3]
     PS15cballoc = (PS15cbsetInfo[1] / totalAlloc)
@@ -625,8 +663,10 @@ def PS15cbcall():
 
 #PS15se
 def PS15secall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PS15sesetInfo = psetcontract.functions.poolInfo(17).call()
     PS15setotalCached = PS15sesetInfo[3]
     PS15sealloc = (PS15sesetInfo[1] / totalAlloc)
@@ -635,8 +675,10 @@ def PS15secall():
 
 #PD4art
 def PD4artcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD4artsetInfo = psetcontract.functions.poolInfo(18).call()
     PD4arttotalCached = PD4artsetInfo[3]
     PD4artalloc = (PD4artsetInfo[1] / totalAlloc)
@@ -645,8 +687,10 @@ def PD4artcall():
 
 #PD4cb
 def PD4cbcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD4cbsetInfo = psetcontract.functions.poolInfo(19).call()
     PD4cbtotalCached = PD4cbsetInfo[3]
     PD4cballoc = (PD4cbsetInfo[1] / totalAlloc)
@@ -655,8 +699,10 @@ def PD4cbcall():
 
 #PD4
 def PD4call():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD4setInfo = psetcontract.functions.poolInfo(20).call()
     PD4totalCached = PD4setInfo[3]
     PD4alloc = (PD4setInfo[1] / totalAlloc)
@@ -665,8 +711,10 @@ def PD4call():
 
 #PD4se
 def PD4secall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD4sesetInfo = psetcontract.functions.poolInfo(21).call()
     PD4setotalCached = PD4sesetInfo[3]
     PD4sealloc = (PD4sesetInfo[1] / totalAlloc)
@@ -675,8 +723,10 @@ def PD4secall():
 
 #PD5
 def PD5call():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD5setInfo = psetcontract.functions.poolInfo(22).call()
     PD5totalCached = PD5setInfo[3]
     PD5alloc = (PD5setInfo[1] / totalAlloc)
@@ -685,8 +735,10 @@ def PD5call():
 
 #PD5se
 def PD5secall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD5sesetInfo = psetcontract.functions.poolInfo(23).call()
     PD5setotalCached = PD5sesetInfo[3]
     PD5sealloc = (PD5sesetInfo[1] / totalAlloc)
@@ -695,8 +747,10 @@ def PD5secall():
 
 #PD5pl
 def PD5plcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD5plsetInfo = psetcontract.functions.poolInfo(24).call()
     PD5pltotalCached = PD5plsetInfo[3]
     PD5plalloc = (PD5plsetInfo[1] / totalAlloc)
@@ -705,8 +759,10 @@ def PD5plcall():
 
 #PD5cb
 def PD5cbcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD5cbsetInfo = psetcontract.functions.poolInfo(25).call()
     PD5cbtotalCached = PD5cbsetInfo[3]
     PD5cballoc = (PD5cbsetInfo[1] / totalAlloc)
@@ -715,8 +771,10 @@ def PD5cbcall():
 
 #PD5art
 def PD5artcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD5artsetInfo = psetcontract.functions.poolInfo(26).call()
     PD5arttotalCached = PD5artsetInfo[3]
     PD5artalloc = (PD5artsetInfo[1] / totalAlloc)
@@ -725,8 +783,10 @@ def PD5artcall():
 
 #PD6
 def PD6call():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD6setInfo = psetcontract.functions.poolInfo(27).call()
     PD6totalCached = PD6setInfo[3]
     PD6alloc = (PD6setInfo[1] / totalAlloc)
@@ -735,8 +795,10 @@ def PD6call():
 
 #PD6se
 def PD6secall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD6sesetInfo = psetcontract.functions.poolInfo(28).call()
     PD6setotalCached = PD6sesetInfo[3]
     PD6sealloc = (PD6sesetInfo[1] / totalAlloc)
@@ -745,8 +807,10 @@ def PD6secall():
 
 #PD6pl
 def PD6plcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD6plsetInfo = psetcontract.functions.poolInfo(29).call()
     PD6pltotalCached = PD6plsetInfo[3]
     PD6plalloc = (PD6plsetInfo[1] / totalAlloc)
@@ -755,8 +819,10 @@ def PD6plcall():
 
 #PD6cb
 def PD6cbcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD6cbsetInfo = psetcontract.functions.poolInfo(30).call()
     PD6cbtotalCached = PD6cbsetInfo[3]
     PD6cballoc = (PD6cbsetInfo[1] / totalAlloc)
@@ -765,8 +831,10 @@ def PD6cbcall():
 
 #PD6art
 def PD6artcall():
-    totalAlloc = psetcontract.functions.totalAllocPoint().call()
-    setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
+    totalAlloc = 21840
+    #totalAlloc = psetcontract.functions.totalAllocPoint().call()
+    setPrimePerSecond = 70466203867215161060311819694100622
+    #setPrimePerSecond = psetcontract.functions.primeAmountPerSecond().call()
     PD6artsetInfo = psetcontract.functions.poolInfo(31).call()
     PD6arttotalCached = PD6artsetInfo[3]
     PD6artalloc = (PD6artsetInfo[1] / totalAlloc)
@@ -1029,8 +1097,60 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    #Daily emissions
+    if message.content.lower() == '.prime daily' and message.channel.id != 1085860941935153203:
+        ctx = await message.channel.send("`Processing, please be patient.`")
+        MP, mpcount = MPcall()
+        CDtotalCached, CD = CDcall()
+        coreTotalCached, core = Corecall()
+        PKtotalCached, PK, totalpkprime, totalpkprimeemitted, dayspassedpercentage, pkprimeleft, pkpercentageleft = PKcall()
+        PD1cbtotalCached, PD1cb = PD1cbcall()
+        PD2cbtotalCached, PD2cb = PD2cbcall()
+        PD3cbtotalCached, PD3cb = PD3cbcall()
+        PD4cbtotalCached, PD4cb = PD4cbcall()
+        PD5cbtotalCached, PD5cb = PD5cbcall()
+        PD6cbtotalCached, PD6cb = PD6cbcall()
+        PS15cbtotalCached, PS15cb = PS15cbcall()
+        PD1setotalCached, PD1se = PD1secall()
+        PD2setotalCached, PD2se = PD2secall()
+        PD3setotalCached, PD3se = PD3secall()
+        PD4setotalCached, PD4se = PD4secall()
+        PD5setotalCached, PD5se = PD5secall()
+        PD6setotalCached, PD6se = PD6secall()
+        PS15setotalCached, PS15se = PS15secall()
+        PD2pltotalCached, PD2pl = PD2plcall()
+        PD3pltotalCached, PD3pl = PD3plcall()
+        PD5pltotalCached, PD5pl = PD5plcall()
+        PD6pltotalCached, PD6pl = PD6plcall()
+        PD1totalCached, PD1 = PD1call()
+        PD2totalCached, PD2 = PD2call()
+        PD3totalCached, PD3 = PD3call()
+        PD4totalCached, PD4 = PD4call()
+        PD5totalCached, PD5 = PD5call()
+        PD6totalCached, PD6 = PD6call()
+        PS15totalCached, PS15 = PS15call()
+        PD1arttotalCached, PD1art = PD1artcall()
+        PD2arttotalCached, PD2art = PD2artcall()
+        PD3arttotalCached, PD3art = PD3artcall()
+        PD4arttotalCached, PD4art = PD4artcall()
+        PD5arttotalCached, PD5art = PD5artcall()
+        PD6arttotalCached, PD6art = PD6artcall()
+        PS15arttotalCached, PS15art = PS15artcall()
+        totalMp = mpcount * MP
+        totalCd = CDtotalCached * CD
+        totalCore = coreTotalCached * core
+        totalPk = PKtotalCached * PK
+        totalCb = (PD1cbtotalCached * PD1cb) + (PD2cbtotalCached * PD2cb) + (PD3cbtotalCached * PD3cb) + (PD4cbtotalCached * PD4cb) + (PD5cbtotalCached * PD5cb) + (PD6cbtotalCached * PD6cb) + (PS15cbtotalCached * PS15cb)
+        totalSe = (PD1setotalCached * PD1se) + (PD2setotalCached * PD2se) + (PD3setotalCached * PD3se) + (PD4setotalCached * PD4se) + (PD5setotalCached * PD5se) + (PD6setotalCached * PD6se) + (PS15setotalCached * PS15se)
+        totalPl = (PD2pltotalCached * PD2pl) + (PD3pltotalCached * PD3pl) + (PD5pltotalCached * PD5pl) + (PD6pltotalCached * PD6pl)
+        totalFe = (PD1totalCached * PD1) + (PD2totalCached * PD2) + (PD3totalCached * PD3) + (PD4totalCached * PD4) + (PD5totalCached * PD5) + (PD6totalCached * PD6) + (PS15totalCached * PS15)
+        totalArt = (PD1arttotalCached * PD1art) + (PD2arttotalCached * PD2art) + (PD3arttotalCached * PD3art) + (PD4arttotalCached * PD4art) + (PD5arttotalCached * PD5art) + (PD6arttotalCached * PD6art) + (PS15arttotalCached * PS15art)
+        dailyEmit = round(totalMp + totalCd + totalCore + totalPk + totalCb + totalSe + totalPl + totalFe + totalArt, 2)
+        await message.channel.send(f"``Daily emissions for all sets and assets: {dailyEmit:,}``")
+        await ctx.delete()
+
     #prime overview, embed
-    if message.content.lower() == '.prime':
+    if message.content.lower() == '.prime' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
         primeEventClaimTotal = 7894941
         primeKeyClaimTotal = primeKeyClaim()
@@ -1048,6 +1168,7 @@ async def on_message(message):
         totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal
         circulating = claimTotal + launchPartners - totalsink
         percentSunk = round(totalsink / (claimTotal + launchPartners) * 100, 2)
+        dailyEmit = 42695
         embed=discord.Embed(title="Overview of Prime", color=discord.Color.yellow())
         #embed.set_author(name="Jake", url="https://echelon.io", icon_url="https://cdn.discordapp.com/emojis/935663412023812156.png")
         #embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/935663412023812156.png")
@@ -1056,7 +1177,8 @@ async def on_message(message):
         embed.add_field(name="Prime Sets", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(currentSetCachingEmitted), int(primeSetClaimTotal), round((primeSetClaimTotal / currentSetCachingEmitted) * 100, 2)), inline=False)
         embed.add_field(name="CD/MP/The Core", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(currentCornerstoneEmitted), int(primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal), round(((primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal) / currentCornerstoneEmitted) * 100, 2)), inline=False)
         embed.add_field(name="Claimable totals", value="```ansi\n\u001b[0;32mClaimable emissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(emitTotal), int(claimTotal), round((claimTotal / emitTotal) * 100, 2)), inline=False)
-        embed.add_field(name="Misc emissions", value="```ansi\n\u001b[0;32mLaunch Partners: {:,}```".format(launchPartners, inline=False))
+        embed.add_field(name="Misc emissions", value="```ansi\n\u001b[0;32mLaunch Partners: {:,}```".format(launchPartners), inline=False)
+        embed.add_field(name="Daily emissions", value="```ansi\n\u001b[0;32mCaching: {:,}```".format(dailyEmit), inline=False)
         embed.add_field(name="Sinks", value="```ansi\n\u001b[0;32mPrime sunk: {:,}\n{}% sunk```".format(int(totalsink), (percentSunk)), inline=False)
         embed.add_field(name="Circulating", value="```ansi\n\u001b[0;32mCirculating supply: {:,}```".format(int(circulating), inline=False))
         embed.set_footer(text="Please note this is intended as an estimate only")
@@ -1064,7 +1186,7 @@ async def on_message(message):
         await ctx.delete()
         
     #Block for ALL Cornerstone assets, returns a line for each set with emissions only
-    if message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core':
+    if message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core' and message.channel.id != 1085860941935153203:
         MP, mpcount = MPcall()
         CDtotalCached, CD = CDcall()
         coreTotalCached, core = Corecall()
@@ -1076,7 +1198,7 @@ async def on_message(message):
         await message.channel.send(embed=embed)
 
     #Call Sink functions and print simplified results for all + total
-    if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink':
+    if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
         payloadTotal = Payloadcall()[0]
         artigraphTotal = Artigraphcall()[0]
@@ -1096,7 +1218,7 @@ async def on_message(message):
         await ctx.delete()
 
     #Begin blocks for individual sinks/sets/etc calls
-    if message.content.lower() == '.prime payload':
+    if message.content.lower() == '.prime payload' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
         #await message.channel.send(f"`Payload Prime - {payloadTotal:,}`")
@@ -1111,7 +1233,7 @@ async def on_message(message):
         await message.channel.send(embed=embed)
         await ctx.delete()
 
-    if message.content.lower().startswith('.prime terminal') or message.content.lower().startswith('.prime battery') or message.content.lower().startswith('.prime batteries'):
+    if message.content.lower().startswith('.prime terminal') or message.content.lower().startswith('.prime battery') or message.content.lower().startswith('.prime batteries') and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
         terminalTotal = terminalCall()
         batteryTotal = batteryCall()
@@ -1127,7 +1249,7 @@ async def on_message(message):
 
 
     #direct artigraph block
-    if message.content.lower() == '.prime artigraph':
+    if message.content.lower() == '.prime artigraph' and message.channel.id != 1085860941935153203:
         artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
         artigraphsinkdistro = int(artigraphTotal * .89)
         feMax = 4556
@@ -1156,7 +1278,7 @@ async def on_message(message):
         await message.channel.send(embed=embed)
 
     #PK block
-    if message.content.lower() == '.prime pk':
+    if message.content.lower() == '.prime pk' and message.channel.id != 1085860941935153203:
         PKtotalCached, PK, totalpkprime, totalpkprimeemitted, dayspassedpercentage, pkprimeleft, pkpercentageleft = PKcall()
         embed=discord.Embed(title="PK overview", color=discord.Color.yellow())
         embed.add_field(name="Cached    |    Daily emissions", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PKtotalCached, round(PK, 3)), inline=False)
@@ -1168,7 +1290,7 @@ async def on_message(message):
         await message.channel.send(embed=embed)
 
     #Block for ALL CB sets, returns a line for each set with emissions only
-    if message.content.lower() == '.prime cb':
+    if message.content.lower() == '.prime cb' and message.channel.id != 1085860941935153203:
         PD1cbtotalCached, PD1cb = PD1cbcall()
         PD2cbtotalCached, PD2cb = PD2cbcall()
         PD3cbtotalCached, PD3cb = PD3cbcall()
@@ -1188,7 +1310,7 @@ async def on_message(message):
         await message.channel.send(embed=embed)
 
     #Block for ALL SE sets, returns a line for each set with emissions only
-    if message.content.lower() == '.prime se':
+    if message.content.lower() == '.prime se' and message.channel.id != 1085860941935153203:
         PD1setotalCached, PD1se = PD1secall()
         PD2setotalCached, PD2se = PD2secall()
         PD3setotalCached, PD3se = PD3secall()
@@ -1208,7 +1330,7 @@ async def on_message(message):
         await message.channel.send(embed=embed)
 
     #Block for ALL PL sets, returns a line for each set with emissions only
-    if message.content.lower() == '.prime pl':
+    if message.content.lower() == '.prime pl' and message.channel.id != 1085860941935153203:
         PD2pltotalCached, PD2pl = PD2plcall()
         PD3pltotalCached, PD3pl = PD3plcall()
         PD5pltotalCached, PD5pl = PD5plcall()
@@ -1222,7 +1344,7 @@ async def on_message(message):
         await message.channel.send(embed=embed)
 
     #Block for ALL FE sets, returns a line for each set with emissions only
-    if message.content.lower() == '.prime fe':
+    if message.content.lower() == '.prime fe' and message.channel.id != 1085860941935153203:
         PD1totalCached, PD1 = PD1call()
         PD2totalCached, PD2 = PD2call()
         PD3totalCached, PD3 = PD3call()
@@ -1242,7 +1364,7 @@ async def on_message(message):
         await message.channel.send(embed=embed)
 
     #Block for ALL Art sets, returns a line for each set with emissions only
-    if message.content.lower() == '.prime art' or message.content.lower() == '.prime ac':
+    if message.content.lower() == '.prime art' or message.content.lower() == '.prime ac' and message.channel.id != 1085860941935153203:
         PD1arttotalCached, PD1art = PD1artcall()
         PD2arttotalCached, PD2art = PD2artcall()
         PD3arttotalCached, PD3art = PD3artcall()
@@ -1271,7 +1393,7 @@ async def on_message(message):
     #    await shady.delete()
     #    await ctx2.edit(content="`Nothing to see here, move along Big Parallel`")
 
-    if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm':
+    if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm' and message.channel.id != 1085860941935153203:
         await message.reply(f'`gm {nick}!`  <a:Prime_Bounce:1075839184738193480>', mention_author=False)
 
     #if message.content.lower() == 'gn' or message.content.lower() == 'gn!' or message.content.lower() == '.gn':
@@ -1353,7 +1475,7 @@ async def on_message(message):
     #    ```")
     #    await ctx.edit(content="**`(This view is meant for desktop only, it will not display properly on mobile.)\nNumber of sets cached:`**")
 
-    if message.content == (".prime sets"):
+    if message.content == (".prime sets") and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
         PD1cbtotalCached, PD1cb = PD1cbcall()
         PD2cbtotalCached, PD2cb = PD2cbcall()
@@ -1446,7 +1568,7 @@ async def on_message(message):
     #    embed.set_footer(text="Data provided by CoinGecko")
     #    await message.channel.send(embed=embed)
 
-    if message.content.lower().startswith('.prime sink:') or message.content.lower().startswith('.prime sinks:'):
+    if message.content.lower().startswith('.prime sink:') or message.content.lower().startswith('.prime sinks:') and message.channel.id != 1085860941935153203:
         if message.content.split(":", 1)[1].isnumeric() == False:
             await message.channel.send("`Usage: .prime sink:x where x is the number of days to search back for historical sink data`")
             return
