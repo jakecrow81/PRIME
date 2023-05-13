@@ -187,6 +187,38 @@ def batteryCall():
     #batteryUnique = set(batteryHits)
     return int(batteryTotal)
 
+#Companion mints
+def companionCall():
+    jsonpayload = {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "alchemy_getAssetTransfers",
+    "params": [
+        {
+            "fromBlock": "0x0",
+            "toBlock": "latest",
+            "category": ["erc1155"],
+            "contractAddresses": ["0x2de4941fec832d5d2f7ab69df397f3e2fb28d391"],
+            "withMetadata": False,
+            "excludeZeroValue": True,
+            "maxCount": "0x3e8",
+            "fromAddress": "0x0000000000000000000000000000000000000000"
+        }
+    ]
+    }
+    headers = {
+    "accept": "application/json",
+    "content-type": "application/json"
+    }
+    companionTotal = 0
+    while True:
+        response = requests.post(alchemyurl, json=jsonpayload, headers=headers).json()
+        companionTotal = companionTotal + len(response["result"]["transfers"])
+        if not 'pageKey' in response["result"]:
+            break
+        jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    return int(companionTotal)
+
 #Artigraph Sink
 def Artigraphcall():
     jsonpayload = {

@@ -206,16 +206,18 @@ async def on_message(message):
         await ctx.delete()
 
     #terminals
-    if message.content.lower().startswith('.prime terminal') or message.content.lower().startswith('.prime battery') or message.content.lower().startswith('.prime batteries') and message.channel.id != 1085860941935153203:
+    if message.content.lower().startswith('.prime terminal') or message.content.lower().startswith('.prime battery') or message.content.lower().startswith('.prime batteries') and message.channel.id != 1085860941935153203 or message.content.lower().startswith('.prime companion') and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
         terminalTotal = terminalCall()
         batteryTotal = batteryCall()
+        companionTotal = companionCall()
         embed=discord.Embed(title="Overview of Terminals", color=0xDEF141)
         embed.add_field(name="Terminal Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(terminalTotal), inline=False)
         embed.add_field(name="Battery Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(batteryTotal), inline=False)
         embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(terminalTotal + batteryTotal), inline=False)
         embed.add_field(name="Total Terminals sold", value="```ansi\n\u001b[0;32m{:,}```".format(int((terminalTotal - 100) / 11)), inline=False)
         embed.add_field(name="Total batteries created", value="```ansi\n\u001b[0;32m{:,}```".format(int(batteryTotal / 135)), inline=False)
+        embed.add_field(name="Total companions created", value="```ansi\n\u001b[0;32m{:,}```".format(companionTotal), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
         await ctx.delete()
@@ -580,6 +582,106 @@ async def on_message(message):
     #gm block
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm' and message.channel.id != 1085860941935153203:
         await message.reply(f'`gm {nick}!`  <a:Prime_Bounce:1075839184738193480>', mention_author=False)
+
+
+    #blocks for Echelon embeds
+
+    #global embed variables
+    #global linksEmbed
+    #linksEmbed = 0
+
+    #embed commands
+    #if message.content.lower() == (".echelon links"):
+
+    #    echelonThumb = discord.File('echelon.png')
+    #    echelonShip = discord.File('sanctuary2.jpg')
+
+    #    embed=discord.Embed(title="Official Links", color=0xDEF141)
+    #    embed.set_thumbnail(url='attachment://echelon.png')
+    #    embed.add_field(name="", value=
+    #    "**Website:**\nhttps://echelon.io\
+    #    \n**Wiki:**\nhttps://docs.echelon.io/echelon-prime-foundation\
+    #    \n**Medium:**\nhttps://medium.com/@EchelonFND\
+    #    \n**Snapshot:**\nhttps://snapshot.org/#/echelonassembly.eth\
+    #    \n**YouTube:**\nhttps://www.youtube.com/@EchelonFND\
+    #    \n\n__***Socials***__\
+    #    \n\n**Twitter:**\nhttps://twitter.com/EchelonFND\
+    #    \n**Discord:**\nhttps://discord.gg/echelonfnd\
+    #    \n\n__***Token***__\
+    #    \n\n**PRIME contract:**\nhttps://etherscan.io/token/0xb23d80f5FefcDDaa212212F028021B41DEd428CF\
+    #    \n**Uniswap:**\nhttps://app.uniswap.org/#/tokens/ethereum/0xb23d80f5fefcddaa212212f028021b41ded428cf\
+    #    \n\n__***Misc***__\
+    #    \n\n**Business inquiries:**\ninfo@echelon.io")
+    #    embed.set_image(url='attachment://sanctuary2.jpg')
+    #    #linksEmbed = await message.guild.get_channel(987187106268995654).send(file = echelonShip, embed=embed)
+    #    linksEmbed = await message.guild.get_channel(1089907445008171009).send(files = [echelonThumb, echelonShip], embed=embed)
+
+
+    #if message.content.lower() == (".faq update"):
+    #    channel = discord.utils.get(message.guild.text_channels, name="faq-update-test")
+    #    async for message in channel.history(limit=1):
+    #        if message.embeds and message.author == client.user and message.embeds[0].title == "Official Links":
+    #            #print(message.id)
+    #            #print(message.embeds[0].title)
+    #            linksEmbed = message
+    #    if linksEmbed != 0:
+    #        #channel = client.get_channel(1105486024387330068) # the message's channel
+    #        msg_id = linksEmbed.id # the message's id
+    #        msg = await channel.fetch_message(msg_id)
+    #        await msg.delete()
+    #        embed=discord.Embed(title="Official Links", color=0xDEF141)
+    #        embed.add_field(name="Test", value="testing")
+    #        linksEmbed = await message.guild.get_channel(1105486024387330068).send(embed=embed)
+    #        # channel = client.get_channel(1105486024387330068) # the message's channel
+    #        # msg_id = linksEmbed.id # the message's id
+    #        # msg = await channel.fetch_message(msg_id)
+    #        # await msg.delete()
+    #        # embed=discord.Embed(title="Official Links", color=0xDEF141)
+    #        # embed.add_field(name="Test", value="testing")
+    #        # linksEmbed = await message.guild.get_channel(1105486024387330068).send(embed=embed)
+    #    else:
+    #        echelonShip = discord.File('echelonship.png')
+    #        embed=discord.Embed(title="Official Links", color=0xDEF141)
+    #        embed.set_thumbnail(url='https://cdn.discordapp.com/emojis/1058114534189043782.gif')
+    #        embed.add_field(name="", value=
+    #        "**Website:**\nhttps://echelon.io\n\
+    #        **Wiki:**\nhttps://docs.echelon.io/echelon-prime-foundation\n\
+    #        **Medium:**\nhttps://medium.com/@EchelonFND\n\
+    #        **Snapshot:**\nhttps://snapshot.org/#/echelonassembly.eth\n\
+    #        **YouTube:**\nhttps://www.youtube.com/@EchelonFND\n\n\
+    #        __***Socials***__\n\n\
+    #        **Twitter:**\nhttps://twitter.com/EchelonFND\n\
+    #        **Discord:**\nhttps://discord.gg/echelonfnd\n\n\
+    #        __***Token***__\n\n\
+    #        **PRIME contract:**\nhttps://etherscan.io/token/0xb23d80f5FefcDDaa212212F028021B41DEd428CF\n\
+    #        **Uniswap:**\nhttps://app.uniswap.org/#/tokens/ethereum/0xb23d80f5fefcddaa212212f028021b41ded428cf\n\n\
+    #        __***Misc***__\n\n\
+    #        **Business inquiries:**\ninfo@echelon.io")
+    #        embed.set_image(url='attachment://echelonship.png')
+    #        linksEmbed = await message.guild.get_channel(1105486024387330068).send(file = echelonShip, embed=embed)
+
+
+    #if message.content.lower() == (".ardent"):
+
+    #    echelonThumb = discord.File('echelon.png')
+    #    echelonShip = discord.File('echelonship.png')
+
+    #    embed=discord.Embed(title="Ardent Prime FAQ", color=0xDEF141)
+    #    embed.set_thumbnail(url='attachment://echelon.png')
+    #    embed.add_field(name="", value="<a:discotoad:1027192981352091659> **What is Ardent Prime?**\n\
+    #    The Ardent Prime Program was created to reward loyal collectors of Parallel TCG cards between Pack Drop 1 and April 2023.\n\n\
+    #    <a:discotoad:1027192981352091659> **What do I need to do to be considered?**\n\
+    #    You may have already done what it takes to be Ardent. So, make sure any wallets that hold Parallel cards/assets are connected/saved to Parallel's website.\n\n\
+    #    <a:discotoad:1027192981352091659> **Is there a cutoff to link my wallet?**\n\
+    #    All wallets must be connected to your Parallel.Life account by <t:1683604800>\n\n\
+    #    <a:discotoad:1027192981352091659> **How do I link multiple wallets?**\n\
+    #    This tweet explains how to connect multiple wallets. https://twitter.com/EchelonFND/status/1653729085921656832?t=sRvBnUAufgzfPqcRVlQ7Vg&s=19")
+    #    embed.set_image(url='attachment://echelonship.png')
+    #    await message.guild.get_channel(1105105579917197412).send(files = [echelonThumb, echelonShip], embed=embed)
+
+
+    if message.content.lower() == (".prime test"):
+        await message.channel.send("``Testing 123``")
 
 
 client.run(TOKEN)
