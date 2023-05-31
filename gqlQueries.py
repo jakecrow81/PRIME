@@ -1,12 +1,16 @@
 from gql import gql, Client
 from gql.transport.aiohttp import AIOHTTPTransport
+import os
+from dotenv import load_dotenv
 
-# Initialize GraphQL variables
-transport = AIOHTTPTransport(url="https://hub.snapshot.org/graphql", headers={'Content-Type': 'application/json'})
-gqlclient = Client(transport=transport, fetch_schema_from_transport=True)
+load_dotenv()
+DEFINEDAPI = os.getenv('DEFINED_API')
+
 
 #Snapshot query blocks, for active and closed proposals
 async def snapshotQuery(space):
+    transport = AIOHTTPTransport(url="https://hub.snapshot.org/graphql", headers={'Content-Type': 'application/json'})
+    gqlclient = Client(transport=transport, fetch_schema_from_transport=True)
     query = gql(
         """
         query Proposals ($space_in: String!) {
@@ -38,6 +42,8 @@ async def snapshotQuery(space):
     return result
 
 async def snapshotClosedQuery(space):
+    transport = AIOHTTPTransport(url="https://hub.snapshot.org/graphql", headers={'Content-Type': 'application/json'})
+    gqlclient = Client(transport=transport, fetch_schema_from_transport=True)
     query = gql(
         """
         query Proposals ($space_in: String!) {
@@ -66,3 +72,27 @@ async def snapshotClosedQuery(space):
     params = {"space_in": space}
     result = await gqlclient.execute_async(query, variable_values=params)
     return result
+
+#Pull for contract data from Defined. address = contract address, poolIds is a list of IDs in the format ["1", "2", "3"].
+#Example: contractData("0xECa9D81a4dC7119A40481CFF4e7E24DD0aaF56bD", ["16", "4", "7", "11", "19", "25", "30"])
+#networkId is always 1 for now so this is hard coded
+async def contractData(address, poolIds):
+    transport = AIOHTTPTransport(url="https://api.defined.fi", headers={'Content-Type': 'application/json', 'x-api-key': DEFINEDAPI})
+    gqlclient = Client(transport=transport, fetch_schema_from_transport=True)
+    query = gql(
+        """
+        query getPrimePools($address: String!, $networkId: Int!, $poolIds: [String]){
+            getPrimePools(address: $address, networkId: $networkId, poolIds: $poolIds) {
+                items{
+                    calcData {
+                        sharePrimePerDay
+                    }
+                    totalSupply
+                }
+                }
+            }
+        """
+    )
+    params = {"address": address, "networkId": 1, "poolIds": poolIds}
+    result = await gqlclient.execute_async(query, variable_values=params)
+    return result['getPrimePools']['items']

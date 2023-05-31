@@ -266,41 +266,29 @@ async def on_message(message):
 
     #Block for ALL CB sets, returns a line for each set with emissions only
     if message.content.lower() == '.prime cb' and message.channel.id != 1085860941935153203:
-        PD1cbtotalCached, PD1cb = PD1cbcall()
-        PD2cbtotalCached, PD2cb = PD2cbcall()
-        PD3cbtotalCached, PD3cb = PD3cbcall()
-        PD4cbtotalCached, PD4cb = PD4cbcall()
-        PD5cbtotalCached, PD5cb = PD5cbcall()
-        PD6cbtotalCached, PD6cb = PD6cbcall()
-        PS15cbtotalCached, PS15cb = PS15cbcall()
+        setInfo = await contractData("0xECa9D81a4dC7119A40481CFF4e7E24DD0aaF56bD", ["16", "4", "7", "11", "19", "25", "30"])
         embed=discord.Embed(title="CB sets cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15cbtotalCached, round(PS15cb, 3)), inline=False)
-        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD1cbtotalCached, round(PD1cb, 3)), inline=False)
-        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2cbtotalCached, round(PD2cb, 3)), inline=False)
-        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3cbtotalCached, round(PD3cb, 3)), inline=False)
-        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD4cbtotalCached, round(PD4cb, 3)), inline=False)
-        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5cbtotalCached, round(PD5cb, 3)), inline=False)
-        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD6cbtotalCached, round(PD6cb, 3)), inline=False)
+        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[0]['totalSupply']), int(setInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
+        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[1]['totalSupply']), int(setInfo[1]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[2]['totalSupply']), int(setInfo[2]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[3]['totalSupply']), int(setInfo[3]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
+        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[4]['totalSupply']), int(setInfo[4]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[5]['totalSupply']), int(setInfo[5]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[6]['totalSupply']), int(setInfo[6]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
     #Block for ALL SE sets, returns a line for each set with emissions only
     if message.content.lower() == '.prime se' and message.channel.id != 1085860941935153203:
-        PD1setotalCached, PD1se = PD1secall()
-        PD2setotalCached, PD2se = PD2secall()
-        PD3setotalCached, PD3se = PD3secall()
-        PD4setotalCached, PD4se = PD4secall()
-        PD5setotalCached, PD5se = PD5secall()
-        PD6setotalCached, PD6se = PD6secall()
-        PS15setotalCached, PS15se = PS15secall()
+        setInfo = await contractData("0xECa9D81a4dC7119A40481CFF4e7E24DD0aaF56bD", ["17", "5", "9", "13", "21", "23", "28"])
         embed=discord.Embed(title="SE sets cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15setotalCached, round(PS15se, 3)), inline=False)
-        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD1setotalCached, round(PD1se, 3)), inline=False)
-        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2setotalCached, round(PD2se, 3)), inline=False)
-        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3setotalCached, round(PD3se, 3)), inline=False)
-        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD4setotalCached, round(PD4se, 3)), inline=False)
-        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5setotalCached, round(PD5se, 3)), inline=False)
-        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD6setotalCached, round(PD6se, 3)), inline=False)
+        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[0]['totalSupply']), int(setInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
+        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[1]['totalSupply']), int(setInfo[1]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[2]['totalSupply']), int(setInfo[2]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[3]['totalSupply']), int(setInfo[3]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
+        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[4]['totalSupply']), int(setInfo[4]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[5]['totalSupply']), int(setInfo[5]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[6]['totalSupply']), int(setInfo[6]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
@@ -582,106 +570,6 @@ async def on_message(message):
     #gm block
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm' and message.channel.id != 1085860941935153203:
         await message.reply(f'`gm {nick}!`  <a:Prime_Bounce:1075839184738193480>', mention_author=False)
-
-
-    #blocks for Echelon embeds
-
-    #global embed variables
-    #global linksEmbed
-    #linksEmbed = 0
-
-    #embed commands
-    #if message.content.lower() == (".echelon links"):
-
-    #    echelonThumb = discord.File('echelon.png')
-    #    echelonShip = discord.File('sanctuary2.jpg')
-
-    #    embed=discord.Embed(title="Official Links", color=0xDEF141)
-    #    embed.set_thumbnail(url='attachment://echelon.png')
-    #    embed.add_field(name="", value=
-    #    "**Website:**\nhttps://echelon.io\
-    #    \n**Wiki:**\nhttps://docs.echelon.io/echelon-prime-foundation\
-    #    \n**Medium:**\nhttps://medium.com/@EchelonFND\
-    #    \n**Snapshot:**\nhttps://snapshot.org/#/echelonassembly.eth\
-    #    \n**YouTube:**\nhttps://www.youtube.com/@EchelonFND\
-    #    \n\n__***Socials***__\
-    #    \n\n**Twitter:**\nhttps://twitter.com/EchelonFND\
-    #    \n**Discord:**\nhttps://discord.gg/echelonfnd\
-    #    \n\n__***Token***__\
-    #    \n\n**PRIME contract:**\nhttps://etherscan.io/token/0xb23d80f5FefcDDaa212212F028021B41DEd428CF\
-    #    \n**Uniswap:**\nhttps://app.uniswap.org/#/tokens/ethereum/0xb23d80f5fefcddaa212212f028021b41ded428cf\
-    #    \n\n__***Misc***__\
-    #    \n\n**Business inquiries:**\ninfo@echelon.io")
-    #    embed.set_image(url='attachment://sanctuary2.jpg')
-    #    #linksEmbed = await message.guild.get_channel(987187106268995654).send(file = echelonShip, embed=embed)
-    #    linksEmbed = await message.guild.get_channel(1089907445008171009).send(files = [echelonThumb, echelonShip], embed=embed)
-
-
-    #if message.content.lower() == (".faq update"):
-    #    channel = discord.utils.get(message.guild.text_channels, name="faq-update-test")
-    #    async for message in channel.history(limit=1):
-    #        if message.embeds and message.author == client.user and message.embeds[0].title == "Official Links":
-    #            #print(message.id)
-    #            #print(message.embeds[0].title)
-    #            linksEmbed = message
-    #    if linksEmbed != 0:
-    #        #channel = client.get_channel(1105486024387330068) # the message's channel
-    #        msg_id = linksEmbed.id # the message's id
-    #        msg = await channel.fetch_message(msg_id)
-    #        await msg.delete()
-    #        embed=discord.Embed(title="Official Links", color=0xDEF141)
-    #        embed.add_field(name="Test", value="testing")
-    #        linksEmbed = await message.guild.get_channel(1105486024387330068).send(embed=embed)
-    #        # channel = client.get_channel(1105486024387330068) # the message's channel
-    #        # msg_id = linksEmbed.id # the message's id
-    #        # msg = await channel.fetch_message(msg_id)
-    #        # await msg.delete()
-    #        # embed=discord.Embed(title="Official Links", color=0xDEF141)
-    #        # embed.add_field(name="Test", value="testing")
-    #        # linksEmbed = await message.guild.get_channel(1105486024387330068).send(embed=embed)
-    #    else:
-    #        echelonShip = discord.File('echelonship.png')
-    #        embed=discord.Embed(title="Official Links", color=0xDEF141)
-    #        embed.set_thumbnail(url='https://cdn.discordapp.com/emojis/1058114534189043782.gif')
-    #        embed.add_field(name="", value=
-    #        "**Website:**\nhttps://echelon.io\n\
-    #        **Wiki:**\nhttps://docs.echelon.io/echelon-prime-foundation\n\
-    #        **Medium:**\nhttps://medium.com/@EchelonFND\n\
-    #        **Snapshot:**\nhttps://snapshot.org/#/echelonassembly.eth\n\
-    #        **YouTube:**\nhttps://www.youtube.com/@EchelonFND\n\n\
-    #        __***Socials***__\n\n\
-    #        **Twitter:**\nhttps://twitter.com/EchelonFND\n\
-    #        **Discord:**\nhttps://discord.gg/echelonfnd\n\n\
-    #        __***Token***__\n\n\
-    #        **PRIME contract:**\nhttps://etherscan.io/token/0xb23d80f5FefcDDaa212212F028021B41DEd428CF\n\
-    #        **Uniswap:**\nhttps://app.uniswap.org/#/tokens/ethereum/0xb23d80f5fefcddaa212212f028021b41ded428cf\n\n\
-    #        __***Misc***__\n\n\
-    #        **Business inquiries:**\ninfo@echelon.io")
-    #        embed.set_image(url='attachment://echelonship.png')
-    #        linksEmbed = await message.guild.get_channel(1105486024387330068).send(file = echelonShip, embed=embed)
-
-
-    #if message.content.lower() == (".ardent"):
-
-    #    echelonThumb = discord.File('echelon.png')
-    #    echelonShip = discord.File('echelonship.png')
-
-    #    embed=discord.Embed(title="Ardent Prime FAQ", color=0xDEF141)
-    #    embed.set_thumbnail(url='attachment://echelon.png')
-    #    embed.add_field(name="", value="<a:discotoad:1027192981352091659> **What is Ardent Prime?**\n\
-    #    The Ardent Prime Program was created to reward loyal collectors of Parallel TCG cards between Pack Drop 1 and April 2023.\n\n\
-    #    <a:discotoad:1027192981352091659> **What do I need to do to be considered?**\n\
-    #    You may have already done what it takes to be Ardent. So, make sure any wallets that hold Parallel cards/assets are connected/saved to Parallel's website.\n\n\
-    #    <a:discotoad:1027192981352091659> **Is there a cutoff to link my wallet?**\n\
-    #    All wallets must be connected to your Parallel.Life account by <t:1683604800>\n\n\
-    #    <a:discotoad:1027192981352091659> **How do I link multiple wallets?**\n\
-    #    This tweet explains how to connect multiple wallets. https://twitter.com/EchelonFND/status/1653729085921656832?t=sRvBnUAufgzfPqcRVlQ7Vg&s=19")
-    #    embed.set_image(url='attachment://echelonship.png')
-    #    await message.guild.get_channel(1105105579917197412).send(files = [echelonThumb, echelonShip], embed=embed)
-
-
-    if message.content.lower() == (".prime test"):
-        await message.channel.send("``Testing 123``")
 
 
 client.run(TOKEN)
