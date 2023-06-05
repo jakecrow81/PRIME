@@ -528,7 +528,7 @@ async def on_message(message):
             await message.channel.send(embed=embed)
 
     # Discord commands for closed votes
-    if message.content.lower() == (".snapshot closed"):
+    if message.content.lower() == (".snapshot closed") and message.channel.id == 1085860941935153203:
         result = await snapshotClosedQuery("echelonassembly.eth")
 
         if result['proposals'] == []:
