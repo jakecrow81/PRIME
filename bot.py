@@ -470,11 +470,18 @@ async def on_message(message):
             joined = '\n'.join([str(choice) for choice in choices])
 
             embed=discord.Embed(title=f"Open community vote {i + 1} of {len(result['proposals'])}")
+            embed.add_field(name="Direct link to vote:", value="[snapshot.org](https://snapshot.org/#/echelonassembly.eth/proposal/{})".format(result['proposals'][i]['id']), inline=True)
+            embed.add_field(name="\u200B", value="\u200B")  # newline
+            embed.add_field(name="\u200B", value="\u200B")  # newline
             embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
             embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
             embed.add_field(name="\u200B", value="\u200B")  # newline
-            if quorum > 0:
+            if quorum > 0 and quorum < 100:
                 embed.add_field(name=f"Votes                       |       Needed votes         |     Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f}  |   {:<10,.0f}   |   {:6.2f}%```".format(totalScores, quorum, (totalScores / quorum) * 100), inline=True)
+                embed.add_field(name="\u200B", value="\u200B")  # newline
+                embed.add_field(name="\u200B", value="\u200B")  # newline
+            if quorum >= 100:
+                embed.add_field(name=f"Votes                    |       Needed votes         |          Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f} |   {:<10,.0f}    |   Quorum met!```".format(totalScores, quorum), inline=True)
                 embed.add_field(name="\u200B", value="\u200B")  # newline
                 embed.add_field(name="\u200B", value="\u200B")  # newline
             embed.add_field(name=f"Choice                                                                                   |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
@@ -503,18 +510,25 @@ async def on_message(message):
             joined = '\n'.join([str(choice) for choice in choices])
 
             embed=discord.Embed(title=f"Open emissary vote {i + 1} of {len(result['proposals'])}")
+            embed.add_field(name="Direct link to vote:", value="[snapshot.org](https://snapshot.org/#/echelon.eth/proposal/{})".format(result['proposals'][i]['id']), inline=True)
+            embed.add_field(name="\u200B", value="\u200B")  # newline
+            embed.add_field(name="\u200B", value="\u200B")  # newline
             embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
             embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
             embed.add_field(name="\u200B", value="\u200B")  # newline
-            if quorum > 0:
+            if quorum > 0 and quorum < 100:
                 embed.add_field(name=f"Votes                       |       Needed votes         |     Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f}  |   {:<10,.0f}   |   {:6.2f}%```".format(totalScores, quorum, (totalScores / quorum) * 100), inline=True)
+                embed.add_field(name="\u200B", value="\u200B")  # newline
+                embed.add_field(name="\u200B", value="\u200B")  # newline
+            if quorum >= 100:
+                embed.add_field(name=f"Votes                    |       Needed votes         |          Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f} |   {:<10,.0f}    |   Quorum met!```".format(totalScores, quorum), inline=True)
                 embed.add_field(name="\u200B", value="\u200B")  # newline
                 embed.add_field(name="\u200B", value="\u200B")  # newline
             embed.add_field(name=f"Choice                                                                                   |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
             await message.channel.send(embed=embed)
 
     # Discord commands for closed votes
-    if message.content.lower() == (".snapshot closed") and message.channel.id == 1085860941935153203:
+    if message.content.lower() == (".snapshot closed"):
         result = await snapshotClosedQuery("echelonassembly.eth")
 
         if result['proposals'] == []:
@@ -534,6 +548,9 @@ async def on_message(message):
             joined = '\n'.join([str(choice) for choice in choices])
 
             embed=discord.Embed(title=f"Closed community vote {i + 1} of 3")
+            embed.add_field(name="Direct link to vote:", value="[snapshot.org](https://snapshot.org/#/echelonassembly.eth/proposal/{})".format(result['proposals'][i]['id']), inline=True)
+            embed.add_field(name="\u200B", value="\u200B")  # newline
+            embed.add_field(name="\u200B", value="\u200B")  # newline
             embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
             embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
             embed.add_field(name="\u200B", value="\u200B")  # newline
@@ -561,6 +578,9 @@ async def on_message(message):
             joined = '\n'.join([str(choice) for choice in choices])
 
             embed=discord.Embed(title=f"Closed emissary vote {i + 1} of 3")
+            embed.add_field(name="Direct link to vote:", value="[snapshot.org](https://snapshot.org/#/echelon.eth/proposal/{})".format(result['proposals'][i]['id']), inline=True)
+            embed.add_field(name="\u200B", value="\u200B")  # newline
+            embed.add_field(name="\u200B", value="\u200B")  # newline
             embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
             embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
             embed.add_field(name="\u200B", value="\u200B")  # newline
