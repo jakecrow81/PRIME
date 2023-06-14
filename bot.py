@@ -15,7 +15,9 @@ import aiohttp
 import matplotlib.pyplot as plt
 from alchemy import *
 from gqlQueries import *
-from contractCalls import *
+from dbUpdate import *
+from fetchFromDb import *
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 #pandas init
 pd.set_option("styler.format.thousands", ",")
@@ -71,55 +73,7 @@ async def on_message(message):
 
     #Daily emissions
     if message.content.lower() == '.prime daily' and message.channel.id != 1085860941935153203:
-        ctx = await message.channel.send("`Processing, please be patient.`")
-        MP, mpcount = MPcall()
-        CDtotalCached, CD = CDcall()
-        coreTotalCached, core = Corecall()
-        PKtotalCached, PK, totalpkprime, totalpkprimeemitted, dayspassedpercentage, pkprimeleft, pkpercentageleft = PKcall()
-        PD1cbtotalCached, PD1cb = PD1cbcall()
-        PD2cbtotalCached, PD2cb = PD2cbcall()
-        PD3cbtotalCached, PD3cb = PD3cbcall()
-        PD4cbtotalCached, PD4cb = PD4cbcall()
-        PD5cbtotalCached, PD5cb = PD5cbcall()
-        PD6cbtotalCached, PD6cb = PD6cbcall()
-        PS15cbtotalCached, PS15cb = PS15cbcall()
-        PD1setotalCached, PD1se = PD1secall()
-        PD2setotalCached, PD2se = PD2secall()
-        PD3setotalCached, PD3se = PD3secall()
-        PD4setotalCached, PD4se = PD4secall()
-        PD5setotalCached, PD5se = PD5secall()
-        PD6setotalCached, PD6se = PD6secall()
-        PS15setotalCached, PS15se = PS15secall()
-        PD2pltotalCached, PD2pl = PD2plcall()
-        PD3pltotalCached, PD3pl = PD3plcall()
-        PD5pltotalCached, PD5pl = PD5plcall()
-        PD6pltotalCached, PD6pl = PD6plcall()
-        PD1totalCached, PD1 = PD1call()
-        PD2totalCached, PD2 = PD2call()
-        PD3totalCached, PD3 = PD3call()
-        PD4totalCached, PD4 = PD4call()
-        PD5totalCached, PD5 = PD5call()
-        PD6totalCached, PD6 = PD6call()
-        PS15totalCached, PS15 = PS15call()
-        PD1arttotalCached, PD1art = PD1artcall()
-        PD2arttotalCached, PD2art = PD2artcall()
-        PD3arttotalCached, PD3art = PD3artcall()
-        PD4arttotalCached, PD4art = PD4artcall()
-        PD5arttotalCached, PD5art = PD5artcall()
-        PD6arttotalCached, PD6art = PD6artcall()
-        PS15arttotalCached, PS15art = PS15artcall()
-        totalMp = mpcount * MP
-        totalCd = CDtotalCached * CD
-        totalCore = coreTotalCached * core
-        totalPk = PKtotalCached * PK
-        totalCb = (PD1cbtotalCached * PD1cb) + (PD2cbtotalCached * PD2cb) + (PD3cbtotalCached * PD3cb) + (PD4cbtotalCached * PD4cb) + (PD5cbtotalCached * PD5cb) + (PD6cbtotalCached * PD6cb) + (PS15cbtotalCached * PS15cb)
-        totalSe = (PD1setotalCached * PD1se) + (PD2setotalCached * PD2se) + (PD3setotalCached * PD3se) + (PD4setotalCached * PD4se) + (PD5setotalCached * PD5se) + (PD6setotalCached * PD6se) + (PS15setotalCached * PS15se)
-        totalPl = (PD2pltotalCached * PD2pl) + (PD3pltotalCached * PD3pl) + (PD5pltotalCached * PD5pl) + (PD6pltotalCached * PD6pl)
-        totalFe = (PD1totalCached * PD1) + (PD2totalCached * PD2) + (PD3totalCached * PD3) + (PD4totalCached * PD4) + (PD5totalCached * PD5) + (PD6totalCached * PD6) + (PS15totalCached * PS15)
-        totalArt = (PD1arttotalCached * PD1art) + (PD2arttotalCached * PD2art) + (PD3arttotalCached * PD3art) + (PD4arttotalCached * PD4art) + (PD5arttotalCached * PD5art) + (PD6arttotalCached * PD6art) + (PS15arttotalCached * PS15art)
-        dailyEmit = round(totalMp + totalCd + totalCore + totalPk + totalCb + totalSe + totalPl + totalFe + totalArt, 2)
-        await message.channel.send(f"``Daily emissions for all sets and assets: {dailyEmit:,}``")
-        await ctx.delete()
+        await message.channel.send(f"``Daily emissions for all sets and assets: 42,695``") #This was derived from all contracts, but the number is static for now.
 
     #prime overview, embed
     if message.content.lower() == '.prime' and message.channel.id != 1085860941935153203:
@@ -142,8 +96,6 @@ async def on_message(message):
         percentSunk = round(totalsink / (claimTotal + launchPartners) * 100, 2)
         dailyEmit = 42695
         embed=discord.Embed(title="Overview of Prime", color=0xDEF141)
-        #embed.set_author(name="Jake", url="https://echelon.io", icon_url="https://cdn.discordapp.com/emojis/935663412023812156.png")
-        #embed.set_thumbnail(url="https://cdn.discordapp.com/emojis/935663412023812156.png")
         embed.add_field(name="Prime Events", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(currentPeClaim, int(primeEventClaimTotal), round((primeEventClaimTotal / currentPeClaim) * 100, 2)), inline=False)
         embed.add_field(name="Prime Keys", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(totalpkprimeemitted), int(primeKeyClaimTotal), round((primeKeyClaimTotal / totalpkprimeemitted) * 100, 2)), inline=False)
         embed.add_field(name="Prime Sets", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(currentSetCachingEmitted), int(primeSetClaimTotal), round((primeSetClaimTotal / currentSetCachingEmitted) * 100, 2)), inline=False)
@@ -156,16 +108,16 @@ async def on_message(message):
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
         await ctx.delete()
-        
+
     #Block for ALL Cornerstone assets, returns a line for each set with emissions only
     if message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core' and message.channel.id != 1085860941935153203:
-        MP, mpcount = MPcall()
-        CDtotalCached, CD = CDcall()
-        coreTotalCached, core = Corecall()
+        result = getSetData(["cd", "mp", "core"])
+        mpcacheurl = "https://api.opensea.io/api/v1/collections?asset_owner=0x89Bb49d06610B4b18e355504551809Be5177f3D0&format=json&limit=300&offset=0"
+        mpresp = requests.get(mpcacheurl).json()
         embed=discord.Embed(title="CD/MP/Core cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="The Core", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(coreTotalCached, round(core, 3)), inline=False)
-        embed.add_field(name="Catalyst Drive", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(CDtotalCached, round(CD, 3)), inline=False)
-        embed.add_field(name="Masterpiece", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(mpcount, round(MP, 3)), inline=False)
+        embed.add_field(name="Catalyst Drive", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(result[0][1], result[0][2]), inline=False)
+        embed.add_field(name="Masterpiece", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(mpresp[0]['owned_asset_count'], result[1][2]), inline=False)
+        embed.add_field(name="The Core", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(result[2][1], result[2][2]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
@@ -193,9 +145,6 @@ async def on_message(message):
     if message.content.lower() == '.prime payload' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
-        #await message.channel.send(f"`Payload Prime - {payloadTotal:,}`")
-        #await message.channel.send(f"`Total Payload hits - {len(payloadHits):,}`")
-        #await message.channel.send(f"`Unique wallets used - {len(payloadUnique):,}`")
         embed=discord.Embed(title="Overview of Payload", color=0xDEF141)
         embed.add_field(name="Payload Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(payloadTotal), inline=False)
         embed.add_field(name="Total Payload hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(payloadHits)), inline=False)
@@ -254,147 +203,117 @@ async def on_message(message):
 
     #PK block
     if message.content.lower() == '.prime pk' and message.channel.id != 1085860941935153203:
-        PKtotalCached, PK, totalpkprime, totalpkprimeemitted, dayspassedpercentage, pkprimeleft, pkpercentageleft = PKcall()
+        #PKtotalCached, PK, totalpkprime, totalpkprimeemitted, dayspassedpercentage, pkprimeleft, pkpercentageleft = PKcall()
+        result = await getSetData("pk")
+        cachestartdate = date(2022, 7, 18)
+        currentdate = date.today()
+        dayspassed = currentdate - cachestartdate
+        totalpkprime = 12222222
+        if dayspassed.days < 365:
+            dayspassedpercentage = float(dayspassed.days / 365)
+        else:
+            dayspassedpercentage = 1
+        totalpkprimeemitted = round((totalpkprime * dayspassedpercentage), 1)
+        pkprimeleft = round((totalpkprime - totalpkprimeemitted), 1)
+        pkpercentageleft = 100 - (round((dayspassedpercentage * 100), 1))
         embed=discord.Embed(title="PK overview", color=0xDEF141)
-        embed.add_field(name="Cached    |    Daily emissions", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PKtotalCached, round(PK, 3)), inline=False)
+        embed.add_field(name="Cached    |    Daily emissions", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(result[0][1], result[0][2]), inline=False)
         embed.add_field(name="Total Prime in PK pool", value="```ansi\n\u001b[0;32m{:,}```".format(totalpkprime), inline=False)
         embed.add_field(name="Prime emitted to date", value="```ansi\n\u001b[0;32m{:,}  |  {}% ```".format(int(totalpkprimeemitted), round((dayspassedpercentage * 100), 1)), inline=False)
         embed.add_field(name="Prime left in pool", value="```ansi\n\u001b[0;32m{:,}  |  {:.2f}%```".format(int(pkprimeleft), pkpercentageleft), inline=False)
-        embed.add_field(name="Prime per PK (at currently cached #)", value="```ansi\n\u001b[0;32m{:,}```".format(int(pkprimeleft / PKtotalCached)), inline=False)
+        embed.add_field(name="Prime per PK (at currently cached #)", value="```ansi\n\u001b[0;32m{:,}```".format(int(pkprimeleft / result[0][1])), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
     #Block for ALL CB sets, returns a line for each set with emissions only
     if message.content.lower() == '.prime cb' and message.channel.id != 1085860941935153203:
-        setInfo = await contractData("0xECa9D81a4dC7119A40481CFF4e7E24DD0aaF56bD", ["16", "4", "7", "11", "19", "25", "30"])
+        cbResults = await getSetData(["16", "4", "7", "11", "19", "25", "30"])
         embed=discord.Embed(title="CB sets cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[0]['totalSupply']), int(setInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
-        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[1]['totalSupply']), int(setInfo[1]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
-        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[2]['totalSupply']), int(setInfo[2]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
-        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[3]['totalSupply']), int(setInfo[3]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
-        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[4]['totalSupply']), int(setInfo[4]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
-        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[5]['totalSupply']), int(setInfo[5]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
-        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[6]['totalSupply']), int(setInfo[6]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
+        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[0][1], cbResults[0][2]), inline=False)
+        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[1][1], cbResults[1][2]), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[2][1], cbResults[2][2]), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[3][1], cbResults[3][2]), inline=False)
+        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[4][1], cbResults[4][2]), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[5][1], cbResults[5][2]), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[6][1], cbResults[6][2]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
     #Block for ALL SE sets, returns a line for each set with emissions only
     if message.content.lower() == '.prime se' and message.channel.id != 1085860941935153203:
-        setInfo = await contractData("0xECa9D81a4dC7119A40481CFF4e7E24DD0aaF56bD", ["17", "5", "9", "13", "21", "23", "28"])
+        seResults = await getSetData(["17", "5", "9", "13", "21", "23", "28"])
         embed=discord.Embed(title="SE sets cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[0]['totalSupply']), int(setInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
-        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[1]['totalSupply']), int(setInfo[1]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
-        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[2]['totalSupply']), int(setInfo[2]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
-        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[3]['totalSupply']), int(setInfo[3]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
-        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[4]['totalSupply']), int(setInfo[4]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
-        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[5]['totalSupply']), int(setInfo[5]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
-        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(int(setInfo[6]['totalSupply']), int(setInfo[6]['calcData']['sharePrimePerDay']) / 1000000000000000000), inline=False)
+        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[0][1], seResults[0][2]), inline=False)
+        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[1][1], seResults[1][2]), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[2][1], seResults[2][2]), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[3][1], seResults[3][2]), inline=False)
+        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[4][1], seResults[4][2]), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[5][1], seResults[5][2]), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[6][1], seResults[6][2]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
     #Block for ALL PL sets, returns a line for each set with emissions only
     if message.content.lower() == '.prime pl' and message.channel.id != 1085860941935153203:
-        PD2pltotalCached, PD2pl = PD2plcall()
-        PD3pltotalCached, PD3pl = PD3plcall()
-        PD5pltotalCached, PD5pl = PD5plcall()
-        PD6pltotalCached, PD6pl = PD6plcall()
+        plResults = await getSetData(["8", "12", "24", "29"])
         embed=discord.Embed(title="PL sets cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2pltotalCached, round(PD2pl, 3)), inline=False)
-        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3pltotalCached, round(PD3pl, 3)), inline=False)
-        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5pltotalCached, round(PD5pl, 3)), inline=False)
-        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD6pltotalCached, round(PD6pl, 3)), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(plResults[0][1], plResults[0][2]), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(plResults[1][1], plResults[1][2]), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(plResults[2][1], plResults[2][2]), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(plResults[3][1], plResults[3][2]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
     #Block for ALL FE sets, returns a line for each set with emissions only
     if message.content.lower() == '.prime fe' and message.channel.id != 1085860941935153203:
-        PD1totalCached, PD1 = PD1call()
-        PD2totalCached, PD2 = PD2call()
-        PD3totalCached, PD3 = PD3call()
-        PD4totalCached, PD4 = PD4call()
-        PD5totalCached, PD5 = PD5call()
-        PD6totalCached, PD6 = PD6call()
-        PS15totalCached, PS15 = PS15call()
+        feResults = await getSetData(["14", "2", "0", "1", "20", "22", "27"])
         embed=discord.Embed(title="FE sets cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15totalCached, round(PS15, 3)), inline=False)
-        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD1totalCached, round(PD1, 3)), inline=False)
-        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2totalCached, round(PD2, 3)), inline=False)
-        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3totalCached, round(PD3, 3)), inline=False)
-        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD4totalCached, round(PD4, 3)), inline=False)
-        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5totalCached, round(PD5, 3)), inline=False)
-        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD6totalCached, round(PD6, 3)), inline=False)
+        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(feResults[0][1], feResults[0][2]), inline=False)
+        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(feResults[1][1], feResults[1][2]), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(feResults[2][1], feResults[2][2]), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(feResults[3][1], feResults[3][2]), inline=False)
+        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(feResults[4][1], feResults[4][2]), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(feResults[5][1], feResults[5][2]), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(feResults[6][1], feResults[6][2]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
     #Block for ALL Art sets, returns a line for each set with emissions only
     if message.content.lower() == '.prime art' or message.content.lower() == '.prime ac' and message.channel.id != 1085860941935153203:
-        PD1arttotalCached, PD1art = PD1artcall()
-        PD2arttotalCached, PD2art = PD2artcall()
-        PD3arttotalCached, PD3art = PD3artcall()
-        PD4arttotalCached, PD4art = PD4artcall()
-        PD5arttotalCached, PD5art = PD5artcall()
-        PD6arttotalCached, PD6art = PD6artcall()
-        PS15arttotalCached, PS15art = PS15artcall()
+        acResults = await getSetData(["15", "3", "6", "10", "18", "26", "31"])
         embed=discord.Embed(title="Art sets cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PS15arttotalCached, round(PS15art, 3)), inline=False)
-        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD1arttotalCached, round(PD1art, 3)), inline=False)
-        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD2arttotalCached, round(PD2art, 3)), inline=False)
-        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD3arttotalCached, round(PD3art, 3)), inline=False)
-        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD4arttotalCached, round(PD4art, 3)), inline=False)
-        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD5arttotalCached, round(PD5art, 3)), inline=False)
-        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(PD6arttotalCached, round(PD6art, 3)), inline=False)
+        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(acResults[0][1], acResults[0][2]), inline=False)
+        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(acResults[1][1], acResults[1][2]), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(acResults[2][1], acResults[2][2]), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(acResults[3][1], acResults[3][2]), inline=False)
+        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(acResults[4][1], acResults[4][2]), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(acResults[5][1], acResults[5][2]), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(acResults[6][1], acResults[6][2]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
     #sets block, outputs an image via pandas
     if message.content == (".prime sets") and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
-        PD1cbtotalCached, PD1cb = PD1cbcall()
-        PD2cbtotalCached, PD2cb = PD2cbcall()
-        PD3cbtotalCached, PD3cb = PD3cbcall()
-        PD4cbtotalCached, PD4cb = PD4cbcall()
-        PD5cbtotalCached, PD5cb = PD5cbcall()
-        PD6cbtotalCached, PD6cb = PD6cbcall()
-        PS15cbtotalCached, PS15cb = PS15cbcall()
-        PD1setotalCached, PD1se = PD1secall()
-        PD2setotalCached, PD2se = PD2secall()
-        PD3setotalCached, PD3se = PD3secall()
-        PD4setotalCached, PD4se = PD4secall()
-        PD5setotalCached, PD5se = PD5secall()
-        PD6setotalCached, PD6se = PD6secall()
-        PS15setotalCached, PS15se = PS15secall()
-        PD2pltotalCached, PD2pl = PD2plcall()
-        PD3pltotalCached, PD3pl = PD3plcall()
-        PD5pltotalCached, PD5pl = PD5plcall()
-        PD6pltotalCached, PD6pl = PD6plcall()
-        PD1totalCached, PD1 = PD1call()
-        PD2totalCached, PD2 = PD2call()
-        PD3totalCached, PD3 = PD3call()
-        PD4totalCached, PD4 = PD4call()
-        PD5totalCached, PD5 = PD5call()
-        PD6totalCached, PD6 = PD6call()
-        PS15totalCached, PS15 = PS15call()
-        PD1arttotalCached, PD1art = PD1artcall()
-        PD2arttotalCached, PD2art = PD2artcall()
-        PD3arttotalCached, PD3art = PD3artcall()
-        PD4arttotalCached, PD4art = PD4artcall()
-        PD5arttotalCached, PD5art = PD5artcall()
-        PD6arttotalCached, PD6art = PD6artcall()
-        PS15arttotalCached, PS15art = PS15artcall()
-        FeTotal = PS15totalCached + PD1totalCached + PD2totalCached + PD3totalCached + PD4totalCached + PD5totalCached + PD6totalCached
-        SeTotal = PS15setotalCached + PD1setotalCached + PD2setotalCached + PD3setotalCached + PD4setotalCached + PD5setotalCached + PD6setotalCached
-        CbTotal = PS15cbtotalCached + PD1cbtotalCached + PD2cbtotalCached + PD3cbtotalCached + PD4cbtotalCached + PD5cbtotalCached + PD6cbtotalCached
-        PlTotal = PD2pltotalCached + PD3pltotalCached + PD5pltotalCached + PD6pltotalCached
-        AcTotal = PS15arttotalCached + PD1arttotalCached + PD2arttotalCached + PD3arttotalCached + PD4arttotalCached + PD5arttotalCached + PD6arttotalCached
+        cbResults = await getSetData(["16", "4", "7", "11", "19", "25", "30"])
+        seResults = await getSetData(["17", "5", "9", "13", "21", "23", "28"])
+        plResults = await getSetData(["8", "12", "24", "29"])
+        feResults = await getSetData(["14", "2", "0", "1", "20", "22", "27"])
+        acResults = await getSetData(["15", "3", "6", "10", "18", "26", "31"])
+        FeTotal = feResults[0][1] + feResults[1][1] + feResults[2][1] + feResults[3][1] + feResults[4][1] + feResults[5][1] + feResults[6][1]
+        SeTotal = seResults[0][1] + seResults[1][1] + seResults[2][1] + seResults[3][1] + seResults[4][1] + seResults[5][1] + seResults[6][1]
+        CbTotal = cbResults[0][1] + cbResults[1][1] + cbResults[2][1] + cbResults[3][1] + cbResults[4][1] + cbResults[5][1] + cbResults[6][1]
+        PlTotal = plResults[0][1] + plResults[1][1] + plResults[2][1] + plResults[3][1]
+        AcTotal = acResults[0][1] + acResults[1][1] + acResults[2][1] + acResults[3][1] + acResults[4][1] + acResults[5][1] + acResults[6][1]
         #overallTotal = FeTotal + SeTotal + CbTotal + PlTotal + AcTotal
-        
-        df2 = pd.DataFrame(np.array([[PS15totalCached, PS15setotalCached, 0, PS15cbtotalCached, PS15arttotalCached],
-        [PD1totalCached, PD1setotalCached, 0, PD1cbtotalCached, PD1arttotalCached],
-        [PD2totalCached, PD2setotalCached, PD2pltotalCached, PD2cbtotalCached, PD2arttotalCached],
-        [PD3totalCached, PD3setotalCached, PD3pltotalCached, PD3cbtotalCached, PD3arttotalCached],
-        [PD4totalCached, PD4setotalCached, 0, PD4cbtotalCached, PD4arttotalCached],
-        [PD5totalCached, PD5setotalCached, PD5pltotalCached, PD5cbtotalCached, PD5arttotalCached],
-        [PD6totalCached, PD6setotalCached, PD6pltotalCached, PD6cbtotalCached, PD6arttotalCached],
+
+        df2 = pd.DataFrame(np.array([[feResults[0][1], seResults[0][1], 0, cbResults[0][1], acResults[0][1]],
+        [feResults[1][1], seResults[1][1], 0, cbResults[1][1], acResults[1][1]],
+        [feResults[2][1], seResults[2][1], plResults[0][1], cbResults[2][1], acResults[2][1]],
+        [feResults[3][1], seResults[3][1], plResults[1][1], cbResults[3][1], acResults[3][1]],
+        [feResults[4][1], seResults[4][1], 0, cbResults[4][1], acResults[4][1]],
+        [feResults[5][1], seResults[5][1], plResults[2][1], cbResults[5][1], acResults[5][1]],
+        [feResults[6][1], seResults[6][1], plResults[3][1], cbResults[6][1], acResults[6][1]],
         [FeTotal, SeTotal, PlTotal, CbTotal, AcTotal]]),
         columns=['FE', 'SE', 'PL', 'CB', 'ART'])
         df2.index =['PS15', 'PD1', 'PD2', 'PD3', 'PD4', 'PD5', 'PD6', 'Totals']
@@ -418,7 +337,7 @@ async def on_message(message):
         {
             'selector': 'tbody tr:nth-child(odd)',
             'props': [('background-color', '#262815'), ('border', '1px solid #ADB550'), ('font-size', '20px')]
-        }        
+        }
         ])
 
         dfi.export(df2_styled, 'df2_styled.png')
@@ -589,7 +508,21 @@ async def on_message(message):
 
     #gm block
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm' and message.channel.id != 1085860941935153203:
-        await message.reply(f'`gm {nick}!`  <a:Prime_Bounce:1075839184738193480>', mention_author=False)
+        await message.reply(f'`gm {nick}!`  <a:PrimeBounce:1106262620484415528>', mention_author=False)
 
+@client.event
+async def on_ready():
+    print('Successfully connected. Bot is ready!')
 
-client.run(TOKEN)
+async def main():
+    try:
+        sched = AsyncIOScheduler()
+        sched.add_job(cachingDbUpdate, 'interval', seconds=15) #task function to add and how often to run it
+        sched.start() #start scheduled tasks
+        discord.utils.setup_logging(root = False) #turn on logging so we see connect success and heartbeat messages
+        await client.start(TOKEN) #async discord init
+    except asyncio.CancelledError:
+        print("asyncIo cancelled, most likely due to keyboard interrupt. Program terminated.")
+
+if __name__ == "__main__":
+        asyncio.run(main())
