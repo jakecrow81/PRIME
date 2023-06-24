@@ -112,11 +112,10 @@ async def on_message(message):
     #Block for ALL Cornerstone assets, returns a line for each set with emissions only
     if message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core' and message.channel.id != 1085860941935153203:
         result = await getSetData(["cd", "mp", "core"])
-        mpcacheurl = "https://api.opensea.io/api/v1/collections?asset_owner=0x89Bb49d06610B4b18e355504551809Be5177f3D0&format=json&limit=300&offset=0"
-        mpresp = requests.get(mpcacheurl).json()
+        mpCount = primeMpCached()
         embed=discord.Embed(title="CD/MP/Core cached  |  daily emissions", color=0xDEF141)
         embed.add_field(name="Catalyst Drive", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(result[0][1], result[0][2]), inline=False)
-        embed.add_field(name="Masterpiece", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(mpresp[0]['owned_asset_count'], result[1][2]), inline=False)
+        embed.add_field(name="Masterpiece", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(mpCount, result[1][2]), inline=False)
         embed.add_field(name="The Core", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(result[2][1], result[2][2]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)

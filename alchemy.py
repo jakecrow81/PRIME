@@ -4,6 +4,7 @@ import os
 
 load_dotenv()
 alchemyurl = os.getenv('ALCHEMY_API')
+alchemyApiKey = os.getenv('ALCHEMY_API_KEY_ONLY')
 
 #pd6 faucet
 def faucet():
@@ -482,3 +483,8 @@ def primeMPClaim():
         payload["params"][0]["pageKey"] = response["result"]["pageKey"]
     currenttotal = currenttotal + total
     return currenttotal
+
+#cached MP count
+def primeMpCached():
+    response = requests.get(f'https://eth-mainnet.g.alchemy.com/nft/v2/{alchemyApiKey}/getNFTs?owner=0x89Bb49d06610B4b18e355504551809Be5177f3D0&contractAddresses\[\]=0x76be3b62873462d2142405439777e971754e8e77&withMetadata=true&pageSize=100').json()
+    return response['totalCount']
