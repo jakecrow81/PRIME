@@ -111,7 +111,7 @@ async def on_message(message):
 
     #Block for ALL Cornerstone assets, returns a line for each set with emissions only
     if message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core' and message.channel.id != 1085860941935153203:
-        result = getSetData(["cd", "mp", "core"])
+        result = await getSetData(["cd", "mp", "core"])
         mpcacheurl = "https://api.opensea.io/api/v1/collections?asset_owner=0x89Bb49d06610B4b18e355504551809Be5177f3D0&format=json&limit=300&offset=0"
         mpresp = requests.get(mpcacheurl).json()
         embed=discord.Embed(title="CD/MP/Core cached  |  daily emissions", color=0xDEF141)
