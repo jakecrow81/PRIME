@@ -509,6 +509,49 @@ async def on_message(message):
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm' and message.channel.id != 1085860941935153203:
         await message.reply(f'`gm {nick}!`  <a:PrimeBounce:1106262620484415528>', mention_author=False)
 
+    #avatar, manifest and sinks
+    if message.content.lower().startswith('.prime avatar') and message.channel.id != 1085860941935153203:
+
+        #alchemy queries to get initial lists of data
+        erc20 = peekErc20()
+        erc721 = erc721Txn()
+        erc721MintList = erc721Mint()
+
+        #variables to use later, start at 0 and count up
+        peekPrime = 0
+        avatarMintPrime = 0
+
+        #loop to get data we need, modifies starting variables
+        for i in range(len(erc20)):
+            peekHashFound = False
+            mintHashFound = False
+            for k in range(len(erc721)):
+                if erc20[i]['hash'] == erc721[k]['hash']:
+                    peekHashFound = True
+                    break
+            if peekHashFound == False:
+                peekPrime = peekPrime + erc20[i]['value']
+            for k in range(len(erc721MintList)):
+                if erc20[i]['hash'] == erc721MintList[k]['hash']:
+                    mintHashFound = True
+                    break
+            if mintHashFound == True:
+                avatarMintPrime = avatarMintPrime + erc20[i]['value']
+
+        embed=discord.Embed(title=f"Avatar overview", color=0xDEF141)
+        embed.add_field(name="Avatars manifested", value="```ansi\n\u001b[0;32m{:,}```".format(int(avatarMintPrime / 11), inline=False))
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="Avatars peeked", value="```ansi\n\u001b[0;32m{:,}```".format(int(peekPrime / 11), inline=False))
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="Prime spent on peeks", value="```ansi\n\u001b[0;32m{:,}```".format(peekPrime, inline=False))
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="Percentage of avatars peeked", value="```ansi\n\u001b[0;32m{:.3}%```".format((int(peekPrime / 11) / int(avatarMintPrime / 11)) * 100, inline=False))
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
+
 @client.event
 async def on_ready():
     print('Successfully connected. Bot is ready!')

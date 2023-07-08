@@ -488,3 +488,99 @@ def primeMPClaim():
 def primeMpCached():
     response = requests.get(f'https://eth-mainnet.g.alchemy.com/nft/v2/{alchemyApiKey}/getNFTs?owner=0x89Bb49d06610B4b18e355504551809Be5177f3D0&contractAddresses\[\]=0x76be3b62873462d2142405439777e971754e8e77&withMetadata=true&pageSize=100').json()
     return response['totalCount']
+
+def peekErc20():
+    jsonpayload = {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "alchemy_getAssetTransfers",
+    "params": [
+        {
+            "fromBlock": "0x0",
+            "toBlock": "latest",
+            "category": ["erc20"],
+            "toAddress": "0xd27c9f7Bf5ca9283D41E0a2f6E992525673623Fd",
+            "contractAddresses": ["0xb23d80f5FefcDDaa212212F028021B41DEd428CF"],
+            "withMetadata": False,
+            "excludeZeroValue": True,
+            "maxCount": "0x3e8"
+        }
+    ]
+    }
+    headers = {
+    "accept": "application/json",
+    "content-type": "application/json"
+    }
+
+    erc20Peek = []
+    while True:
+        response = requests.post(alchemyurl, json=jsonpayload, headers=headers).json()
+        for i in range(len(response['result']['transfers'])):
+            erc20Peek.append(response['result']['transfers'][i])
+        if not 'pageKey' in response["result"]:
+            break
+        jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    return erc20Peek
+
+def erc721Txn():
+    jsonpayload = {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "alchemy_getAssetTransfers",
+    "params": [
+        {
+            "fromBlock": "0x0",
+            "toBlock": "latest",
+            "contractAddresses": ["0x0Fc3DD8C37880a297166BEd57759974A157f0E74"],
+            "category": ["erc721"],
+            "withMetadata": False,
+            "excludeZeroValue": True,
+            "maxCount": "0x3e8"
+        }
+    ]
+    }
+    headers = {
+    "accept": "application/json",
+    "content-type": "application/json"
+    }
+    erc721TxnList = []
+    while True:
+        response = requests.post(alchemyurl, json=jsonpayload, headers=headers).json()
+        for i in range(len(response['result']['transfers'])):
+            erc721TxnList.append(response['result']['transfers'][i])
+        if not 'pageKey' in response["result"]:
+            break
+        jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    return erc721TxnList
+
+def erc721Mint():
+    jsonpayload = {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "alchemy_getAssetTransfers",
+    "params": [
+        {
+            "fromBlock": "0x10D1FD2",
+            "toBlock": "latest",
+            "contractAddresses": ["0x0Fc3DD8C37880a297166BEd57759974A157f0E74"],
+            "category": ["erc721"],
+            "withMetadata": False,
+            "excludeZeroValue": True,
+            "maxCount": "0x3e8",
+            "fromAddress": "0x0000000000000000000000000000000000000000"
+        }
+    ]
+    }
+    headers = {
+    "accept": "application/json",
+    "content-type": "application/json"
+    }
+    erc721MintList = []
+    while True:
+        response = requests.post(alchemyurl, json=jsonpayload, headers=headers).json()
+        for i in range(len(response['result']['transfers'])):
+            erc721MintList.append(response['result']['transfers'][i])
+        if not 'pageKey' in response["result"]:
+            break
+        jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    return erc721MintList
