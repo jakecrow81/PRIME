@@ -31,6 +31,39 @@ intents = discord.Intents.all()
 activity = discord.Activity(type=discord.ActivityType.watching, name="Prime data")
 client = discord.Client(intents=intents, activity=activity)
 
+def avatarCall():
+    #alchemy queries to get initial lists of data
+    erc20 = peekErc20()
+    erc721 = erc721Txn()
+    erc721MintList = erc721Mint()
+
+    #variables to use later, start at 0 and count up
+    peekPrime = 0
+    avatarMintPrime = 0
+
+    #loop to get data we need, modifies starting variables
+    for i in range(len(erc20)):
+        peekHashFound = False
+        mintHashFound = False
+        for k in range(len(erc721)):
+            if erc20[i]['hash'] == erc721[k]['hash']:
+                peekHashFound = True
+                break
+        if peekHashFound == False:
+            peekPrime = peekPrime + erc20[i]['value']
+        for k in range(len(erc721MintList)):
+            if erc20[i]['hash'] == erc721MintList[k]['hash']:
+                mintHashFound = True
+                break
+        if mintHashFound == True:
+            avatarMintPrime = avatarMintPrime + erc20[i]['value']
+
+    #return variables
+    avatarsManifested = int(avatarMintPrime / 11)
+    avatarsPeeked = int(peekPrime / 11)
+    percentagePeeked = (int(peekPrime / 11) / int(avatarMintPrime / 11)) * 100
+    return avatarsManifested, avatarsPeeked, percentagePeeked, peekPrime
+
 #oldblock number function, takes input of N days and returns hex code for block number from N days ago
 def oldBlock(n):
     oldDate = datetime.now().replace(second=0, microsecond=0) - timedelta(days = n)
@@ -87,11 +120,12 @@ async def on_message(message):
         claimTotal = round(primeEventClaimTotal + primeKeyClaimTotal + primeSetClaimTotal + primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal, 3)
         currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted, launchPartners = emitCall()
         emitTotal = currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted
+        peekPrime = avatarCall()[3]
         payloadTotal = Payloadcall()[0]
         artigraphTotal = Artigraphcall()[0]
         terminalTotal = terminalCall()
         batteryTotal = batteryCall()
-        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal
+        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal + peekPrime
         circulating = claimTotal + launchPartners - totalsink
         percentSunk = round(totalsink / (claimTotal + launchPartners) * 100, 2)
         dailyEmit = 42695
@@ -123,17 +157,19 @@ async def on_message(message):
     #Call Sink functions and print simplified results for all + total
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
+        peekPrime = avatarCall()[3]
         payloadTotal = Payloadcall()[0]
         artigraphTotal = Artigraphcall()[0]
         terminalTotal = terminalCall()
         batteryTotal = batteryCall()
-        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal
-        sinkdistro = int((artigraphTotal * .89) + payloadTotal + terminalTotal + batteryTotal)
+        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal + peekPrime
+        sinkdistro = int((artigraphTotal * .89) + payloadTotal + terminalTotal + batteryTotal + peekPrime)
         embed=discord.Embed(title="Overview of Sinks", color=0xDEF141)
         embed.add_field(name="Payload", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(payloadTotal), inline=False)
         embed.add_field(name="Artigraph", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(artigraphTotal), inline=False)
         embed.add_field(name="Terminals", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(terminalTotal), inline=False)
         embed.add_field(name="Batteries", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(batteryTotal), inline=False)
+        embed.add_field(name="Avatar peeks", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(peekPrime), inline=False)
         embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(totalsink), inline=False)
         embed.add_field(name="Total Prime to sink schedule", value="```ansi\n\u001b[0;32m{:,}```".format(sinkdistro), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
@@ -511,46 +547,22 @@ async def on_message(message):
 
     #avatar, manifest and sinks
     if message.content.lower().startswith('.prime avatar') and message.channel.id != 1085860941935153203:
-
-        #alchemy queries to get initial lists of data
-        erc20 = peekErc20()
-        erc721 = erc721Txn()
-        erc721MintList = erc721Mint()
-
-        #variables to use later, start at 0 and count up
-        peekPrime = 0
-        avatarMintPrime = 0
-
-        #loop to get data we need, modifies starting variables
-        for i in range(len(erc20)):
-            peekHashFound = False
-            mintHashFound = False
-            for k in range(len(erc721)):
-                if erc20[i]['hash'] == erc721[k]['hash']:
-                    peekHashFound = True
-                    break
-            if peekHashFound == False:
-                peekPrime = peekPrime + erc20[i]['value']
-            for k in range(len(erc721MintList)):
-                if erc20[i]['hash'] == erc721MintList[k]['hash']:
-                    mintHashFound = True
-                    break
-            if mintHashFound == True:
-                avatarMintPrime = avatarMintPrime + erc20[i]['value']
-
+        ctx = await message.channel.send("`Processing, please be patient.`")
+        avatarsManifested, avatarsPeeked, percentagePeeked, peekPrime = avatarCall()
         embed=discord.Embed(title=f"Avatar overview", color=0xDEF141)
-        embed.add_field(name="Avatars manifested", value="```ansi\n\u001b[0;32m{:,}```".format(int(avatarMintPrime / 11), inline=False))
+        embed.add_field(name="Avatars manifested", value="```ansi\n\u001b[0;32m{:,}```".format(avatarsManifested, inline=False))
         embed.add_field(name="\u200B", value="\u200B")  # newline
         embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="Avatars peeked", value="```ansi\n\u001b[0;32m{:,}```".format(int(peekPrime / 11), inline=False))
+        embed.add_field(name="Avatars peeked", value="```ansi\n\u001b[0;32m{:,}```".format(avatarsPeeked, inline=False))
         embed.add_field(name="\u200B", value="\u200B")  # newline
         embed.add_field(name="\u200B", value="\u200B")  # newline
         embed.add_field(name="Prime spent on peeks", value="```ansi\n\u001b[0;32m{:,}```".format(peekPrime, inline=False))
         embed.add_field(name="\u200B", value="\u200B")  # newline
         embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="Percentage of avatars peeked", value="```ansi\n\u001b[0;32m{:.3}%```".format((int(peekPrime / 11) / int(avatarMintPrime / 11)) * 100, inline=False))
+        embed.add_field(name="Percentage of avatars peeked", value="```ansi\n\u001b[0;32m{:.3}%```".format(percentagePeeked, inline=False))
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
+        await ctx.delete()
 
 @client.event
 async def on_ready():
