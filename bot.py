@@ -61,7 +61,7 @@ def avatarCall():
     #return variables
     avatarsManifested = int(avatarMintPrime / 11)
     avatarsPeeked = int(peekPrime / 11)
-    percentagePeeked = (int(peekPrime / 11) / int(avatarMintPrime / 11)) * 100
+    percentagePeeked = (int(peekPrime / 11) / int(avatarMintPrime / 11 + 6371)) * 100
     return avatarsManifested, avatarsPeeked, percentagePeeked, peekPrime
 
 #oldblock number function, takes input of N days and returns hex code for block number from N days ago
