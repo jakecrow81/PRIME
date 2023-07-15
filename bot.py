@@ -402,7 +402,7 @@ async def on_message(message):
         await message.channel.send(embed=embed)
 
     #discord commands for open votes
-    if message.content.lower() == (".snapshot") and message.channel.id == 1085860941935153203:
+    if message.content.lower() == (".snapshot") and message.channel.id == 987187080096522262:
         result = await snapshotQuery("echelonassembly.eth")
 
         if result['proposals'] == []:
@@ -417,6 +417,8 @@ async def on_message(message):
 
             quorum = result['proposals'][i]['quorum']
 
+            quorumPercent = (totalScores / quorum) * 100
+
             choices = []
             for k in range(len(result['proposals'][i]['choices'])):
                 choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
@@ -430,11 +432,11 @@ async def on_message(message):
             embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
             embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
             embed.add_field(name="\u200B", value="\u200B")  # newline
-            if quorum > 0 and quorum < 100:
-                embed.add_field(name=f"Votes                       |       Needed votes         |     Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f}  |   {:<10,.0f}   |   {:6.2f}%```".format(totalScores, quorum, (totalScores / quorum) * 100), inline=True)
+            if quorumPercent > 0 and quorumPercent < 100:
+                embed.add_field(name=f"Votes                       |       Needed votes         |     Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f}  |   {:<10,.0f}   |   {:6.2f}%```".format(totalScores, quorum, quorumPercent), inline=True)
                 embed.add_field(name="\u200B", value="\u200B")  # newline
                 embed.add_field(name="\u200B", value="\u200B")  # newline
-            if quorum >= 100:
+            if quorumPercent >= 100:
                 embed.add_field(name=f"Votes                    |       Needed votes         |          Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f} |   {:<10,.0f}    |   Quorum met!```".format(totalScores, quorum), inline=True)
                 embed.add_field(name="\u200B", value="\u200B")  # newline
                 embed.add_field(name="\u200B", value="\u200B")  # newline
@@ -457,6 +459,8 @@ async def on_message(message):
 
             quorum = result['proposals'][i]['quorum']
 
+            quorumPercent = (totalScores / quorum) * 100
+
             choices = []
             for k in range(len(result['proposals'][i]['choices'])):
                 choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
@@ -470,11 +474,11 @@ async def on_message(message):
             embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
             embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
             embed.add_field(name="\u200B", value="\u200B")  # newline
-            if quorum > 0 and quorum < 100:
-                embed.add_field(name=f"Votes                       |       Needed votes         |     Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f}  |   {:<10,.0f}   |   {:6.2f}%```".format(totalScores, quorum, (totalScores / quorum) * 100), inline=True)
+            if quorumPercent > 0 and quorumPercent < 100:
+                embed.add_field(name=f"Votes                       |       Needed votes         |     Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f}  |   {:<10,.0f}   |   {:6.2f}%```".format(totalScores, quorum, quorumPercent), inline=True)
                 embed.add_field(name="\u200B", value="\u200B")  # newline
                 embed.add_field(name="\u200B", value="\u200B")  # newline
-            if quorum >= 100:
+            if quorumPercent >= 100:
                 embed.add_field(name=f"Votes                    |       Needed votes         |          Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f} |   {:<10,.0f}    |   Quorum met!```".format(totalScores, quorum), inline=True)
                 embed.add_field(name="\u200B", value="\u200B")  # newline
                 embed.add_field(name="\u200B", value="\u200B")  # newline
