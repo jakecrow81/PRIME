@@ -402,7 +402,7 @@ async def on_message(message):
         await message.channel.send(embed=embed)
 
     #discord commands for open votes
-    if message.content.lower() == (".snapshot") and message.channel.id == 987187080096522262:
+    if message.content.lower() == (".snapshot") and message.channel.id == 1085860941935153203:
         result = await snapshotQuery("echelonassembly.eth")
 
         if result['proposals'] == []:
