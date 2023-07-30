@@ -292,10 +292,10 @@ async def on_message(message):
     if message.content.lower() == '.prime pl' and message.channel.id != 1085860941935153203:
         plResults = await getSetData(["8", "12", "24", "29"])
         embed=discord.Embed(title="PL sets cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[0][1], plResults[0][2]), inline=False)
-        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[1][1], plResults[1][2]), inline=False)
-        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[2][1], plResults[2][2]), inline=False)
-        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[3][1], plResults[3][2]), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[0][1], 0), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[1][1], 0), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[2][1], 0), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[3][1], 0), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
