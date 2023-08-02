@@ -125,7 +125,8 @@ async def on_message(message):
         artigraphTotal = Artigraphcall()[0]
         terminalTotal = terminalCall()
         batteryTotal = batteryCall()
-        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal + peekPrime
+        glintPrime = glintSunk()
+        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal + peekPrime + glintPrime
         circulating = claimTotal + launchPartners - totalsink
         percentSunk = round(totalsink / (claimTotal + launchPartners) * 100, 2)
         investorEmit = 24718
@@ -143,17 +144,6 @@ async def on_message(message):
         await message.channel.send(embed=embed)
         await ctx.delete()
 
-    #Block for ALL Cornerstone assets, returns a line for each set with emissions only
-    if message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core' and message.channel.id != 1085860941935153203:
-        result = await getSetData(["cd", "mp", "core"])
-        mpCount = primeMpCached()
-        embed=discord.Embed(title="CD/MP/Core cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="Catalyst Drive", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(result[0][1], 0), inline=False)
-        embed.add_field(name="Masterpiece", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(mpCount, 0), inline=False)
-        embed.add_field(name="The Core", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(result[2][1], 0), inline=False)
-        embed.set_footer(text="Please note this is intended as an estimate only")
-        await message.channel.send(embed=embed)
-
     #Call Sink functions and print simplified results for all + total
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
@@ -162,13 +152,15 @@ async def on_message(message):
         artigraphTotal = Artigraphcall()[0]
         terminalTotal = terminalCall()
         batteryTotal = batteryCall()
-        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal + peekPrime
-        sinkdistro = int((artigraphTotal * .89) + payloadTotal + terminalTotal + batteryTotal + peekPrime)
+        glintPrime = glintSunk()
+        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal + peekPrime + glintPrime
+        sinkdistro = int((artigraphTotal * .89) + payloadTotal + terminalTotal + batteryTotal + peekPrime + glintPrime)
         embed=discord.Embed(title="Overview of Sinks", color=0xDEF141)
         embed.add_field(name="Payload", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(payloadTotal), inline=False)
         embed.add_field(name="Artigraph", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(artigraphTotal), inline=False)
         embed.add_field(name="Terminals", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(terminalTotal), inline=False)
         embed.add_field(name="Batteries", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(batteryTotal), inline=False)
+        embed.add_field(name="Glints", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(glintPrime), inline=False)
         embed.add_field(name="Avatar peeks", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(peekPrime), inline=False)
         embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(totalsink), inline=False)
         embed.add_field(name="Total Prime to sink schedule", value="```ansi\n\u001b[0;32m{:,}```".format(sinkdistro), inline=False)
@@ -185,6 +177,15 @@ async def on_message(message):
         embed.add_field(name="Total Payload hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(payloadHits)), inline=False)
         embed.add_field(name="Average Payload hit", value="```ansi\n\u001b[0;32m{:.2f}```".format(payloadTotal / len(payloadHits)), inline=False)
         embed.add_field(name="Unique wallets used", value="```ansi\n\u001b[0;32m{:,}```".format(len(payloadUnique)), inline=False)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
+        await ctx.delete()
+
+    if message.content.lower().startswith('.prime glint') and message.channel.id != 1085860941935153203:
+        ctx = await message.channel.send("`Processing, please be patient.`")
+        glintPrime = glintSunk()
+        embed=discord.Embed(title="Overview of Glints", color=0xDEF141)
+        embed.add_field(name="Prime directly sunk into glints", value="```ansi\n\u001b[0;32m{:,}```".format(glintPrime), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
         await ctx.delete()
@@ -233,6 +234,17 @@ async def on_message(message):
         embed.add_field(name="Total hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(artigraphHits), inline=True))
         embed.add_field(name="% of max hits", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((len(artigraphHits) / 6144 * 100)), inline=True)
         embed.add_field(name="% of max prime sunk", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((artigraphTotal / 2084520) * 100), inline=True)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
+
+    #Block for ALL Cornerstone assets, returns a line for each set with emissions only
+    if message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core' and message.channel.id != 1085860941935153203:
+        result = await getSetData(["cd", "mp", "core"])
+        mpCount = primeMpCached()
+        embed=discord.Embed(title="CD/MP/Core cached  |  daily emissions", color=0xDEF141)
+        embed.add_field(name="Catalyst Drive", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(result[0][1], 0), inline=False)
+        embed.add_field(name="Masterpiece", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(mpCount, 0), inline=False)
+        embed.add_field(name="The Core", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(result[2][1], 0), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 

@@ -584,3 +584,32 @@ def erc721Mint():
             break
         jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
     return erc721MintList
+
+def glintSunk():
+    payload = {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "alchemy_getAssetTransfers",
+    "params": [
+        {
+            "category": ["erc20"],
+            "toAddress": "0xC5dF220C88Ffcd97DA457D66839096F3B888A689",
+            "contractAddresses": ["0xb23d80f5FefcDDaa212212F028021B41DEd428CF"]
+        }
+    ]
+    }
+    headers = {
+        "accept": "application/json",
+        "content-type": "application/json"
+    }
+    primeSunk = 0
+    while True:
+        response = requests.post(alchemyurl, json=payload, headers=headers).json()
+        for i in range(len(response['result']['transfers'])):
+             #total = round(total + float(response["result"]["transfers"][i]["value"]), 3)
+             #primeSunk = primeSunk + response['result']['transfers'][i]['value']
+             primeSunk = round(primeSunk + float(response["result"]["transfers"][i]["value"]), 2)
+        if not 'pageKey' in response["result"]:
+                break
+        payload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    return int(primeSunk)
