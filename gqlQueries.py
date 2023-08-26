@@ -33,6 +33,7 @@ async def snapshotQuery(space):
                     scores_total
                     quorum
                     author
+                    votes
                 }
                 }
             """
@@ -65,6 +66,7 @@ async def snapshotClosedQuery(space):
                     scores
                     scores_total
                     author
+                    votes
                 }
                 }
             """

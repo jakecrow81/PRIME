@@ -98,7 +98,10 @@ def emitCall():
 async def on_message(message):
 
     #define user variables for replying/mentioning users later on
-    nick = (message.author.display_name)
+    if message.author == message.author.display_name:
+        nick = message.author.global_name
+    else:
+        nick = message.author.display_name
 
     # we do not want the bot to reply to itself
     if message.author == client.user:
@@ -431,6 +434,8 @@ async def on_message(message):
 
             quorumPercent = (totalScores / quorum) * 100
 
+            votes = result['proposals'][i]['votes']
+
             choices = []
             for k in range(len(result['proposals'][i]['choices'])):
                 choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
@@ -452,7 +457,8 @@ async def on_message(message):
                 embed.add_field(name=f"Votes                    |       Needed votes         |          Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f} |   {:<10,.0f}    |   Quorum met!```".format(totalScores, quorum), inline=True)
                 embed.add_field(name="\u200B", value="\u200B")  # newline
                 embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name=f"Choice                                                                                   |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
+            embed.add_field(name=f"Choice                                                                                   |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=False)
+            embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
             await message.channel.send(embed=embed)
 
     #open emissary votes
@@ -472,6 +478,8 @@ async def on_message(message):
             quorum = result['proposals'][i]['quorum']
 
             quorumPercent = (totalScores / quorum) * 100
+
+            votes = result['proposals'][i]['votes']
 
             choices = []
             for k in range(len(result['proposals'][i]['choices'])):
@@ -494,7 +502,8 @@ async def on_message(message):
                 embed.add_field(name=f"Votes                    |       Needed votes         |          Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f} |   {:<10,.0f}    |   Quorum met!```".format(totalScores, quorum), inline=True)
                 embed.add_field(name="\u200B", value="\u200B")  # newline
                 embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name=f"Choice                                                                                   |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
+            embed.add_field(name=f"Choice                                                                                   |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=False)
+            embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
             await message.channel.send(embed=embed)
 
     # Discord commands for closed votes
@@ -511,6 +520,8 @@ async def on_message(message):
 
             totalScores = result['proposals'][i]['scores_total']
 
+            votes = result['proposals'][i]['votes']
+
             choices = []
             for k in range(len(result['proposals'][i]['choices'])):
                 choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
@@ -524,7 +535,8 @@ async def on_message(message):
             embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
             embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
             embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name=f"Choice                                                                                  |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
+            embed.add_field(name=f"Choice                                                                                  |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=False)
+            embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
             await message.channel.send(embed=embed)
 
     #closed emissary votes
@@ -541,6 +553,8 @@ async def on_message(message):
 
             totalScores = result['proposals'][i]['scores_total']
 
+            votes = result['proposals'][i]['votes']
+
             choices = []
             for k in range(len(result['proposals'][i]['choices'])):
                 choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
@@ -554,7 +568,8 @@ async def on_message(message):
             embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
             embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
             embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name=f"Choice                                                                                  |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=True)
+            embed.add_field(name=f"Choice                                                                                  |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=False)
+            embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
             await message.channel.send(embed=embed)
 
     #gm block
