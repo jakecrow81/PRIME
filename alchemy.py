@@ -608,7 +608,8 @@ def glintSunk():
         for i in range(len(response['result']['transfers'])):
              #total = round(total + float(response["result"]["transfers"][i]["value"]), 3)
              #primeSunk = primeSunk + response['result']['transfers'][i]['value']
-             primeSunk = round(primeSunk + float(response["result"]["transfers"][i]["value"]), 2)
+             if response["result"]["transfers"][i]["hash"] != "0x494d9a7dea10c1636454baef2369a46712ceb27e996404b2c8f303caa591fe3a":
+                primeSunk = round(primeSunk + float(response["result"]["transfers"][i]["value"]), 2)
         if not 'pageKey' in response["result"]:
                 break
         payload["params"][0]["pageKey"] = response["result"]["pageKey"]

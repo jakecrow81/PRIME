@@ -7,7 +7,7 @@ poolDict = {"0": "PD2", "1": "PD3", "2": "PD1", "3": "PD1 Art", "4": "PD1 CB"
             , "20": "PD4", "21": "PD4 SE", "22": "PD5", "23": "PD5 SE", "24": "PD5 PL"
             , "25": "PD5 CB", "26": "PD5 Art", "27": "PD6", "28": "PD6 SE", "29": "PD6 PL"
             , "30": "PD6 CB", "31": "PD6 Art", "pk": "Prime Key", "mp": "Masterpiece"
-            , "cd": "Catalyst Drive", "core": "The Core"}
+            , "cd": "Catalyst Drive", "core": "The Core", "pd": "Prime Drive"}
 
 async def getSetData(ids):
     #forQuery = str(ids).replace("'", "").strip("[]")

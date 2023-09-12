@@ -275,17 +275,27 @@ async def on_message(message):
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
+    #Block for Prime Drives
+    if message.content.lower() == '.prime pd' and message.channel.id != 1085860941935153203:
+        result = await getSetData("pd")
+        embed=discord.Embed(title="Prime Drive overview", color=0xDEF141)
+        embed.add_field(name="Cached    |    Daily emissions", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(result[0][1], result[0][2]), inline=False)
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
+
+        0xC4a21c88C3fA5654F51a2975494b752557DDaC2c
+
     #Block for ALL CB sets, returns a line for each set with emissions only
     if message.content.lower() == '.prime cb' and message.channel.id != 1085860941935153203:
         cbResults = await getSetData(["16", "4", "7", "11", "19", "25", "30"])
         embed=discord.Embed(title="CB sets cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[0][1], 0), inline=False)
-        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[1][1], 0), inline=False)
-        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[2][1], 0), inline=False)
-        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[3][1], 0), inline=False)
-        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[4][1], 0), inline=False)
-        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[5][1], 0), inline=False)
-        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[6][1], 0), inline=False)
+        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[0][1], cbResults[0][2]), inline=False)
+        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[1][1], cbResults[1][2]), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[2][1], cbResults[2][2]), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[3][1], cbResults[3][2]), inline=False)
+        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[4][1], cbResults[4][2]), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[5][1], cbResults[5][2]), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(cbResults[6][1], cbResults[6][2]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
@@ -293,13 +303,13 @@ async def on_message(message):
     if message.content.lower() == '.prime se' and message.channel.id != 1085860941935153203:
         seResults = await getSetData(["17", "5", "9", "13", "21", "23", "28"])
         embed=discord.Embed(title="SE sets cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[0][1], 0), inline=False)
-        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[1][1], 0), inline=False)
-        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[2][1], 0), inline=False)
-        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[3][1], 0), inline=False)
-        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[4][1], 0), inline=False)
-        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[5][1], 0), inline=False)
-        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[6][1], 0), inline=False)
+        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[0][1], seResults[0][2]), inline=False)
+        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[1][1], seResults[1][2]), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[2][1], seResults[2][2]), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[3][1], seResults[3][2]), inline=False)
+        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[4][1], seResults[4][2]), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[5][1], seResults[5][2]), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(seResults[6][1], seResults[6][2]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
@@ -307,10 +317,10 @@ async def on_message(message):
     if message.content.lower() == '.prime pl' and message.channel.id != 1085860941935153203:
         plResults = await getSetData(["8", "12", "24", "29"])
         embed=discord.Embed(title="PL sets cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[0][1], 0), inline=False)
-        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[1][1], 0), inline=False)
-        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[2][1], 0), inline=False)
-        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[3][1], 0), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[0][1], plResults[0][2]), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[1][1], plResults[1][2]), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[2][1], plResults[2][2]), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(plResults[3][1], plResults[3][2]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
@@ -318,13 +328,13 @@ async def on_message(message):
     if message.content.lower() == '.prime fe' and message.channel.id != 1085860941935153203:
         feResults = await getSetData(["14", "2", "0", "1", "20", "22", "27"])
         embed=discord.Embed(title="FE sets cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(feResults[0][1], 0), inline=False)
-        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(feResults[1][1], 0), inline=False)
-        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(feResults[2][1], 0), inline=False)
-        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(feResults[3][1], 0), inline=False)
-        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(feResults[4][1], 0), inline=False)
-        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(feResults[5][1], 0), inline=False)
-        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(feResults[6][1], 0), inline=False)
+        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(feResults[0][1], feResults[0][2]), inline=False)
+        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(feResults[1][1], feResults[1][2]), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(feResults[2][1], feResults[2][2]), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(feResults[3][1], feResults[3][2]), inline=False)
+        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(feResults[4][1], feResults[4][2]), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(feResults[5][1], feResults[5][2]), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(feResults[6][1], feResults[6][2]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
@@ -332,13 +342,13 @@ async def on_message(message):
     if message.content.lower() == '.prime art' or message.content.lower() == '.prime ac' and message.channel.id != 1085860941935153203:
         acResults = await getSetData(["15", "3", "6", "10", "18", "26", "31"])
         embed=discord.Embed(title="Art sets cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(acResults[0][1], 0), inline=False)
-        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(acResults[1][1], 0), inline=False)
-        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(acResults[2][1], 0), inline=False)
-        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(acResults[3][1], 0), inline=False)
-        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(acResults[4][1], 0), inline=False)
-        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(acResults[5][1], 0), inline=False)
-        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(acResults[6][1], 0), inline=False)
+        embed.add_field(name="PS15", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(acResults[0][1], acResults[0][2]), inline=False)
+        embed.add_field(name="PD1", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(acResults[1][1], acResults[1][2]), inline=False)
+        embed.add_field(name="PD2", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(acResults[2][1], acResults[2][2]), inline=False)
+        embed.add_field(name="PD3", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(acResults[3][1], acResults[3][2]), inline=False)
+        embed.add_field(name="PD4", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(acResults[4][1], acResults[4][2]), inline=False)
+        embed.add_field(name="PD5", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(acResults[5][1], acResults[5][2]), inline=False)
+        embed.add_field(name="PD6", value="```ansi\n\u001b[0;32m{:,}  |  {:.3f} ```".format(acResults[6][1], acResults[6][2]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
@@ -394,27 +404,27 @@ async def on_message(message):
         await message.channel.send(file=discord.File('df2_styled.png'))
         await ctx.edit(content="`Number of sets cached:`")
 
-    #sinks overview
-    if message.content.lower().startswith('.prime sink:') or message.content.lower().startswith('.prime sinks:') and message.channel.id != 1085860941935153203:
-        if message.content.split(":", 1)[1].isnumeric() == False:
-            await message.channel.send("`Usage: .prime sink:x where x is the number of days to search back for historical sink data`")
-            return
-        days = int(message.content.split(":", 1)[1])
-        oldBlockNumber = oldBlock(days)
-        artigraphTotal, artigraphHits = artigraphTimeframe(oldBlockNumber)
-        payloadTotal, payloadHits = payloadTimeframe(oldBlockNumber)
+    #sinks history, not updated for the time being
+    #if message.content.lower().startswith('.prime sink:') or message.content.lower().startswith('.prime sinks:') and message.channel.id != 1085860941935153203:
+    #    if message.content.split(":", 1)[1].isnumeric() == False:
+    #        await message.channel.send("`Usage: .prime sink:x where x is the number of days to search back for historical sink data`")
+    #        return
+    #    days = int(message.content.split(":", 1)[1])
+    #    oldBlockNumber = oldBlock(days)
+    #    artigraphTotal, artigraphHits = artigraphTimeframe(oldBlockNumber)
+    #    payloadTotal, payloadHits = payloadTimeframe(oldBlockNumber)
 
-        embed=discord.Embed(title=f"Sink overview for the last {days} days", color=0xDEF141)
-        embed.add_field(name="Artigraph Prime", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphTotal, inline=True))
-        embed.add_field(name="Artigraph hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(artigraphHits), inline=True))
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="Payload Prime", value="```ansi\n\u001b[0;32m{:,}```".format(payloadTotal, inline=True))
-        embed.add_field(name="Payload hits", value="```ansi\n\u001b[0;32m{:,}```".format(payloadHits, inline=True))
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphTotal + payloadTotal, inline=True))
-        embed.add_field(name="To redistribute", value="```ansi\n\u001b[0;32m{:,}```".format(int((artigraphTotal * .89) + payloadTotal), inline=True))
-        embed.set_footer(text="Please note this is intended as an estimate only")
-        await message.channel.send(embed=embed)
+    #    embed=discord.Embed(title=f"Sink overview for the last {days} days", color=0xDEF141)
+    #    embed.add_field(name="Artigraph Prime", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphTotal, inline=True))
+    #    embed.add_field(name="Artigraph hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(artigraphHits), inline=True))
+    #    embed.add_field(name="\u200B", value="\u200B")  # newline
+    #    embed.add_field(name="Payload Prime", value="```ansi\n\u001b[0;32m{:,}```".format(payloadTotal, inline=True))
+    #    embed.add_field(name="Payload hits", value="```ansi\n\u001b[0;32m{:,}```".format(payloadHits, inline=True))
+    #    embed.add_field(name="\u200B", value="\u200B")  # newline
+    #    embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphTotal + payloadTotal, inline=True))
+    #    embed.add_field(name="To redistribute", value="```ansi\n\u001b[0;32m{:,}```".format(int((artigraphTotal * .89) + payloadTotal), inline=True))
+    #    embed.set_footer(text="Please note this is intended as an estimate only")
+    #    await message.channel.send(embed=embed)
 
     #discord commands for open votes
     if message.content.lower() == (".snapshot") and message.channel.id == 1085860941935153203:

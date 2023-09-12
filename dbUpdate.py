@@ -20,7 +20,7 @@ poolDict = {"0": "PD2", "1": "PD3", "2": "PD1", "3": "PD1 Art", "4": "PD1 CB"
             , "20": "PD4", "21": "PD4 SE", "22": "PD5", "23": "PD5 SE", "24": "PD5 PL"
             , "25": "PD5 CB", "26": "PD5 Art", "27": "PD6", "28": "PD6 SE", "29": "PD6 PL"
             , "30": "PD6 CB", "31": "PD6 Art", "pk": "Prime Key", "mp": "Masterpiece"
-            , "cd": "Catalyst Drive", "core": "The Core"}
+            , "cd": "Catalyst Drive", "core": "The Core", "pd": "Prime Drive"}
 
 #Pull for contract data from Defined. address = contract address, poolIds is a list of IDs in the format ["1", "2", "3"].
 #Example: contractData("0xECa9D81a4dC7119A40481CFF4e7E24DD0aaF56bD", ["16", "4", "7", "11", "19", "25", "30"])
@@ -61,6 +61,7 @@ async def cachingDbUpdate():
     cdInfo = await contractData("0xc44C50C4162058494b542bBfAB5946ac6d6eBAB6", ["0"])
     coreInfo = await contractData("0xa0Cd986F53cBF8B8Fb7bF6fB14791e31aeB9E449", ["0"])
     mpInfo = await contractData("0x89Bb49d06610B4b18e355504551809Be5177f3D0", ["0"])
+    pdInfo = await contractData("0xC4a21c88C3fA5654F51a2975494b752557DDaC2c", ["0"])
 
     #mysql remote db creation and update
     HOST = "162.241.219.143" # or "domain.com"
@@ -97,7 +98,8 @@ async def cachingDbUpdate():
         ("pk", int(pkInfo[0]['totalSupply']), round(int(pkInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['pk']),
         ("cd", int(cdInfo[0]['totalSupply']),  round(int(cdInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['cd']),
         ("core", int(coreInfo[0]['totalSupply']),  round(int(coreInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['core']),
-        ("mp", int(mpInfo[0]['totalSupply']),  round(int(mpInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['mp'])
+        ("mp", int(mpInfo[0]['totalSupply']),  round(int(mpInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['mp']),
+        ("pd", int(pdInfo[0]['totalSupply']),  round(int(pdInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['pd'])
     ]
     remoteCrsr.executemany(sql_insert_into_sets, values)
     remoteDbConnection.commit()
@@ -135,7 +137,8 @@ async def cachingDbUpdate():
     data = (("pk", int(pkInfo[0]['totalSupply']), round(int(pkInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['pk']),
     ("cd", int(cdInfo[0]['totalSupply']),  round(int(cdInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['cd']),
     ("core", int(coreInfo[0]['totalSupply']),  round(int(coreInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['core']),
-    ("mp", int(mpInfo[0]['totalSupply']),  round(int(mpInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['mp']))
+    ("mp", int(mpInfo[0]['totalSupply']),  round(int(mpInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['mp']),
+    ("pd", int(pdInfo[0]['totalSupply']),  round(int(pdInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['pd']))
     crsr.executemany(sqlite_insert_with_param, data)
     dbconnection.commit()
     crsr.close()
