@@ -247,7 +247,6 @@ async def on_message(message):
         for i in range(len(response['result'])):
             echoPrime = echoPrime + int(response['result'][i]['value'])
         finalPrime = round(echoPrime / 1000000000000000000, 3)
-        print(finalPrime)
         embed=discord.Embed(title="Echos overview", color=0xDEF141)
         embed.add_field(name="Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(finalPrime, inline=True))
         embed.set_footer(text="Please note this is intended as an estimate only")
