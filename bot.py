@@ -240,6 +240,19 @@ async def on_message(message):
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
+    #direct echo block
+    if message.content.lower().startswith('.prime echo') and message.channel.id != 1085860941935153203:
+        response = requests.get(f'https://api.basescan.org/api?module=account&action=tokentx&contractAddress=0xfa980ced6895ac314e7de34ef1bfae90a5add21b&address=0xf507d0073039551907eb55bdc2c62c894641cfee&page=1&offset=10000&startblock=0&endblock=27025780&sort=asc&apikey=STGIRNFE4JK1T36Z522PSM6GHGICTM5Y3W').json()
+        echoPrime = 0
+        for i in range(len(response['result'])):
+            echoPrime = echoPrime + int(response['result'][i]['value'])
+        finalPrime = round(echoPrime / 1000000000000000000, 3)
+        print(finalPrime)
+        embed=discord.Embed(title="Echos overview", color=0xDEF141)
+        embed.add_field(name="Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(finalPrime, inline=True))
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
+
     #Block for ALL Cornerstone assets, returns a line for each set with emissions only
     if message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core' and message.channel.id != 1085860941935153203:
         result = await getSetData(["cd", "mp", "core"])
