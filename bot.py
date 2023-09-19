@@ -17,6 +17,7 @@ from alchemy import *
 from gqlQueries import *
 from dbUpdate import *
 from fetchFromDb import *
+from requestsCalls import *
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 #pandas init
@@ -109,7 +110,8 @@ async def on_message(message):
 
     #Daily emissions
     if message.content.lower() == '.prime daily' and message.channel.id != 1085860941935153203:
-        await message.channel.send(f"``Daily emissions for investors: 24,718``") #This was derived from all contracts, but the number is static for now.
+        await message.channel.send(f"``Daily emissions for investors: 24,718``") #This is distributed monthly, but this is the daily amount if it were divided into days
+        await message.channel.send(f"``Daily emissions for sets: 1,791``") #Normal sets total per day:  1721.8728405848442 Art sets total per day:  68.87491362339375 Total:  1790.747754208238. Set numbers are <for any set except art> number cached * daily amount * number of types for that set (aka  100 pd1se sets * 1 daily prime * 7 different se sets). Art set bucket == the output of any other single pool
 
     #prime overview, embed
     if message.content.lower() == '.prime' and message.channel.id != 1085860941935153203:
@@ -129,20 +131,23 @@ async def on_message(message):
         terminalTotal = terminalCall()
         batteryTotal = batteryCall()
         glintPrime = glintSunk()
-        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal + peekPrime + glintPrime
-        circulating = claimTotal + launchPartners - totalsink
+        echoPrime = int(echoCall())
+        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal + peekPrime + glintPrime + echoPrime
+        circulating = primeCirculating()
         percentSunk = round(totalsink / (claimTotal + launchPartners) * 100, 2)
-        investorEmit = 24718
+        launchPartners = 1950000
+        investorMonthly = 751853
+        dailyEmit = 1791
         embed=discord.Embed(title="Overview of Prime", color=0xDEF141)
         embed.add_field(name="Prime Events", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(currentPeClaim, int(primeEventClaimTotal), round((primeEventClaimTotal / currentPeClaim) * 100, 2)), inline=False)
         embed.add_field(name="Prime Keys", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(totalpkprimeemitted), int(primeKeyClaimTotal), round((primeKeyClaimTotal / totalpkprimeemitted) * 100, 2)), inline=False)
         embed.add_field(name="Prime Sets", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(currentSetCachingEmitted), int(primeSetClaimTotal), round((primeSetClaimTotal / currentSetCachingEmitted) * 100, 2)), inline=False)
         embed.add_field(name="CD/MP/The Core", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(currentCornerstoneEmitted), int(primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal), round(((primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal) / currentCornerstoneEmitted) * 100, 2)), inline=False)
         embed.add_field(name="Claimable totals", value="```ansi\n\u001b[0;32mClaimable emissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(emitTotal), int(claimTotal), round((claimTotal / emitTotal) * 100, 2)), inline=False)
-        embed.add_field(name="Misc emissions", value="```ansi\n\u001b[0;32mLaunch Partners: {:,}```".format(launchPartners), inline=False)
-        embed.add_field(name="Daily emissions", value="```ansi\n\u001b[0;32mInvestors: {:,}```".format(investorEmit), inline=False)
+        embed.add_field(name="Daily emissions", value="```ansi\n\u001b[0;32mSets: {:,}```".format(dailyEmit), inline=False)
+        embed.add_field(name="Misc emissions", value="```ansi\n\u001b[0;32mLaunch Partners: {:,}\nInvestors (monthly): {:,}```".format(launchPartners, investorMonthly), inline=False)        
         embed.add_field(name="Sinks", value="```ansi\n\u001b[0;32mPrime sunk: {:,}\n{}% sunk```".format(int(totalsink), (percentSunk)), inline=False)
-        embed.add_field(name="Circulating", value="```ansi\n\u001b[0;32mCirculating supply: {:,}```".format(int(circulating), inline=False))
+        embed.add_field(name="Circulating", value="```ansi\n\u001b[0;32mCirculating supply: {:,}```".format(circulating), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
         await ctx.delete()
@@ -156,10 +161,12 @@ async def on_message(message):
         terminalTotal = terminalCall()
         batteryTotal = batteryCall()
         glintPrime = glintSunk()
-        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal + peekPrime + glintPrime
-        sinkdistro = int((artigraphTotal * .89) + payloadTotal + terminalTotal + batteryTotal + peekPrime + glintPrime)
+        echoPrime = int(echoCall())
+        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal + peekPrime + glintPrime + echoPrime
+        sinkdistro = int((artigraphTotal * .89) + payloadTotal + terminalTotal + batteryTotal + peekPrime + glintPrime + echoPrime)
         embed=discord.Embed(title="Overview of Sinks", color=0xDEF141)
         embed.add_field(name="Payload", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(payloadTotal), inline=False)
+        embed.add_field(name="Echos", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(echoPrime), inline=False)
         embed.add_field(name="Artigraph", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(artigraphTotal), inline=False)
         embed.add_field(name="Terminals", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(terminalTotal), inline=False)
         embed.add_field(name="Batteries", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(batteryTotal), inline=False)
@@ -242,13 +249,9 @@ async def on_message(message):
 
     #direct echo block
     if message.content.lower().startswith('.prime echo') and message.channel.id != 1085860941935153203:
-        response = requests.get(f'https://api.basescan.org/api?module=account&action=tokentx&contractAddress=0xfa980ced6895ac314e7de34ef1bfae90a5add21b&address=0xf507d0073039551907eb55bdc2c62c894641cfee&page=1&offset=10000&startblock=0&endblock=27025780&sort=asc&apikey=STGIRNFE4JK1T36Z522PSM6GHGICTM5Y3W').json()
-        echoPrime = 0
-        for i in range(len(response['result'])):
-            echoPrime = echoPrime + int(response['result'][i]['value'])
-        finalPrime = round(echoPrime / 1000000000000000000, 3)
+        echoPrime = echoCall()
         embed=discord.Embed(title="Echos overview", color=0xDEF141)
-        embed.add_field(name="Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(finalPrime, inline=True))
+        embed.add_field(name="Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(echoPrime, inline=True))
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
