@@ -12,6 +12,10 @@ import mysql.connector as mysql
 
 load_dotenv()
 DEFINEDAPI = os.getenv('DEFINED_API')
+WIKIDOMAIN = os.getenv('WIKI_DOMAIN')
+WIKIDBNAME = os.getenv('WIKI_DB_NAME')
+WIKIUSER = os.getenv('WIKI_USER')
+WIKIPW = os.getenv('WIKI_PW')
 
 poolDict = {"0": "PD2", "1": "PD3", "2": "PD1", "3": "PD1 Art", "4": "PD1 CB"
             , "5": "PD1 SE", "6": "PD2 Art", "7": "PD2 CB", "8": "PD2 PL", "9": "PD2 SE"
@@ -64,10 +68,10 @@ async def cachingDbUpdate():
     pdInfo = await contractData("0xC4a21c88C3fA5654F51a2975494b752557DDaC2c", ["0"])
 
     #mysql remote db creation and update
-    HOST = "162.241.219.143" # or "domain.com"
-    DATABASE = "lectrij5_testforjakeandrob"
-    USER = "lectrij5_jakec"
-    PASSWORD = "XTo8@MyRBnTMCGMa$Gcd&qJ&"
+    HOST = WIKIDOMAIN # or "domain.com"
+    DATABASE = WIKIDBNAME
+    USER = WIKIUSER
+    PASSWORD = WIKIPW
     remoteDbConnection = mysql.connect(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
     remoteCrsr = remoteDbConnection.cursor()
 

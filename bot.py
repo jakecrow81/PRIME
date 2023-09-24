@@ -138,7 +138,9 @@ async def on_message(message):
         launchPartners = 1950000
         investorMonthly = 751853
         dailyEmit = 1791
+        holders = primeHolders()
         embed=discord.Embed(title="Overview of Prime", color=0xDEF141)
+        embed.add_field(name="Prime holders", value="```ansi\n\u001b[0;32mUnique holders: {:,}```".format(holders), inline=False)
         embed.add_field(name="Prime Events", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(currentPeClaim, int(primeEventClaimTotal), round((primeEventClaimTotal / currentPeClaim) * 100, 2)), inline=False)
         embed.add_field(name="Prime Keys", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(totalpkprimeemitted), int(primeKeyClaimTotal), round((primeKeyClaimTotal / totalpkprimeemitted) * 100, 2)), inline=False)
         embed.add_field(name="Prime Sets", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(currentSetCachingEmitted), int(primeSetClaimTotal), round((primeSetClaimTotal / currentSetCachingEmitted) * 100, 2)), inline=False)
@@ -297,8 +299,6 @@ async def on_message(message):
         embed.add_field(name="Cached    |    Daily emissions", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(result[0][1], result[0][2]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
-
-        0xC4a21c88C3fA5654F51a2975494b752557DDaC2c
 
     #Block for ALL CB sets, returns a line for each set with emissions only
     if message.content.lower() == '.prime cb' and message.channel.id != 1085860941935153203:
@@ -627,7 +627,7 @@ async def on_ready():
 async def main():
     try:
         sched = AsyncIOScheduler()
-        sched.add_job(cachingDbUpdate, 'interval', minutes=15) #task function to add and how often to run it
+        sched.add_job(cachingDbUpdate, 'interval', minutes=1) #task function to add and how often to run it
         sched.start() #start scheduled tasks
         discord.utils.setup_logging(root = False) #turn on logging so we see connect success and heartbeat messages
         await client.start(TOKEN) #async discord init

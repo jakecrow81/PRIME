@@ -4,6 +4,7 @@ import os
 
 load_dotenv()
 basescanApi = os.getenv('BASESCAN_API')
+chainbaseApi = os.getenv('CHAINBASE_API')
 
 
 #Echos block, get response from Basescan
@@ -20,3 +21,12 @@ def primeCirculating():
     response = requests.get('https://echelon.io/api/supply/').json()
     circSupply = int(float(response['circulatingSupply']))
     return circSupply
+
+def primeHolders():
+    url = "https://api.chainbase.online/v1/token/holders?chain_id=1&contract_address=0xb23d80f5FefcDDaa212212F028021B41DEd428CF&page=1&limit=1"
+    headers = {
+        "accept": "application/json",
+        "x-api-key": chainbaseApi
+    }
+    response = requests.get(url, headers=headers).json()
+    return int(response['count'])
