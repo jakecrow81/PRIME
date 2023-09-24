@@ -627,7 +627,7 @@ async def on_ready():
 async def main():
     try:
         sched = AsyncIOScheduler()
-        sched.add_job(cachingDbUpdate, 'interval', minutes=1) #task function to add and how often to run it
+        sched.add_job(cachingDbUpdate, 'interval', minutes=15) #task function to add and how often to run it
         sched.start() #start scheduled tasks
         discord.utils.setup_logging(root = False) #turn on logging so we see connect success and heartbeat messages
         await client.start(TOKEN) #async discord init
