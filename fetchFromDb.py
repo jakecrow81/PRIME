@@ -33,7 +33,6 @@ async def getSetData(ids):
 async def getPrimeData(ids):
     #forQuery = str(ids).replace("'", "").strip("[]")
     forQuery = str(ids).strip("[]")
-    print(forQuery)
     dbconnection = sqlite3.connect("./databases/prime.db")
     crsr = dbconnection.cursor()
     if "," in forQuery:
