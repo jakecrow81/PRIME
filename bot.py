@@ -80,7 +80,6 @@ async def on_message(message):
         #holders = primeHolders()
 
         primeResult = await getPrimeData(["primeEvent", "primeKey", "primeSet", "cornerstone", "launchPartners", "avatar", "payload", "artigraph", "terminal", "battery", "glint", "echo", "circSupply", "investorEmit", "dailyEmit", "holders"])
-        print(primeResult)
 
         claimTotal = round(primeResult[0][2] + primeResult[1][2] + primeResult[2][2] + primeResult[3][2], 3)
         emitTotal = primeResult[0][1] + primeResult[1][1] + primeResult[3][1] + primeResult[2][1]
