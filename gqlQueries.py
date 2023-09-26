@@ -78,23 +78,28 @@ async def snapshotClosedQuery(space):
 #Pull for contract data from Defined. address = contract address, poolIds is a list of IDs in the format ["1", "2", "3"].
 #Example: contractData("0xECa9D81a4dC7119A40481CFF4e7E24DD0aaF56bD", ["16", "4", "7", "11", "19", "25", "30"])
 #networkId is always 1 for now so this is hard coded
-async def contractData(address, poolIds):
+def contractData(address, poolIds):
     transport = AIOHTTPTransport(url="https://api.defined.fi", headers={'Content-Type': 'application/json', 'x-api-key': DEFINEDAPI})
     gqlclient = Client(transport=transport, fetch_schema_from_transport=True)
+
     query = gql(
         """
         query getPrimePools($address: String!, $networkId: Int!, $poolIds: [String]){
             getPrimePools(address: $address, networkId: $networkId, poolIds: $poolIds) {
                 items{
+                    chainData {
+                        primeAllocPoint
+                    }
                     calcData {
                         sharePrimePerDay
                     }
                     totalSupply
+                    poolId
                 }
                 }
             }
         """
     )
     params = {"address": address, "networkId": 1, "poolIds": poolIds}
-    result = await gqlclient.execute_async(query, variable_values=params)
+    result = gqlclient.execute(query, variable_values=params)
     return result['getPrimePools']['items']

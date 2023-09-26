@@ -19,6 +19,7 @@ from dbUpdate import *
 from fetchFromDb import *
 from requestsCalls import *
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from extraFunctions import *
 
 #pandas init
 pd.set_option("styler.format.thousands", ",")
@@ -31,68 +32,6 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 intents = discord.Intents.all()
 activity = discord.Activity(type=discord.ActivityType.watching, name="Prime data")
 client = discord.Client(intents=intents, activity=activity)
-
-def avatarCall():
-    #alchemy queries to get initial lists of data
-    erc20 = peekErc20()
-    erc721 = erc721Txn()
-    erc721MintList = erc721Mint()
-
-    #variables to use later, start at 0 and count up
-    peekPrime = 0
-    avatarMintPrime = 0
-
-    #loop to get data we need, modifies starting variables
-    for i in range(len(erc20)):
-        peekHashFound = False
-        mintHashFound = False
-        for k in range(len(erc721)):
-            if erc20[i]['hash'] == erc721[k]['hash']:
-                peekHashFound = True
-                break
-        if peekHashFound == False:
-            peekPrime = peekPrime + erc20[i]['value']
-        for k in range(len(erc721MintList)):
-            if erc20[i]['hash'] == erc721MintList[k]['hash']:
-                mintHashFound = True
-                break
-        if mintHashFound == True:
-            avatarMintPrime = avatarMintPrime + erc20[i]['value']
-
-    #return variables
-    avatarsManifested = int(avatarMintPrime / 11)
-    avatarsPeeked = int(peekPrime / 11)
-    percentagePeeked = (int(peekPrime / 11) / int(avatarMintPrime / 11 + 6371)) * 100
-    return avatarsManifested, avatarsPeeked, percentagePeeked, peekPrime
-
-#oldblock number function, takes input of N days and returns hex code for block number from N days ago
-def oldBlock(n):
-    oldDate = datetime.now().replace(second=0, microsecond=0) - timedelta(days = n)
-    unix_time = int(oldDate.timestamp())
-    etherscanapi = f"https://api.etherscan.io/api?module=block&action=getblocknobytime&timestamp={unix_time}&closest=before&apikey=Q367IZCX5ETK5FX7UMKBBJ9WMNZZNMMUWP"
-    etherscanresponse = requests.get(etherscanapi).json()
-    oldblocknumber = hex(int(etherscanresponse["result"]))
-    return oldblocknumber
-
-#Current Prime emissions
-def emitCall():
-    cachestartdate = date(2022, 7, 18)
-    currentdate = date.today()
-    dayspassed = currentdate - cachestartdate
-    currentPeClaim = 7894941
-    totalpkprime = 12222222    
-    totalCornerstone = 1222222
-    totalSetCaching = 2222222
-    launchPartners = 1950000
-    if dayspassed.days < 365:
-        dayspassedpercentage = float(dayspassed.days / 365)
-    else:
-        dayspassedpercentage = 1
-    totalpkprimeemitted = round((totalpkprime * dayspassedpercentage), 1)
-    currentCornerstoneEmitted = round((totalCornerstone * dayspassedpercentage), 1)
-    currentSetCachingEmitted = round((totalSetCaching * dayspassedpercentage), 1)
-    return currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted, launchPartners
-
 
 #Begin Discord blocks, watch for specific messages, perform functions, return results
 @client.event
@@ -116,40 +55,49 @@ async def on_message(message):
     #prime overview, embed
     if message.content.lower() == '.prime' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
-        primeEventClaimTotal = 7894941
-        primeKeyClaimTotal = primeKeyClaim()
-        primeSetClaimTotal = primeSetClaim()
-        primeCDClaimTotal = primeCDClaim()
-        primeCoreClaimTotal = primeCoreClaim()
-        primeMPClaimTotal = primeMPClaim()
-        claimTotal = round(primeEventClaimTotal + primeKeyClaimTotal + primeSetClaimTotal + primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal, 3)
-        currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted, launchPartners = emitCall()
-        emitTotal = currentPeClaim + totalpkprimeemitted + currentCornerstoneEmitted + currentSetCachingEmitted
-        peekPrime = avatarCall()[3]
-        payloadTotal = Payloadcall()[0]
-        artigraphTotal = Artigraphcall()[0]
-        terminalTotal = terminalCall()
-        batteryTotal = batteryCall()
-        glintPrime = glintSunk()
-        echoPrime = int(echoCall())
-        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal + peekPrime + glintPrime + echoPrime
-        circulating = primeCirculating()
-        percentSunk = round(totalsink / (claimTotal + launchPartners) * 100, 2)
-        launchPartners = 1950000
-        investorMonthly = 751853
-        dailyEmit = 1791
-        holders = primeHolders()
+        #primeEventClaimTotal = 7894941
+        #primeKeyClaimTotal = primeKeyClaim()
+        #primeSetClaimTotal = primeSetClaim()
+        #primeCDClaimTotal = primeCDClaim()
+        #primeCoreClaimTotal = primeCoreClaim()
+        #primeMPClaimTotal = primeMPClaim()
+        
+        #currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted, launchPartners = emitCall()
+        
+        #peekPrime = avatarCall()[3]
+        #payloadTotal = Payloadcall()[0]
+        #artigraphTotal = Artigraphcall()[0]
+        #terminalTotal = terminalCall()
+        #batteryTotal = batteryCall()
+        #glintPrime = glintSunk()
+        #echoPrime = int(echoCall())
+        
+        #circulating = primeCirculating()
+        
+        #launchPartners = 1950000
+        #investorMonthly = 751853
+        #dailyEmit = 1791
+        #holders = primeHolders()
+
+        primeResult = await getPrimeData(["primeEvent", "primeKey", "primeSet", "cornerstone", "launchPartners", "avatar", "payload", "artigraph", "terminal", "battery", "glint", "echo", "circSupply", "investorEmit", "dailyEmit", "holders"])
+        print(primeResult)
+
+        claimTotal = round(primeResult[0][2] + primeResult[1][2] + primeResult[2][2] + primeResult[3][2], 3)
+        emitTotal = primeResult[0][1] + primeResult[1][1] + primeResult[3][1] + primeResult[2][1]
+        totalsink = primeResult[6][3] + primeResult[7][3] + primeResult[8][3] + primeResult[9][3] + primeResult[5][3] + primeResult[10][3] + primeResult[11][3]
+        percentSunk = round(totalsink / (claimTotal + primeResult[4][1]) * 100, 2)
+
         embed=discord.Embed(title="Overview of Prime", color=0xDEF141)
-        embed.add_field(name="Prime holders", value="```ansi\n\u001b[0;32mUnique holders: {:,}```".format(holders), inline=False)
-        embed.add_field(name="Prime Events", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(currentPeClaim, int(primeEventClaimTotal), round((primeEventClaimTotal / currentPeClaim) * 100, 2)), inline=False)
-        embed.add_field(name="Prime Keys", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(totalpkprimeemitted), int(primeKeyClaimTotal), round((primeKeyClaimTotal / totalpkprimeemitted) * 100, 2)), inline=False)
-        embed.add_field(name="Prime Sets", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(currentSetCachingEmitted), int(primeSetClaimTotal), round((primeSetClaimTotal / currentSetCachingEmitted) * 100, 2)), inline=False)
-        embed.add_field(name="CD/MP/The Core", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(currentCornerstoneEmitted), int(primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal), round(((primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal) / currentCornerstoneEmitted) * 100, 2)), inline=False)
+        embed.add_field(name="Prime holders", value="```ansi\n\u001b[0;32mUnique holders: {:,}```".format(primeResult[15][4]), inline=False)
+        embed.add_field(name="Prime Events", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(primeResult[0][1]), int(primeResult[0][2]), round((primeResult[0][2] / primeResult[0][1]) * 100, 2)), inline=False)
+        embed.add_field(name="Prime Keys", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(primeResult[1][1]), int(primeResult[1][2]), round((primeResult[1][2] / primeResult[1][1]) * 100, 2)), inline=False)
+        embed.add_field(name="Prime Sets", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(primeResult[2][1]), int(primeResult[2][2]), round((primeResult[2][2] / primeResult[2][1]) * 100, 2)), inline=False)
+        embed.add_field(name="CD/MP/The Core", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(primeResult[3][1]), int(primeResult[3][2]), round((primeResult[3][2] / primeResult[3][1]) * 100, 2)), inline=False)
         embed.add_field(name="Claimable totals", value="```ansi\n\u001b[0;32mClaimable emissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(emitTotal), int(claimTotal), round((claimTotal / emitTotal) * 100, 2)), inline=False)
-        embed.add_field(name="Daily emissions", value="```ansi\n\u001b[0;32mSets: {:,}```".format(dailyEmit), inline=False)
-        embed.add_field(name="Misc emissions", value="```ansi\n\u001b[0;32mLaunch Partners: {:,}\nInvestors (monthly): {:,}```".format(launchPartners, investorMonthly), inline=False)        
+        embed.add_field(name="Daily emissions", value="```ansi\n\u001b[0;32mSets: {:,}```".format(primeResult[14][1]), inline=False)
+        embed.add_field(name="Misc emissions", value="```ansi\n\u001b[0;32mLaunch Partners: {:,}\nInvestors (monthly): {:,}```".format(primeResult[4][1], primeResult[13][1]), inline=False)        
         embed.add_field(name="Sinks", value="```ansi\n\u001b[0;32mPrime sunk: {:,}\n{}% sunk```".format(int(totalsink), (percentSunk)), inline=False)
-        embed.add_field(name="Circulating", value="```ansi\n\u001b[0;32mCirculating supply: {:,}```".format(circulating), inline=False)
+        embed.add_field(name="Circulating", value="```ansi\n\u001b[0;32mCirculating supply: {:,}```".format(primeResult[12][4]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
         await ctx.delete()
@@ -259,12 +207,12 @@ async def on_message(message):
 
     #Block for ALL Cornerstone assets, returns a line for each set with emissions only
     if message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core' and message.channel.id != 1085860941935153203:
-        result = await getSetData(["cd", "mp", "core"])
+        setResult = await getSetData(["cd", "mp", "core"])
         mpCount = primeMpCached()
         embed=discord.Embed(title="CD/MP/Core cached  |  daily emissions", color=0xDEF141)
-        embed.add_field(name="Catalyst Drive", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(result[0][1], 0), inline=False)
+        embed.add_field(name="Catalyst Drive", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(setResult[0][1], 0), inline=False)
         embed.add_field(name="Masterpiece", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(mpCount, 0), inline=False)
-        embed.add_field(name="The Core", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(result[2][1], 0), inline=False)
+        embed.add_field(name="The Core", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(setResult[2][1], 0), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
@@ -628,6 +576,7 @@ async def main():
     try:
         sched = AsyncIOScheduler()
         sched.add_job(cachingDbUpdate, 'interval', minutes=15) #task function to add and how often to run it
+        sched.add_job(primeDbUpdate, 'interval', minutes=15)
         sched.start() #start scheduled tasks
         discord.utils.setup_logging(root = False) #turn on logging so we see connect success and heartbeat messages
         await client.start(TOKEN) #async discord init

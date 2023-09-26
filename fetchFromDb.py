@@ -29,3 +29,25 @@ async def getSetData(ids):
         results = crsr.fetchall()
         crsr.close()
         return results
+
+async def getPrimeData(ids):
+    #forQuery = str(ids).replace("'", "").strip("[]")
+    forQuery = str(ids).strip("[]")
+    print(forQuery)
+    dbconnection = sqlite3.connect("./databases/prime.db")
+    crsr = dbconnection.cursor()
+    if "," in forQuery:
+        crsr.execute(f"SELECT * FROM prime WHERE name IN ({forQuery})")
+        results = crsr.fetchall()
+        sortedData = []
+        for i in range(len(ids)):
+            for j in range(len(results)):
+                if results[j][0] == ids[i]:
+                    sortedData.append(results[j])
+        crsr.close()
+        return sortedData
+    else:
+        crsr.execute(f"SELECT * FROM prime WHERE name = '{forQuery}'")
+        results = crsr.fetchall()
+        crsr.close()
+        return results

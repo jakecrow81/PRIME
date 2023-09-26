@@ -1,6 +1,9 @@
 from dotenv import load_dotenv
 import requests
 import os
+from datetime import date
+from datetime import datetime
+from datetime import timedelta
 
 load_dotenv()
 basescanApi = os.getenv('BASESCAN_API')
@@ -15,7 +18,7 @@ def echoCall():
         if response['result'][i]['tokenName'] == 'Prime':
             echoPrime = echoPrime + int(response['result'][i]['value'])
     finalPrime = round(echoPrime / 1000000000000000000, 3)
-    return finalPrime
+    return int(finalPrime)
 
 def primeCirculating():
     response = requests.get('https://echelon.io/api/supply/').json()
@@ -30,3 +33,12 @@ def primeHolders():
     }
     response = requests.get(url, headers=headers).json()
     return int(response['count'])
+
+#oldblock number function, takes input of N days and returns hex code for block number from N days ago
+def oldBlock(n):
+    oldDate = datetime.now().replace(second=0, microsecond=0) - timedelta(days = n)
+    unix_time = int(oldDate.timestamp())
+    etherscanapi = f"https://api.etherscan.io/api?module=block&action=getblocknobytime&timestamp={unix_time}&closest=before&apikey=Q367IZCX5ETK5FX7UMKBBJ9WMNZZNMMUWP"
+    etherscanresponse = requests.get(etherscanapi).json()
+    oldblocknumber = hex(int(etherscanresponse["result"]))
+    return oldblocknumber
