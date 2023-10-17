@@ -10,4 +10,4 @@ numpy==1.25.0
 pandas==2.0.3
 python-dotenv==1.0.0
 Requests==2.31.0
-web3==6.9.0
+web3==5.27.0
