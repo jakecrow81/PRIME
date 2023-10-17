@@ -34,7 +34,7 @@ def avatarCall():
     avatarsManifested = int(avatarMintPrime / 11)
     avatarsPeeked = int(peekPrime / 11)
     percentagePeeked = (int(peekPrime / 11) / int(avatarMintPrime / 11 + 6371)) * 100
-    return avatarsManifested, avatarsPeeked, percentagePeeked, peekPrime
+    return avatarsManifested, avatarsPeeked, percentagePeeked, int(peekPrime)
 
 #Current Prime emissions
 def emitCall():
@@ -54,3 +54,13 @@ def emitCall():
     currentCornerstoneEmitted = round((totalCornerstone * dayspassedpercentage), 1)
     currentSetCachingEmitted = round((totalSetCaching * dayspassedpercentage), 1)
     return currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted, launchPartners
+
+def unlockInvestor():
+    start = datetime(2023,7,30)
+    now = datetime.now()
+    return (now.year - start.year) * 12 + now.month - start.month
+
+def unlockStudio():
+    start = datetime(2023,9,30)
+    now = datetime.now()
+    return (now.year - start.year) * 12 + now.month - start.month

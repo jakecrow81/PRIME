@@ -48,9 +48,9 @@ async def on_message(message):
         return
 
     #Daily emissions
-    if message.content.lower() == '.prime daily' and message.channel.id != 1085860941935153203:
-        await message.channel.send(f"``Daily emissions for investors: 24,718``") #This is distributed monthly, but this is the daily amount if it were divided into days
-        await message.channel.send(f"``Daily emissions for sets: 1,791``") #Normal sets total per day:  1721.8728405848442 Art sets total per day:  68.87491362339375 Total:  1790.747754208238. Set numbers are <for any set except art> number cached * daily amount * number of types for that set (aka  100 pd1se sets * 1 daily prime * 7 different se sets). Art set bucket == the output of any other single pool
+    #if message.content.lower() == '.prime daily' and message.channel.id != 1085860941935153203:
+        #await message.channel.send(f"``Daily emissions for investors: 24,718``") #This is distributed monthly, but this is the daily amount if it were divided into days
+        #await message.channel.send(f"``Daily emissions for sets: 1,791``") #Normal sets total per day:  1721.8728405848442 Art sets total per day:  68.87491362339375 Total:  1790.747754208238. Set numbers are <for any set except art> number cached * daily amount * number of types for that set (aka  100 pd1se sets * 1 daily prime * 7 different se sets). Art set bucket == the output of any other single pool
 
     #prime overview, embed
     if message.content.lower() == '.prime' and message.channel.id != 1085860941935153203:
@@ -79,12 +79,15 @@ async def on_message(message):
         #dailyEmit = 1791
         #holders = primeHolders()
 
-        primeResult = await getPrimeData(["primeEvent", "primeKey", "primeSet", "cornerstone", "launchPartners", "avatar", "payload", "artigraph", "terminal", "battery", "glint", "echo", "circSupply", "investorEmit", "dailyEmit", "holders"])
+        primeResult = await getPrimeData(["primeEvent", "primeKey", "primeSet", "cornerstone", "launchPartners", "avatar", "payload", "artigraph", "terminal", "battery", "glint", "echo", "circSupply", "investorEmit", "dailyEmit", "holders", "studioEmit"])
 
         claimTotal = round(primeResult[0][2] + primeResult[1][2] + primeResult[2][2] + primeResult[3][2], 3)
         emitTotal = primeResult[0][1] + primeResult[1][1] + primeResult[3][1] + primeResult[2][1]
         totalsink = primeResult[6][3] + primeResult[7][3] + primeResult[8][3] + primeResult[9][3] + primeResult[5][3] + primeResult[10][3] + primeResult[11][3]
         percentSunk = round(totalsink / (claimTotal + primeResult[4][1]) * 100, 2)
+
+        investorMonths = unlockInvestor()
+        studioMonths = unlockStudio()
 
         embed=discord.Embed(title="Overview of Prime", color=0xDEF141)
         embed.add_field(name="Prime holders", value="```ansi\n\u001b[0;32mUnique holders: {:,}```".format(primeResult[15][4]), inline=False)
@@ -94,7 +97,7 @@ async def on_message(message):
         embed.add_field(name="CD/MP/The Core", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(primeResult[3][1]), int(primeResult[3][2]), round((primeResult[3][2] / primeResult[3][1]) * 100, 2)), inline=False)
         embed.add_field(name="Claimable totals", value="```ansi\n\u001b[0;32mClaimable emissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(emitTotal), int(claimTotal), round((claimTotal / emitTotal) * 100, 2)), inline=False)
         embed.add_field(name="Daily emissions", value="```ansi\n\u001b[0;32mSets: {:,}```".format(primeResult[14][1]), inline=False)
-        embed.add_field(name="Misc emissions", value="```ansi\n\u001b[0;32mLaunch Partners: {:,}\nInvestors (monthly): {:,}```".format(primeResult[4][1], primeResult[13][1]), inline=False)        
+        embed.add_field(name="Misc emissions", value="```ansi\n\u001b[0;32mLaunch Partners: {:,}\nInvestors: {:,}\nStudio: {:,}```".format(primeResult[4][1], primeResult[13][1] * investorMonths, primeResult[16][1] * studioMonths), inline=False)        
         embed.add_field(name="Sinks", value="```ansi\n\u001b[0;32mPrime sunk: {:,}\n{}% sunk```".format(int(totalsink), (percentSunk)), inline=False)
         embed.add_field(name="Circulating", value="```ansi\n\u001b[0;32mCirculating supply: {:,}```".format(primeResult[12][4]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
@@ -104,23 +107,25 @@ async def on_message(message):
     #Call Sink functions and print simplified results for all + total
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
-        peekPrime = avatarCall()[3]
-        payloadTotal = Payloadcall()[0]
-        artigraphTotal = Artigraphcall()[0]
-        terminalTotal = terminalCall()
-        batteryTotal = batteryCall()
-        glintPrime = glintSunk()
-        echoPrime = int(echoCall())
-        totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal + peekPrime + glintPrime + echoPrime
-        sinkdistro = int((artigraphTotal * .89) + payloadTotal + terminalTotal + batteryTotal + peekPrime + glintPrime + echoPrime)
+        primeResult = await getPrimeData(["avatar", "payload", "artigraph", "terminal", "battery", "glint", "echo"])
+        #peekPrime = avatarCall()[3]
+        #payloadTotal = Payloadcall()[0]
+        #artigraphTotal = Artigraphcall()[0]
+        #terminalTotal = terminalCall()
+        #batteryTotal = batteryCall()
+        #glintPrime = glintSunk()
+        #echoPrime = int(echoCall())
+        totalsink = primeResult[0][3] + primeResult[1][3] + primeResult[2][3] + primeResult[3][3] + primeResult[4][3] + primeResult[5][3] + primeResult[6][3]
+        #totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal + peekPrime + glintPrime + echoPrime
+        sinkdistro = int((primeResult[2][3] * .89) + primeResult[0][3] + primeResult[1][3] + primeResult[3][3] + primeResult[4][3] + primeResult[5][3] + primeResult[6][3])
         embed=discord.Embed(title="Overview of Sinks", color=0xDEF141)
-        embed.add_field(name="Payload", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(payloadTotal), inline=False)
-        embed.add_field(name="Echos", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(echoPrime), inline=False)
-        embed.add_field(name="Artigraph", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(artigraphTotal), inline=False)
-        embed.add_field(name="Terminals", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(terminalTotal), inline=False)
-        embed.add_field(name="Batteries", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(batteryTotal), inline=False)
-        embed.add_field(name="Glints", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(glintPrime), inline=False)
-        embed.add_field(name="Avatar peeks", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(peekPrime), inline=False)
+        embed.add_field(name="Payload", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[1][3]), inline=False)
+        embed.add_field(name="Echos", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[6][3]), inline=False)
+        embed.add_field(name="Artigraph", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[2][3]), inline=False)
+        embed.add_field(name="Terminals", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[3][3]), inline=False)
+        embed.add_field(name="Batteries", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[4][3]), inline=False)
+        embed.add_field(name="Glints", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[5][3]), inline=False)
+        embed.add_field(name="Avatar peeks", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[0][3]), inline=False)
         embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(totalsink), inline=False)
         embed.add_field(name="Total Prime to sink schedule", value="```ansi\n\u001b[0;32m{:,}```".format(sinkdistro), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")

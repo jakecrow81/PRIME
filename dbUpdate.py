@@ -205,7 +205,8 @@ def primeDbUpdate():
         ("circSupply", 0, 0, 0, circulating),
         ("investorEmit", (751853),  0, 0, 0),
         ("dailyEmit", 1791, 0, 0, 0),
-        ("holders", 0, 0, 0, holders)
+        ("holders", 0, 0, 0, holders),
+        ("studioEmit", (910370),  0, 0, 0)
     ]
     remoteCrsr.executemany(sql_insert_into_prime, values)
     remoteDbConnection.commit()
@@ -245,7 +246,8 @@ def primeDbUpdate():
         ("circSupply", 0, 0, 0, circulating),
         ("investorEmit", (751853),  0, 0, 0),
         ("dailyEmit", 1791, 0, 0, 0),
-        ("holders", 0, 0, 0, holders))
+        ("holders", 0, 0, 0, holders),
+        ("studioEmit", (910370),  0, 0, 0))
     crsr.executemany(sqlite_insert_with_param, data)
     dbconnection.commit()
     crsr.close()
