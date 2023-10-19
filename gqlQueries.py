@@ -7,7 +7,8 @@ load_dotenv()
 DEFINEDAPI = os.getenv('DEFINED_API')
 
 
-#Snapshot query blocks, for active and closed proposals
+#Snapshot query blocks, for active and closed proposals. These utilized the api from snapshot.org, currently no api key is needed.
+#Open votes
 async def snapshotQuery(space):
     transport = AIOHTTPTransport(url="https://hub.snapshot.org/graphql", headers={'Content-Type': 'application/json'})
     gqlclient = Client(transport=transport, fetch_schema_from_transport=True)
@@ -42,6 +43,7 @@ async def snapshotQuery(space):
     result = await gqlclient.execute_async(query, variable_values=params)
     return result
 
+#Closed votes
 async def snapshotClosedQuery(space):
     transport = AIOHTTPTransport(url="https://hub.snapshot.org/graphql", headers={'Content-Type': 'application/json'})
     gqlclient = Client(transport=transport, fetch_schema_from_transport=True)

@@ -52,43 +52,16 @@ async def on_message(message):
         #await message.channel.send(f"``Daily emissions for investors: 24,718``") #This is distributed monthly, but this is the daily amount if it were divided into days
         #await message.channel.send(f"``Daily emissions for sets: 1,791``") #Normal sets total per day:  1721.8728405848442 Art sets total per day:  68.87491362339375 Total:  1790.747754208238. Set numbers are <for any set except art> number cached * daily amount * number of types for that set (aka  100 pd1se sets * 1 daily prime * 7 different se sets). Art set bucket == the output of any other single pool
 
-    #prime overview, embed
+    #Fetch caching, sink, circulating, unlock data from db
     if message.content.lower() == '.prime' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
-        #primeEventClaimTotal = 7894941
-        #primeKeyClaimTotal = primeKeyClaim()
-        #primeSetClaimTotal = primeSetClaim()
-        #primeCDClaimTotal = primeCDClaim()
-        #primeCoreClaimTotal = primeCoreClaim()
-        #primeMPClaimTotal = primeMPClaim()
-        
-        #currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted, launchPartners = emitCall()
-        
-        #peekPrime = avatarCall()[3]
-        #payloadTotal = Payloadcall()[0]
-        #artigraphTotal = Artigraphcall()[0]
-        #terminalTotal = terminalCall()
-        #batteryTotal = batteryCall()
-        #glintPrime = glintSunk()
-        #echoPrime = int(echoCall())
-        
-        #circulating = primeCirculating()
-        
-        #launchPartners = 1950000
-        #investorMonthly = 751853
-        #dailyEmit = 1791
-        #holders = primeHolders()
-
         primeResult = await getPrimeData(["primeEvent", "primeKey", "primeSet", "cornerstone", "launchPartners", "avatar", "payload", "artigraph", "terminal", "battery", "glint", "echo", "circSupply", "investorEmit", "dailyEmit", "holders", "studioEmit"])
-
         claimTotal = round(primeResult[0][2] + primeResult[1][2] + primeResult[2][2] + primeResult[3][2], 3)
         emitTotal = primeResult[0][1] + primeResult[1][1] + primeResult[3][1] + primeResult[2][1]
         totalsink = primeResult[6][3] + primeResult[7][3] + primeResult[8][3] + primeResult[9][3] + primeResult[5][3] + primeResult[10][3] + primeResult[11][3]
         percentSunk = round(totalsink / (claimTotal + primeResult[4][1]) * 100, 2)
-
         investorMonths = unlockInvestor()
         studioMonths = unlockStudio()
-
         embed=discord.Embed(title="Overview of Prime", color=0xDEF141)
         embed.add_field(name="Prime holders", value="```ansi\n\u001b[0;32mUnique holders: {:,}```".format(primeResult[15][4]), inline=False)
         embed.add_field(name="Prime Events", value="```ansi\n\u001b[0;32mEmissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(primeResult[0][1]), int(primeResult[0][2]), round((primeResult[0][2] / primeResult[0][1]) * 100, 2)), inline=False)
@@ -104,19 +77,11 @@ async def on_message(message):
         await message.channel.send(embed=embed)
         await ctx.delete()
 
-    #Call Sink functions and print simplified results for all + total
+    #Fetch sink data from db
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
         primeResult = await getPrimeData(["avatar", "payload", "artigraph", "terminal", "battery", "glint", "echo"])
-        #peekPrime = avatarCall()[3]
-        #payloadTotal = Payloadcall()[0]
-        #artigraphTotal = Artigraphcall()[0]
-        #terminalTotal = terminalCall()
-        #batteryTotal = batteryCall()
-        #glintPrime = glintSunk()
-        #echoPrime = int(echoCall())
         totalsink = primeResult[0][3] + primeResult[1][3] + primeResult[2][3] + primeResult[3][3] + primeResult[4][3] + primeResult[5][3] + primeResult[6][3]
-        #totalsink = payloadTotal + artigraphTotal + terminalTotal + batteryTotal + peekPrime + glintPrime + echoPrime
         sinkdistro = int((primeResult[2][3] * .89) + primeResult[0][3] + primeResult[1][3] + primeResult[3][3] + primeResult[4][3] + primeResult[5][3] + primeResult[6][3])
         embed=discord.Embed(title="Overview of Sinks", color=0xDEF141)
         embed.add_field(name="Payload", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[1][3]), inline=False)
@@ -132,7 +97,7 @@ async def on_message(message):
         await message.channel.send(embed=embed)
         await ctx.delete()
 
-    #Begin blocks for individual sinks/sets/etc calls
+    #Payload breakdown, data fetched from Alchemy
     if message.content.lower() == '.prime payload' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
@@ -145,16 +110,7 @@ async def on_message(message):
         await message.channel.send(embed=embed)
         await ctx.delete()
 
-    if message.content.lower().startswith('.prime glint') and message.channel.id != 1085860941935153203:
-        ctx = await message.channel.send("`Processing, please be patient.`")
-        glintPrime = glintSunk()
-        embed=discord.Embed(title="Overview of Glints", color=0xDEF141)
-        embed.add_field(name="Prime directly sunk into glints", value="```ansi\n\u001b[0;32m{:,}```".format(glintPrime), inline=False)
-        embed.set_footer(text="Please note this is intended as an estimate only")
-        await message.channel.send(embed=embed)
-        await ctx.delete()
-
-    #terminals
+    #Terminal breakdown, data fetched from Alchemy
     if message.content.lower().startswith('.prime terminal') or message.content.lower().startswith('.prime battery') or message.content.lower().startswith('.prime batteries') and message.channel.id != 1085860941935153203 or message.content.lower().startswith('.prime companion') and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
         terminalTotal = terminalCall()
@@ -171,8 +127,26 @@ async def on_message(message):
         await message.channel.send(embed=embed)
         await ctx.delete()
 
+    #Avatar breakdown, data fetched from Alchemy. This command may need updating.
+    if message.content.lower().startswith('.prime avatar') and message.channel.id != 1085860941935153203:
+        ctx = await message.channel.send("`Processing, please be patient.`")
+        avatarsManifested, avatarsPeeked, percentagePeeked, peekPrime = avatarCall()
+        embed=discord.Embed(title=f"Avatar overview", color=0xDEF141)
+        embed.add_field(name="Avatars manifested", value="```ansi\n\u001b[0;32m{:,}```".format(avatarsManifested, inline=False))
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="Avatars peeked", value="```ansi\n\u001b[0;32m{:,}```".format(avatarsPeeked, inline=False))
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="Prime spent on peeks", value="```ansi\n\u001b[0;32m{:,}```".format(peekPrime, inline=False))
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="\u200B", value="\u200B")  # newline
+        embed.add_field(name="Percentage of avatars peeked", value="```ansi\n\u001b[0;32m{:.3}%```".format(percentagePeeked, inline=False))
+        embed.set_footer(text="Please note this is intended as an estimate only")
+        await message.channel.send(embed=embed)
+        await ctx.delete()
 
-    #direct artigraph block
+    #Artigraph breakdown, data fetched from Alchemy
     if message.content.lower() == '.prime artigraph' and message.channel.id != 1085860941935153203:
         artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
         artigraphsinkdistro = int(artigraphTotal * .89)
@@ -201,15 +175,7 @@ async def on_message(message):
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
-    #direct echo block
-    if message.content.lower().startswith('.prime echo') and message.channel.id != 1085860941935153203:
-        echoPrime = echoCall()
-        embed=discord.Embed(title="Echos overview", color=0xDEF141)
-        embed.add_field(name="Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(echoPrime, inline=True))
-        embed.set_footer(text="Please note this is intended as an estimate only")
-        await message.channel.send(embed=embed)
-
-    #Block for ALL Cornerstone assets, returns a line for each set with emissions only
+    #Cornerstone breakdown, data fetched from db
     if message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core' and message.channel.id != 1085860941935153203:
         setResult = await getSetData(["cd", "mp", "core"])
         mpCount = primeMpCached()
@@ -220,9 +186,8 @@ async def on_message(message):
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
-    #PK block
+    #PK breakdown, used to determine date and PK emissions based on time from start but that is no longer relevant. Data fetched from db
     if message.content.lower() == '.prime pk' and message.channel.id != 1085860941935153203:
-        #PKtotalCached, PK, totalpkprime, totalpkprimeemitted, dayspassedpercentage, pkprimeleft, pkpercentageleft = PKcall()
         result = await getSetData("pk")
         cachestartdate = date(2022, 7, 18)
         currentdate = date.today()
@@ -244,7 +209,7 @@ async def on_message(message):
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
-    #Block for Prime Drives
+    #Prime Drive breakdown, data fetched from db
     if message.content.lower() == '.prime pd' and message.channel.id != 1085860941935153203:
         result = await getSetData("pd")
         embed=discord.Embed(title="Prime Drive overview", color=0xDEF141)
@@ -252,7 +217,7 @@ async def on_message(message):
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
-    #Block for ALL CB sets, returns a line for each set with emissions only
+    #CB sets breakdown, data fetched from db
     if message.content.lower() == '.prime cb' and message.channel.id != 1085860941935153203:
         cbResults = await getSetData(["16", "4", "7", "11", "19", "25", "30"])
         embed=discord.Embed(title="CB sets cached  |  daily emissions", color=0xDEF141)
@@ -266,7 +231,7 @@ async def on_message(message):
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
-    #Block for ALL SE sets, returns a line for each set with emissions only
+    #SE sets breakdown, data fetched from db
     if message.content.lower() == '.prime se' and message.channel.id != 1085860941935153203:
         seResults = await getSetData(["17", "5", "9", "13", "21", "23", "28"])
         embed=discord.Embed(title="SE sets cached  |  daily emissions", color=0xDEF141)
@@ -280,7 +245,7 @@ async def on_message(message):
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
-    #Block for ALL PL sets, returns a line for each set with emissions only
+    #PL sets breakdown, data fetched from db
     if message.content.lower() == '.prime pl' and message.channel.id != 1085860941935153203:
         plResults = await getSetData(["8", "12", "24", "29"])
         embed=discord.Embed(title="PL sets cached  |  daily emissions", color=0xDEF141)
@@ -291,7 +256,7 @@ async def on_message(message):
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
-    #Block for ALL FE sets, returns a line for each set with emissions only
+    #FE sets breakdown, data fetched from db
     if message.content.lower() == '.prime fe' and message.channel.id != 1085860941935153203:
         feResults = await getSetData(["14", "2", "0", "1", "20", "22", "27"])
         embed=discord.Embed(title="FE sets cached  |  daily emissions", color=0xDEF141)
@@ -305,7 +270,7 @@ async def on_message(message):
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
-    #Block for ALL Art sets, returns a line for each set with emissions only
+    #AC sets breakdown, data fetched from db
     if message.content.lower() == '.prime art' or message.content.lower() == '.prime ac' and message.channel.id != 1085860941935153203:
         acResults = await getSetData(["15", "3", "6", "10", "18", "26", "31"])
         embed=discord.Embed(title="Art sets cached  |  daily emissions", color=0xDEF141)
@@ -319,21 +284,22 @@ async def on_message(message):
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
-    #sets block, outputs an image via pandas
+    #Counts for all cached sets, data fetched from db, creata pandas dataframe, export .png via dataframe_image to upload to Discord
     if message.content == (".prime sets") and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
+        #fetch data from db
         cbResults = await getSetData(["16", "4", "7", "11", "19", "25", "30"])
         seResults = await getSetData(["17", "5", "9", "13", "21", "23", "28"])
         plResults = await getSetData(["8", "12", "24", "29"])
         feResults = await getSetData(["14", "2", "0", "1", "20", "22", "27"])
         acResults = await getSetData(["15", "3", "6", "10", "18", "26", "31"])
+        #assign variables
         FeTotal = feResults[0][1] + feResults[1][1] + feResults[2][1] + feResults[3][1] + feResults[4][1] + feResults[5][1] + feResults[6][1]
         SeTotal = seResults[0][1] + seResults[1][1] + seResults[2][1] + seResults[3][1] + seResults[4][1] + seResults[5][1] + seResults[6][1]
         CbTotal = cbResults[0][1] + cbResults[1][1] + cbResults[2][1] + cbResults[3][1] + cbResults[4][1] + cbResults[5][1] + cbResults[6][1]
         PlTotal = plResults[0][1] + plResults[1][1] + plResults[2][1] + plResults[3][1]
         AcTotal = acResults[0][1] + acResults[1][1] + acResults[2][1] + acResults[3][1] + acResults[4][1] + acResults[5][1] + acResults[6][1]
-        #overallTotal = FeTotal + SeTotal + CbTotal + PlTotal + AcTotal
-
+        #create dataframe
         df2 = pd.DataFrame(np.array([[feResults[0][1], seResults[0][1], 0, cbResults[0][1], acResults[0][1]],
         [feResults[1][1], seResults[1][1], 0, cbResults[1][1], acResults[1][1]],
         [feResults[2][1], seResults[2][1], plResults[0][1], cbResults[2][1], acResults[2][1]],
@@ -366,7 +332,7 @@ async def on_message(message):
             'props': [('background-color', '#262815'), ('border', '1px solid #ADB550'), ('font-size', '20px')]
         }
         ])
-
+        #export .png
         dfi.export(df2_styled, 'df2_styled.png')
         await message.channel.send(file=discord.File('df2_styled.png'))
         await ctx.edit(content="`Number of sets cached:`")
@@ -393,7 +359,7 @@ async def on_message(message):
     #    embed.set_footer(text="Please note this is intended as an estimate only")
     #    await message.channel.send(embed=embed)
 
-    #discord commands for open votes
+    #Snapshot.org open votes query
     if message.content.lower() == (".snapshot") and message.channel.id == 1085860941935153203:
         result = await snapshotQuery("echelonassembly.eth")
 
@@ -438,7 +404,7 @@ async def on_message(message):
             embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
             await message.channel.send(embed=embed)
 
-    #open emissary votes
+    #Snapshot.org open emissary votes query
     if message.content.lower() == (".snapshot e") and message.channel.id == 1085860941935153203:
         result = await snapshotQuery("echelon.eth")
 
@@ -483,7 +449,7 @@ async def on_message(message):
             embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
             await message.channel.send(embed=embed)
 
-    # Discord commands for closed votes
+    #Snapshot.org closed votes query
     if message.content.lower() == (".snapshot closed") and message.channel.id == 1085860941935153203:
         result = await snapshotClosedQuery("echelonassembly.eth")
 
@@ -516,7 +482,7 @@ async def on_message(message):
             embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
             await message.channel.send(embed=embed)
 
-    #closed emissary votes
+    #Snapshot.org closed emissary votes query
     if message.content.lower() == (".snapshot e closed") and message.channel.id == 1085860941935153203:
         result = await snapshotClosedQuery("echelon.eth")
 
@@ -549,43 +515,27 @@ async def on_message(message):
             embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
             await message.channel.send(embed=embed)
 
-    #gm block
+    #Easter egg gm command, just a simple reply to user with a gm
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm' and message.channel.id != 1085860941935153203:
         await message.reply(f'`gm {nick}!`  <a:PrimeBounce:1106262620484415528>', mention_author=False)
 
-    #avatar, manifest and sinks
-    if message.content.lower().startswith('.prime avatar') and message.channel.id != 1085860941935153203:
-        ctx = await message.channel.send("`Processing, please be patient.`")
-        avatarsManifested, avatarsPeeked, percentagePeeked, peekPrime = avatarCall()
-        embed=discord.Embed(title=f"Avatar overview", color=0xDEF141)
-        embed.add_field(name="Avatars manifested", value="```ansi\n\u001b[0;32m{:,}```".format(avatarsManifested, inline=False))
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="Avatars peeked", value="```ansi\n\u001b[0;32m{:,}```".format(avatarsPeeked, inline=False))
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="Prime spent on peeks", value="```ansi\n\u001b[0;32m{:,}```".format(peekPrime, inline=False))
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="Percentage of avatars peeked", value="```ansi\n\u001b[0;32m{:.3}%```".format(percentagePeeked, inline=False))
-        embed.set_footer(text="Please note this is intended as an estimate only")
-        await message.channel.send(embed=embed)
-        await ctx.delete()
-
+#Print connection successful message to terminal after bot init completes
 @client.event
 async def on_ready():
     print('Successfully connected. Bot is ready!')
 
+#Main function. Add db update jobs to async scheduler, run async on specific interval so as to not block main Discord thread
 async def main():
     try:
-        sched = AsyncIOScheduler()
+        sched = AsyncIOScheduler() #select async scheduler so we don't block Discord thread
         sched.add_job(cachingDbUpdate, 'interval', minutes=15) #task function to add and how often to run it
-        sched.add_job(primeDbUpdate, 'interval', minutes=15)
+        sched.add_job(primeDbUpdate, 'interval', minutes=15) #task function to add and how often to run it
         sched.start() #start scheduled tasks
         discord.utils.setup_logging(root = False) #turn on logging so we see connect success and heartbeat messages
         await client.start(TOKEN) #async discord init
     except asyncio.CancelledError:
         print("asyncIo cancelled, most likely due to keyboard interrupt. Program terminated.")
 
+#run main
 if __name__ == "__main__":
         asyncio.run(main())

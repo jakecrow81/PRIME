@@ -2,11 +2,12 @@ from dotenv import load_dotenv
 import requests
 import os
 
+#obtain api key variables from .env
 load_dotenv()
 alchemyurl = os.getenv('ALCHEMY_API')
 alchemyApiKey = os.getenv('ALCHEMY_API_KEY_ONLY')
 
-#pd6 faucet
+#PD6 Faucet information
 def faucet():
     #response = requests.post('https://api.ethplorer.io/getAddressInfo/0xd97a0a7c55b335cef440d7a33c5bf5b6ee2af9e2?apiKey=freekey&showETHTotals=true').json()
     #packEth = response['ETH']['totalIn']
@@ -38,47 +39,49 @@ def faucet():
         payload["params"][0]["pageKey"] = response["result"]["pageKey"]
     return txncount
 
-def manifestPacks():
-    #response = requests.post('https://api.ethplorer.io/getAddressInfo/0xd97a0a7c55b335cef440d7a33c5bf5b6ee2af9e2?apiKey=freekey&showETHTotals=true').json()
-    #packEth = response['ETH']['totalIn']
-    #packsSold = packEth / .195
-    payload = {
-    "id": 1,
-    "jsonrpc": "2.0",
-    "method": "alchemy_getAssetTransfers",
-    "params": [
-        {
-            "fromBlock": "0xF97A68",
-            "category": ["external"],
-            "toAddress": "0xd97A0a7c55b335ceF440d7A33c5BF5b6eE2Af9E2"
-        }
-    ]
-    }
-    headers = {
-        "accept": "application/json",
-        "content-type": "application/json"
-    }
-    onePack = 0
-    twoPack = 0
-    maxPax = 0
-    packEth = 0
-    while True:
-        response = requests.post(alchemyurl, json=payload, headers=headers).json()
-        for i in range(len(response["result"]["transfers"])):
-            packEth = packEth + response["result"]["transfers"][i]["value"]
-            if response["result"]["transfers"][i]["value"] == 0.195:
-                onePack = onePack + 1
-            if response["result"]["transfers"][i]["value"] == 0.39:
-                twoPack = twoPack + 1
-            if response["result"]["transfers"][i]["value"] == 0.585:
-                maxPax = maxPax + 1
-        if not 'pageKey' in response["result"]:
-                break
-        payload["params"][0]["pageKey"] = response["result"]["pageKey"]
-    packsSold = packEth / .195
-    return onePack, twoPack, maxPax, int(packsSold)
 
-#Payload Sink
+## Manifest pack information, no longer used and deprecated.
+#def manifestPacks():
+#    #response = requests.post('https://api.ethplorer.io/getAddressInfo/0xd97a0a7c55b335cef440d7a33c5bf5b6ee2af9e2?apiKey=freekey&showETHTotals=true').json()
+#    #packEth = response['ETH']['totalIn']
+#    #packsSold = packEth / .195
+#    payload = {
+#    "id": 1,
+#    "jsonrpc": "2.0",
+#    "method": "alchemy_getAssetTransfers",
+#    "params": [
+#        {
+#            "fromBlock": "0xF97A68",
+#            "category": ["external"],
+#            "toAddress": "0xd97A0a7c55b335ceF440d7A33c5BF5b6eE2Af9E2"
+#        }
+#    ]
+#    }
+#    headers = {
+#        "accept": "application/json",
+#        "content-type": "application/json"
+#    }
+#    onePack = 0
+#    twoPack = 0
+#    maxPax = 0
+#    packEth = 0
+#    while True:
+#        response = requests.post(alchemyurl, json=payload, headers=headers).json()
+#        for i in range(len(response["result"]["transfers"])):
+#            packEth = packEth + response["result"]["transfers"][i]["value"]
+#            if response["result"]["transfers"][i]["value"] == 0.195:
+#                onePack = onePack + 1
+#            if response["result"]["transfers"][i]["value"] == 0.39:
+#                twoPack = twoPack + 1
+#            if response["result"]["transfers"][i]["value"] == 0.585:
+#                maxPax = maxPax + 1
+#        if not 'pageKey' in response["result"]:
+#                break
+#        payload["params"][0]["pageKey"] = response["result"]["pageKey"]
+#    packsSold = packEth / .195
+#    return onePack, twoPack, maxPax, int(packsSold)
+
+#Payload sink information
 def Payloadcall():
     jsonpayload = {
     "id": 1,
@@ -114,7 +117,7 @@ def Payloadcall():
     payloadUnique = set(payloadHits)
     return int(payloadTotal), payloadHits, payloadUnique
 
-#Terminal sink
+#Terminal sink information
 def terminalCall():
     jsonpayload = {
     "id": 1,
@@ -151,7 +154,7 @@ def terminalCall():
     #terminalUnique = set(terminalHits)
     return int(terminalTotal)
 
-#Battery sink
+#Battery sink information
 def batteryCall():
     jsonpayload = {
     "id": 1,
@@ -188,7 +191,7 @@ def batteryCall():
     #batteryUnique = set(batteryHits)
     return int(batteryTotal)
 
-#Companion mints
+#Companion information
 def companionCall():
     jsonpayload = {
     "id": 1,
@@ -220,7 +223,7 @@ def companionCall():
         jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
     return int(companionTotal)
 
-#Artigraph Sink
+#Artigraph Sink information
 def Artigraphcall():
     jsonpayload = {
     "id": 1,
@@ -339,7 +342,7 @@ def payloadTimeframe(block="0x0"):
         jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
     return int(payloadTotal), payloadHits
 
-#Prime Key Claims
+#Prime Key claim information
 def primeKeyClaim():
     payload = {
     "id": 1,
@@ -368,7 +371,7 @@ def primeKeyClaim():
     currenttotal = currenttotal + total
     return currenttotal
 
-#Prime Set Claims
+#Prime Set claim information
 def primeSetClaim():
     payload = {
     "id": 1,
@@ -397,7 +400,7 @@ def primeSetClaim():
     currenttotal = currenttotal + total
     return currenttotal
 
-#CD PRIME Claims
+#CD claim information
 def primeCDClaim():
     payload = {
     "id": 1,
@@ -426,7 +429,7 @@ def primeCDClaim():
     currenttotal = currenttotal + total
     return currenttotal
 
-#Core PRIME Claims
+#Core claim information
 def primeCoreClaim():
     payload = {
     "id": 1,
@@ -455,7 +458,7 @@ def primeCoreClaim():
     currenttotal = currenttotal + total
     return currenttotal
 
-#MP Prime Claims
+#MP claim information
 def primeMPClaim():
     payload = {
     "id": 1,
@@ -489,6 +492,8 @@ def primeMpCached():
     response = requests.get(f'https://eth-mainnet.g.alchemy.com/nft/v2/{alchemyApiKey}/getNFTs?owner=0x89Bb49d06610B4b18e355504551809Be5177f3D0&contractAddresses\[\]=0x76be3b62873462d2142405439777e971754e8e77&withMetadata=true&pageSize=100').json()
     return response['totalCount']
 
+
+ #Avatar peek information
 def peekErc20():
     jsonpayload = {
     "id": 1,
@@ -522,6 +527,8 @@ def peekErc20():
         jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
     return erc20Peek
 
+
+#Transfer transactions on Avatar contract
 def erc721Txn():
     jsonpayload = {
     "id": 1,
@@ -553,6 +560,7 @@ def erc721Txn():
         jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
     return erc721TxnList
 
+#Mint transactions on Avatar contract. This and erc721Txn data are combined to verify avatar mint validity.
 def erc721Mint():
     jsonpayload = {
     "id": 1,
@@ -585,6 +593,7 @@ def erc721Mint():
         jsonpayload["params"][0]["pageKey"] = response["result"]["pageKey"]
     return erc721MintList
 
+#Glint sink information
 def glintSunk():
     payload = {
     "id": 1,

@@ -20,11 +20,13 @@ def echoCall():
     finalPrime = round(echoPrime / 1000000000000000000, 3)
     return int(finalPrime)
 
+#PRIME circ supply, pulled directly from Echelon API.
 def primeCirculating():
     response = requests.get('https://echelon.io/api/supply/').json()
     circSupply = int(float(response['circulatingSupply']))
     return circSupply
 
+#PRIME holder count, this is pulled from the Chainbase API
 def primeHolders():
     url = "https://api.chainbase.online/v1/token/holders?chain_id=1&contract_address=0xb23d80f5FefcDDaa212212F028021B41DEd428CF&page=1&limit=1"
     headers = {
@@ -34,7 +36,7 @@ def primeHolders():
     response = requests.get(url, headers=headers).json()
     return int(response['count'])
 
-#oldblock number function, takes input of N days and returns hex code for block number from N days ago
+#oldblock number function, takes input of N days and returns hex code for block number from N days ago. Referenced in other functions such as historical sink data.
 def oldBlock(n):
     oldDate = datetime.now().replace(second=0, microsecond=0) - timedelta(days = n)
     unix_time = int(oldDate.timestamp())

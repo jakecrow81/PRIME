@@ -16,6 +16,7 @@ from extraFunctions import *
 import functools
 import typing
 
+#More variables here for wiki ftp upload
 load_dotenv()
 DEFINEDAPI = os.getenv('DEFINED_API')
 WIKIDOMAIN = os.getenv('WIKI_DOMAIN')
@@ -23,6 +24,7 @@ WIKIDBNAME = os.getenv('WIKI_DB_NAME')
 WIKIUSER = os.getenv('WIKI_USER')
 WIKIPW = os.getenv('WIKI_PW')
 
+#same dictionary that is in fetchFromDb.py
 poolDict = {"0": "PD2", "1": "PD3", "2": "PD1", "3": "PD1 Art", "4": "PD1 CB"
             , "5": "PD1 SE", "6": "PD2 Art", "7": "PD2 CB", "8": "PD2 PL", "9": "PD2 SE"
             , "10": "PD3 Art", "11": "PD3 CB", "12": "PD3 PL", "13": "PD3 SE", "14": "PS15"
@@ -40,10 +42,10 @@ def to_thread(func: typing.Callable) -> typing.Coroutine:
     return wrapper
 
 
-
-#1) Connect and create db if needed, 2) create sets table if needed, 3) update sets table with fresh data, 4) upload db via ftp
+#1) Connect and create db if needed, 2) create sets table if needed, 3) update sets table with fresh data, 4) upload db via ftp, 5) update local db
 @to_thread
 def cachingDbUpdate():
+    #gather data from Defined
     setInfo = contractData("0xECa9D81a4dC7119A40481CFF4e7E24DD0aaF56bD", ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"
                                                                     , "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"
                                                                     , "26", "27", "28", "29", "30", "31"])
@@ -61,7 +63,7 @@ def cachingDbUpdate():
     remoteDbConnection = mysql.connect(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
     remoteCrsr = remoteDbConnection.cursor()
 
-    #create sets table if it does not already exist
+    #REMOTE - create sets table if it does not already exist
     sql_create_sets_table = """ CREATE TABLE IF NOT EXISTS sets (
                                             poolId varchar(255) PRIMARY KEY NOT NULL,
                                             cached int NOT NULL,
@@ -82,7 +84,7 @@ def cachingDbUpdate():
             remoteCrsr.execute(sql_insert_into_sets, values)
             remoteDbConnection.commit()
 
-    #add rows for specific assets.
+    #add rows for specific assets, commit REMOTE updates
     sql_insert_into_sets = "REPLACE INTO sets (poolId, cached, dailyPrime, name) VALUES (%s, %s, %s, %s)"
     values = [
         ("pk", int(pkInfo[0]['totalSupply']), round(int(pkInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['pk']),
@@ -95,7 +97,7 @@ def cachingDbUpdate():
     remoteDbConnection.commit()
     remoteCrsr.close()
 
-    #sqlite local db creation and update
+    #LOCAL - sqlite local db creation and update
     dbconnection = sqlite3.connect("./databases/cachingPools.db")
     crsr = dbconnection.cursor()
 
@@ -108,8 +110,7 @@ def cachingDbUpdate():
                                     ); """
     crsr.execute(sql_create_sets_table)
 
-    #add in row for each set pool. read id from poolDict to get set name.
-    
+    #add in row for each set pool. read id from poolDict to get set name.    
     for i in range(len(setInfo)):
             for key, value in poolDict.items():
                 if setInfo[i]['poolId'] == key:
@@ -121,7 +122,7 @@ def cachingDbUpdate():
             crsr.execute(sqlite_insert_with_param, data)
             dbconnection.commit()
 
-    #add rows for specific assets.
+    #add rows for specific assets, commit LOCAL updates
     sqlite_insert_with_param = """INSERT OR REPLACE INTO sets
                                 (poolId, cached, dailyPrime, name)
                                 VALUES (?, ?, ?, ?);"""
@@ -137,11 +138,7 @@ def cachingDbUpdate():
     #finished, print success message with timestamp
     print("\u001b[33mCaching databases (local and remote) updated at:\u001b[0m", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
-    # dbPath = Path('./databases/cachingPools.db')
-    # with FTP('speedtest.tele2.net', 'anonymous', '') as ftp, open(dbPath, 'rb') as file:
-    #     ftp.storbinary(f'STOR {dbPath.name}', file)
-
-
+#much the same as previous db creation/update, but this utilizes calls to Alchemy for sink data
 @to_thread
 def primeDbUpdate():
     primeKeyClaimTotal = primeKeyClaim()
@@ -159,17 +156,8 @@ def primeDbUpdate():
     echoPrime = echoCall()
     circulating = primeCirculating()
     holders = primeHolders()
-    #cachestartdate = date(2023, 9, 11)
-    #    currentdate = date.today()
-    #    dayspassed = currentdate - cachestartdate
-    #    totalpkprime = 12222222
-    #    if dayspassed.days < 365:
-    #        dayspassedpercentage = float(dayspassed.days / 365)
-    #    else:
-    #        dayspassedpercentage = 1
-    #    totalpkprimeemitted = round((totalpkprime * dayspassedpercentage), 1)
 
-    #mysql remote db creation and update
+    #REMOTE - mysql remote db creation and update
     HOST = WIKIDOMAIN # or "domain.com"
     DATABASE = WIKIDBNAME
     USER = WIKIUSER
@@ -187,7 +175,7 @@ def primeDbUpdate():
                                         ); """
     remoteCrsr.execute(sql_create_prime_table)
 
-    #add rows for specific assets.
+    #add rows for specific assets, commit REMOTE db
     sql_insert_into_prime = "REPLACE INTO prime (name, emitted, claimed, sunk, data) VALUES (%s, %s, %s, %s, %s)"
     values = [
         ("primeEvent", 7894941, 7894941, 0, 0),
@@ -212,7 +200,7 @@ def primeDbUpdate():
     remoteDbConnection.commit()
     remoteCrsr.close()
 
-    #sqlite local db creation and update
+    #LOCAL - sqlite local db creation and update
     dbconnection = sqlite3.connect("./databases/prime.db")
     crsr = dbconnection.cursor()
 
@@ -226,7 +214,7 @@ def primeDbUpdate():
                                         ); """
     crsr.execute(sql_create_prime_table)
 
-    #add rows for specific assets.
+    #add rows for specific assets, commit LOCAL db
     sqlite_insert_with_param = """INSERT OR REPLACE INTO prime
                                 (name, emitted, claimed, sunk, data)
                                 VALUES (?, ?, ?, ?, ?);"""

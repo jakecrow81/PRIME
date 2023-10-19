@@ -1,5 +1,6 @@
 import sqlite3
 
+#Dictionary for poolIds from caching contracts, as well as additional key/values for specific assets that are included in db
 poolDict = {"0": "PD2", "1": "PD3", "2": "PD1", "3": "PD1 Art", "4": "PD1 CB"
             , "5": "PD1 SE", "6": "PD2 Art", "7": "PD2 CB", "8": "PD2 PL", "9": "PD2 SE"
             , "10": "PD3 Art", "11": "PD3 CB", "12": "PD3 PL", "13": "PD3 SE", "14": "PS15"
@@ -9,8 +10,8 @@ poolDict = {"0": "PD2", "1": "PD3", "2": "PD1", "3": "PD1 Art", "4": "PD1 CB"
             , "30": "PD6 CB", "31": "PD6 Art", "pk": "Prime Key", "mp": "Masterpiece"
             , "cd": "Catalyst Drive", "core": "The Core", "pd": "Prime Drive"}
 
+#fetch from db for cached sets/assets. Input (ids) is first stripped to prepare the query. IF is if we are inputting multiple ids and returning multiple rows of data, ELSE is for 1 input/output. This data is sorted before being returned so returned order matches input order.
 async def getSetData(ids):
-    #forQuery = str(ids).replace("'", "").strip("[]")
     forQuery = str(ids).strip("[]")
     dbconnection = sqlite3.connect("./databases/cachingPools.db")
     crsr = dbconnection.cursor()
@@ -30,8 +31,8 @@ async def getSetData(ids):
         crsr.close()
         return results
 
+#fetch from db for Prime. Input (ids) is first stripped to prepare the query. IF is if we are inputting multiple ids and returning multiple rows of data, ELSE is for 1 input/output. This data is sorted before being returned so returned order matches input order.
 async def getPrimeData(ids):
-    #forQuery = str(ids).replace("'", "").strip("[]")
     forQuery = str(ids).strip("[]")
     dbconnection = sqlite3.connect("./databases/prime.db")
     crsr = dbconnection.cursor()
