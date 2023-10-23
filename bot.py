@@ -519,6 +519,10 @@ async def on_message(message):
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm' and message.channel.id != 1085860941935153203:
         await message.reply(f'`gm {nick}!`  <a:PrimeBounce:1106262620484415528>', mention_author=False)
 
+    if message.content.lower() == '.prime dbupdate' and message.channel.id != 1085860941935153203:
+        await cachingDbUpdate()
+        await primeDbUpdate()
+
 #Print connection successful message to terminal after bot init completes
 @client.event
 async def on_ready():
