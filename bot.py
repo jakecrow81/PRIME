@@ -519,9 +519,24 @@ async def on_message(message):
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm' and message.channel.id != 1085860941935153203:
         await message.reply(f'`gm {nick}!`  <a:PrimeBounce:1106262620484415528>', mention_author=False)
 
+    #command to manually start a db update, mainly just used for testing purposes
     if message.content.lower() == '.prime dbupdate' and message.channel.id != 1085860941935153203:
         await cachingDbUpdate()
         await primeDbUpdate()
+
+    #Planetfall pre-sale breakdown
+    if message.content.lower().startswith('.prime pf') and message.channel.id != 1085860941935153203:
+        ctx = await message.channel.send("`Processing, please be patient.`")
+        playerPack, collectorPack, collectorCrate, packEth = pfPresale()
+        embed=discord.Embed(title=f"Planetfall Presale", color=0xDEF141)
+        embed.add_field(name="Player packs from manifest", value="```ansi\n\u001b[0;32m{:,}```".format(0, inline=False))
+        embed.add_field(name="Collector's packs from manifest", value="```ansi\n\u001b[0;32m{:,}```".format(0, inline=False))
+        embed.add_field(name="Collector's crates from manifest", value="```ansi\n\u001b[0;32m{:,}```".format(0, inline=False))
+        embed.add_field(name="Player packs sold", value="```ansi\n\u001b[0;32m{:,}```".format(0, inline=False))
+        embed.add_field(name="Collector's packs sold", value="```ansi\n\u001b[0;32m{:,}```".format(0, inline=False))
+        embed.add_field(name="Collector's crates sold", value="```ansi\n\u001b[0;32m{:,}```".format(0, inline=False))
+        await message.channel.send(embed=embed)
+        await ctx.delete()
 
 #Print connection successful message to terminal after bot init completes
 @client.event

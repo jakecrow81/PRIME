@@ -40,46 +40,47 @@ def faucet():
     return txncount
 
 
-## Manifest pack information, no longer used and deprecated.
-#def manifestPacks():
-#    #response = requests.post('https://api.ethplorer.io/getAddressInfo/0xd97a0a7c55b335cef440d7a33c5bf5b6ee2af9e2?apiKey=freekey&showETHTotals=true').json()
-#    #packEth = response['ETH']['totalIn']
-#    #packsSold = packEth / .195
-#    payload = {
-#    "id": 1,
-#    "jsonrpc": "2.0",
-#    "method": "alchemy_getAssetTransfers",
-#    "params": [
-#        {
-#            "fromBlock": "0xF97A68",
-#            "category": ["external"],
-#            "toAddress": "0xd97A0a7c55b335ceF440d7A33c5BF5b6eE2Af9E2"
-#        }
-#    ]
-#    }
-#    headers = {
-#        "accept": "application/json",
-#        "content-type": "application/json"
-#    }
-#    onePack = 0
-#    twoPack = 0
-#    maxPax = 0
-#    packEth = 0
-#    while True:
-#        response = requests.post(alchemyurl, json=payload, headers=headers).json()
-#        for i in range(len(response["result"]["transfers"])):
-#            packEth = packEth + response["result"]["transfers"][i]["value"]
-#            if response["result"]["transfers"][i]["value"] == 0.195:
-#                onePack = onePack + 1
-#            if response["result"]["transfers"][i]["value"] == 0.39:
-#                twoPack = twoPack + 1
-#            if response["result"]["transfers"][i]["value"] == 0.585:
-#                maxPax = maxPax + 1
-#        if not 'pageKey' in response["result"]:
-#                break
-#        payload["params"][0]["pageKey"] = response["result"]["pageKey"]
-#    packsSold = packEth / .195
-#    return onePack, twoPack, maxPax, int(packsSold)
+# Manifest pack information, no longer used and deprecated.
+def pfPresale():
+    #response = requests.post('https://api.ethplorer.io/getAddressInfo/0xd97a0a7c55b335cef440d7a33c5bf5b6ee2af9e2?apiKey=freekey&showETHTotals=true').json()
+    #packEth = response['ETH']['totalIn']
+    #packsSold = packEth / .195
+    payload = {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "alchemy_getAssetTransfers",
+    "params": [
+        {
+            "fromBlock": "0xF97A68",
+            "category": ["external"],
+            "contractAddresses": ["0x6811f2f20c42f42656A3c8623aD5e9461b83f719"],
+            "toAddress": "0xd97A0a7c55b335ceF440d7A33c5BF5b6eE2Af9E2"
+        }
+    ]
+    }
+    headers = {
+        "accept": "application/json",
+        "content-type": "application/json"
+    }
+    playerPack = 0
+    collectorPack = 0
+    collectorCrate = 0
+    packEth = 0
+    while True:
+        response = requests.post(alchemyurl, json=payload, headers=headers).json()
+        for i in range(len(response["result"]["transfers"])):
+            packEth = packEth + response["result"]["transfers"][i]["value"]
+            #could also potentiall look at cardbacks included to know if the sale is for collector pack or crate?
+            if response["result"]["transfers"][i]["value"] % .018 == 0 and response["result"]["transfers"][i]["tokenId"] == 100200003:
+                playerPack = playerPack + (response["result"]["transfers"][i]["value"] / .018)
+            if response["result"]["transfers"][i]["value"] % .18 == 0 and response["result"]["transfers"][i]["tokenId"] == 100200001:
+                collectorPack = collectorPack + (response["result"]["transfers"][i]["value"] / .18)
+            if response["result"]["transfers"][i]["value"] % 1.6 == 0 and response["result"]["transfers"][i]["tokenId"] == 100200002:
+                collectorCrate = collectorCrate + (response["result"]["transfers"][i]["value"] / 1.6)
+        if not 'pageKey' in response["result"]:
+                break
+        payload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    return playerPack, collectorPack, collectorCrate, packEth
 
 #Payload sink information
 def Payloadcall():
