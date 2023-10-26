@@ -528,7 +528,7 @@ async def on_message(message):
     if message.content.lower().startswith('.prime pf') and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
         playerPack, collectorPack, collectorCrate, packEth = pfPresale()
-        embed=discord.Embed(title=f"Planetfall Presale", color=0xDEF141)
+        embed=discord.Embed(title=f"Planetfall Presale", description="**PP = Player Pack**\n**CP = Collector Pack**\n**CC = Collector Crate**", color=0xDEF141)
         embed.add_field(name="PP from manifest", value="```ansi\n\u001b[0;32m{:,}```".format(playerPack, inline=False))
         embed.add_field(name="CP from manifest", value="```ansi\n\u001b[0;32m{:,}```".format(collectorPack, inline=False))
         embed.add_field(name="CC from manifest", value="```ansi\n\u001b[0;32m{:,}```".format(collectorCrate, inline=False))
@@ -536,8 +536,9 @@ async def on_message(message):
         embed.add_field(name="CP from public sale", value="```ansi\n\u001b[0;32m{:,}```".format(0, inline=False))
         embed.add_field(name="CC from public sale", value="```ansi\n\u001b[0;32m{:,}```".format(0, inline=False))
         embed.add_field(name="PP total / % sold", value="```ansi\n\u001b[0;32m{:,} / {:.1f}%```".format(playerPack + 0, (playerPack / 50000) * 100, inline=False))
-        embed.add_field(name="CP total / % sold", value="```ansi\n\u001b[0;32m{:,} / {:.1f}%```".format(collectorPack + 0, ((collectorPack + (collectorCrate * 10)) / 18646) * 100,inline=False))
+        embed.add_field(name="CP total", value="```ansi\n\u001b[0;32m{:,}```".format(collectorPack + 0, inline=False))
         embed.add_field(name="CC total", value="```ansi\n\u001b[0;32m{:,}```".format(collectorCrate + 0, inline=False))
+        embed.add_field(name="Collector Packs + Crates / % sold", value="```ansi\n\u001b[0;32m{:,} / {:.1f}%```".format(collectorPack + (collectorCrate *10), ((collectorPack + (collectorCrate * 10)) / 18646) * 100,inline=True))
         await message.channel.send(embed=embed)
         await ctx.delete()
 
