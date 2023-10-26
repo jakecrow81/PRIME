@@ -35,7 +35,7 @@ def avatarCall():
     avatarsManifested = int(avatarMintPrime / 11)
     avatarsPeeked = int(peekPrime / 11)
     percentagePeeked = (int(peekPrime / 11) / int(avatarMintPrime / 11 + 6371)) * 100
-    return avatarsManifested, avatarsPeeked, percentagePeeked, int(peekPrime)
+    return avatarsManifested, avatarsPeeked, percentagePeeked, int(peekPrime), avatarMintPrime
 
 #Current Prime emissions
 def emitCall():

@@ -90,7 +90,7 @@ async def on_message(message):
         embed.add_field(name="Terminals", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[3][3]), inline=False)
         embed.add_field(name="Batteries", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[4][3]), inline=False)
         embed.add_field(name="Glints", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[5][3]), inline=False)
-        embed.add_field(name="Avatar peeks", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[0][3]), inline=False)
+        embed.add_field(name="Avatars", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[0][3]), inline=False)
         embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(totalsink), inline=False)
         embed.add_field(name="Total Prime to sink schedule", value="```ansi\n\u001b[0;32m{:,}```".format(sinkdistro), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
@@ -130,7 +130,7 @@ async def on_message(message):
     #Avatar breakdown, data fetched from Alchemy. This command may need updating.
     if message.content.lower().startswith('.prime avatar') and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
-        avatarsManifested, avatarsPeeked, percentagePeeked, peekPrime = avatarCall()
+        avatarsManifested, avatarsPeeked, percentagePeeked, peekPrime, avatarMintPrime = avatarCall()
         embed=discord.Embed(title=f"Avatar overview", color=0xDEF141)
         embed.add_field(name="Avatars manifested", value="```ansi\n\u001b[0;32m{:,}```".format(avatarsManifested, inline=False))
         embed.add_field(name="\u200B", value="\u200B")  # newline

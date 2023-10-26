@@ -152,7 +152,7 @@ def terminalCall():
     while True:
         response = requests.post(alchemyurl, json=jsonpayload, headers=headers).json()
         for i in range(len(response["result"]["transfers"])):
-            if response["result"]["transfers"][i]["value"] % 11 == 0 or response["result"]["transfers"][i]["value"] == 111:
+            if response["result"]["transfers"][i]["value"] % 11 == 0:
                 #terminalHits.append(response["result"]["transfers"][i]["from"])
                 terminalTotal = terminalTotal + response["result"]["transfers"][i]["value"]
         if not 'pageKey' in response["result"]:
