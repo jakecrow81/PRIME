@@ -61,32 +61,45 @@ def pfPresale():
     playerPack = 0
     collectorPack = 0
     collectorCrate = 0
+    publicPlayerPack = 0
+    publicCollectorPack = 0
+    publicCrate = 0
     packEth = 0
+    # could also potentially look at cardbacks included to know if the sale is for collector pack or crate?
+    # 0x05f8ee41 = 100200001 = collector pack
+    # 0x05f8ee42 = 100200002 = collector crate
+    # 0x05f8ee43 = 100200003 = player pack
+    # 0x05f8ee45 = 100200005 = all out war, collector pack cb
+    # 0x05f8ee46 = 100200006 = armada of one, collector crate cb
     while True:
         response = requests.post(alchemyurl, json=payload, headers=headers).json()
         for i in range(len(response["result"]["transfers"])):
-            # could also potentiall look at cardbacks included to know if the sale is for collector pack or crate?
-
-            # 0x05f8ee41 = 100200001 = collector pack
-            # 0x05f8ee42 = 100200002 = collector crate
-            # 0x05f8ee43 = 100200003 = player pack
-            # 0x05f8ee45 = 100200005 = all out war, collector pack cb
-            # 0x05f8ee46 = 100200006 = armada of one, collector crate cb
-
-            for j in range(len(response["result"]["transfers"][i]["erc1155Metadata"])):
-                if int(response["result"]["transfers"][i]["erc1155Metadata"][j]['tokenId'], 16) == 100200003:
-                    playerPack = playerPack + int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16)
-                    packEth = packEth + (int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16) * .018)
-                if int(response["result"]["transfers"][i]["erc1155Metadata"][j]['tokenId'], 16) == 100200001:
-                    collectorPack = collectorPack + int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16)
-                    packEth = packEth + (int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16) * .18)
-                if int(response["result"]["transfers"][i]["erc1155Metadata"][j]['tokenId'], 16) == 100200002:
-                    collectorCrate = collectorCrate + int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16)
-                    packEth = packEth + (int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16) * 1.6)
+            if int(response["result"]["transfers"][i]["blockNum"], 16) < 18443470:
+                for j in range(len(response["result"]["transfers"][i]["erc1155Metadata"])):
+                    if int(response["result"]["transfers"][i]["erc1155Metadata"][j]['tokenId'], 16) == 100200003:
+                        playerPack = playerPack + int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16)
+                        packEth = packEth + (int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16) * .018)
+                    if int(response["result"]["transfers"][i]["erc1155Metadata"][j]['tokenId'], 16) == 100200001:
+                        collectorPack = collectorPack + int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16)
+                        packEth = packEth + (int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16) * .18)
+                    if int(response["result"]["transfers"][i]["erc1155Metadata"][j]['tokenId'], 16) == 100200002:
+                        collectorCrate = collectorCrate + int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16)
+                        packEth = packEth + (int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16) * 1.6)
+            else:
+                for j in range(len(response["result"]["transfers"][i]["erc1155Metadata"])):
+                    if int(response["result"]["transfers"][i]["erc1155Metadata"][j]['tokenId'], 16) == 100200003:
+                        publicPlayerPack = publicPlayerPack + int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16)
+                        packEth = packEth + (int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16) * .018)
+                    if int(response["result"]["transfers"][i]["erc1155Metadata"][j]['tokenId'], 16) == 100200001:
+                        publicCollectorPack = publicCollectorPack + int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16)
+                        packEth = packEth + (int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16) * .18)
+                    if int(response["result"]["transfers"][i]["erc1155Metadata"][j]['tokenId'], 16) == 100200002:
+                        publicCrate = publicCrate + int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16)
+                        packEth = packEth + (int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16) * 1.6)
         if not 'pageKey' in response["result"]:
                 break
         payload["params"][0]["pageKey"] = response["result"]["pageKey"]
-    return playerPack, collectorPack, collectorCrate, packEth
+    return playerPack, collectorPack, collectorCrate, publicPlayerPack, publicCollectorPack, publicCrate, packEth
 
 #Payload sink information
 def Payloadcall():
