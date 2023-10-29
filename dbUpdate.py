@@ -147,12 +147,10 @@ def primeDbUpdate():
     primeCoreClaimTotal = primeCoreClaim()
     primeMPClaimTotal = primeMPClaim()
     currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted, launchPartners = emitCall()
-    avatarsManifested, avatarsPeeked, percentagePeeked, peekPrime, avatarMintPrime = avatarCall()
-    avatarPrime = peekPrime + avatarMintPrime
-    payloadTotal = Payloadcall()[0]
-    artigraphTotal = Artigraphcall()[0]
+    avatarPrime = avatarCall()
+    payloadTotal = payloadSink()
+    artigraphTotal = artigraphSink()
     terminalTotal = terminalCall()
-    batteryTotal = batteryCall()
     glintPrime = glintSunk()
     echoPrime = echoCall()
     circulating = primeCirculating()
@@ -188,7 +186,7 @@ def primeDbUpdate():
         ("payload", 0, 0, payloadTotal, 0),
         ("artigraph", 0, 0, artigraphTotal, 0),
         ("terminal", 0, 0, terminalTotal, 0),
-        ("battery", 0, 0, batteryTotal, 0),
+        ("battery", 0, 0, 0, 0),
         ("glint", 0, 0, glintPrime, 0),
         ("echo", 0, 0, echoPrime, 0),
         ("circSupply", 0, 0, 0, circulating),
@@ -229,7 +227,7 @@ def primeDbUpdate():
         ("payload", 0, 0, payloadTotal, 0),
         ("artigraph", 0, 0, artigraphTotal, 0),
         ("terminal", 0, 0, terminalTotal, 0),
-        ("battery", 0, 0, batteryTotal, 0),
+        ("battery", 0, 0, 0, 0),
         ("glint", 0, 0, glintPrime, 0),
         ("echo", 0, 0, echoPrime, 0),
         ("circSupply", 0, 0, 0, circulating),

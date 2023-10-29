@@ -58,8 +58,8 @@ async def on_message(message):
         primeResult = await getPrimeData(["primeEvent", "primeKey", "primeSet", "cornerstone", "launchPartners", "avatar", "payload", "artigraph", "terminal", "battery", "glint", "echo", "circSupply", "investorEmit", "dailyEmit", "holders", "studioEmit"])
         claimTotal = round(primeResult[0][2] + primeResult[1][2] + primeResult[2][2] + primeResult[3][2], 3)
         emitTotal = primeResult[0][1] + primeResult[1][1] + primeResult[3][1] + primeResult[2][1]
-        totalsink = primeResult[6][3] + primeResult[7][3] + primeResult[8][3] + primeResult[9][3] + primeResult[5][3] + primeResult[10][3] + primeResult[11][3]
-        percentSunk = round(totalsink / (claimTotal + primeResult[4][1]) * 100, 2)
+        totalsink = totalSinkCall()
+        #percentSunk = round(totalsink / (claimTotal + primeResult[4][1]) * 100, 2)
         investorMonths = unlockInvestor()
         studioMonths = unlockStudio()
         embed=discord.Embed(title="Overview of Prime", color=0xDEF141)
@@ -71,7 +71,7 @@ async def on_message(message):
         embed.add_field(name="Claimable totals", value="```ansi\n\u001b[0;32mClaimable emissions: {:,}\nClaimed: {:,}\n{}% claimed```".format(int(emitTotal), int(claimTotal), round((claimTotal / emitTotal) * 100, 2)), inline=False)
         embed.add_field(name="Daily emissions", value="```ansi\n\u001b[0;32mSets: {:,}```".format(primeResult[14][1]), inline=False)
         embed.add_field(name="Misc emissions", value="```ansi\n\u001b[0;32mLaunch Partners: {:,}\nInvestors: {:,}\nStudio: {:,}```".format(primeResult[4][1], primeResult[13][1] * investorMonths, primeResult[16][1] * studioMonths), inline=False)        
-        embed.add_field(name="Sinks", value="```ansi\n\u001b[0;32mPrime sunk: {:,}\n{}% sunk```".format(int(totalsink), (percentSunk)), inline=False)
+        embed.add_field(name="Sinks", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(totalsink), inline=False)
         embed.add_field(name="Circulating", value="```ansi\n\u001b[0;32mCirculating supply: {:,}```".format(primeResult[12][4]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
@@ -81,17 +81,16 @@ async def on_message(message):
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
         primeResult = await getPrimeData(["avatar", "payload", "artigraph", "terminal", "battery", "glint", "echo"])
-        totalsink = primeResult[0][3] + primeResult[1][3] + primeResult[2][3] + primeResult[3][3] + primeResult[4][3] + primeResult[5][3] + primeResult[6][3]
-        sinkdistro = int((primeResult[2][3] * .89) + primeResult[0][3] + primeResult[1][3] + primeResult[3][3] + primeResult[4][3] + primeResult[5][3] + primeResult[6][3])
+        totalSink = totalSinkCall()
+        sinkdistro = int(totalSink - (primeResult[2][3] * .11))
         embed=discord.Embed(title="Overview of Sinks", color=0xDEF141)
         embed.add_field(name="Payload", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[1][3]), inline=False)
         embed.add_field(name="Echos", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[6][3]), inline=False)
         embed.add_field(name="Artigraph", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[2][3]), inline=False)
         embed.add_field(name="Terminals", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[3][3]), inline=False)
-        embed.add_field(name="Batteries", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[4][3]), inline=False)
         embed.add_field(name="Glints", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[5][3]), inline=False)
         embed.add_field(name="Avatars", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[0][3]), inline=False)
-        embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(totalsink), inline=False)
+        embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(totalSink), inline=False)
         embed.add_field(name="Total Prime to sink schedule", value="```ansi\n\u001b[0;32m{:,}```".format(sinkdistro), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
@@ -101,47 +100,12 @@ async def on_message(message):
     if message.content.lower() == '.prime payload' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
         payloadTotal, payloadHits, payloadUnique = Payloadcall()
+        payloadSinkTotal = payloadSink()
         embed=discord.Embed(title="Overview of Payload", color=0xDEF141)
-        embed.add_field(name="Payload Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(payloadTotal), inline=False)
+        embed.add_field(name="Payload Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(payloadSinkTotal), inline=False)
         embed.add_field(name="Total Payload hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(payloadHits)), inline=False)
-        embed.add_field(name="Average Payload hit", value="```ansi\n\u001b[0;32m{:.2f}```".format(payloadTotal / len(payloadHits)), inline=False)
+        embed.add_field(name="Average Payload hit", value="```ansi\n\u001b[0;32m{:.2f}```".format(payloadSinkTotal / len(payloadHits)), inline=False)
         embed.add_field(name="Unique wallets used", value="```ansi\n\u001b[0;32m{:,}```".format(len(payloadUnique)), inline=False)
-        embed.set_footer(text="Please note this is intended as an estimate only")
-        await message.channel.send(embed=embed)
-        await ctx.delete()
-
-    #Terminal breakdown, data fetched from Alchemy
-    if message.content.lower().startswith('.prime terminal') or message.content.lower().startswith('.prime battery') or message.content.lower().startswith('.prime batteries') and message.channel.id != 1085860941935153203 or message.content.lower().startswith('.prime companion') and message.channel.id != 1085860941935153203:
-        ctx = await message.channel.send("`Processing, please be patient.`")
-        terminalTotal = terminalCall()
-        batteryTotal = batteryCall()
-        companionTotal = companionCall()
-        embed=discord.Embed(title="Overview of Terminals", color=0xDEF141)
-        embed.add_field(name="Terminal Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(terminalTotal), inline=False)
-        embed.add_field(name="Battery Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(batteryTotal), inline=False)
-        embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(terminalTotal + batteryTotal), inline=False)
-        embed.add_field(name="Total Terminals sold", value="```ansi\n\u001b[0;32m{:,}```".format(int((terminalTotal - 100) / 11)), inline=False)
-        embed.add_field(name="Total batteries created", value="```ansi\n\u001b[0;32m{:,}```".format(int(batteryTotal / 135)), inline=False)
-        embed.add_field(name="Total companions created", value="```ansi\n\u001b[0;32m{:,}```".format(companionTotal), inline=False)
-        embed.set_footer(text="Please note this is intended as an estimate only")
-        await message.channel.send(embed=embed)
-        await ctx.delete()
-
-    #Avatar breakdown, data fetched from Alchemy. This command may need updating.
-    if message.content.lower().startswith('.prime avatar') and message.channel.id != 1085860941935153203:
-        ctx = await message.channel.send("`Processing, please be patient.`")
-        avatarsManifested, avatarsPeeked, percentagePeeked, peekPrime, avatarMintPrime = avatarCall()
-        embed=discord.Embed(title=f"Avatar overview", color=0xDEF141)
-        embed.add_field(name="Avatars manifested", value="```ansi\n\u001b[0;32m{:,}```".format(avatarsManifested, inline=False))
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="Avatars peeked", value="```ansi\n\u001b[0;32m{:,}```".format(avatarsPeeked, inline=False))
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="Prime spent on peeks", value="```ansi\n\u001b[0;32m{:,}```".format(peekPrime, inline=False))
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="Percentage of avatars peeked", value="```ansi\n\u001b[0;32m{:.3}%```".format(percentagePeeked, inline=False))
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
         await ctx.delete()
@@ -149,16 +113,17 @@ async def on_message(message):
     #Artigraph breakdown, data fetched from Alchemy
     if message.content.lower() == '.prime artigraph' and message.channel.id != 1085860941935153203:
         artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
-        artigraphsinkdistro = int(artigraphTotal * .89)
+        artigraphSinkTotal = artigraphSink()
+        artigraphsinkdistro = int(artigraphSinkTotal * .89)
         feMax = 4556
         seMax = 1484
         plMax = 104
         embed=discord.Embed(title="Artigraph overview", color=0xDEF141)
-        embed.add_field(name="Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphTotal, inline=True))
+        embed.add_field(name="Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphSinkTotal, inline=True))
         embed.add_field(name="Sink redistribution", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphsinkdistro), inline=True)
         embed.add_field(name="\u200B", value="\u200B")  # newline
         embed.add_field(name="Unique wallets", value="```ansi\n\u001b[0;32m{:,}```".format(len(artigraphUnique)), inline=True)
-        embed.add_field(name="Avg spent per wallet", value="```ansi\n\u001b[0;32m{:,}```".format(int(artigraphTotal / len(artigraphUnique))), inline=True)
+        embed.add_field(name="Avg spent per wallet", value="```ansi\n\u001b[0;32m{:,}```".format(int(artigraphSinkTotal / len(artigraphUnique))), inline=True)
         embed.add_field(name="\u200B", value="\u200B")  # newline
         embed.add_field(name="FE hits", value="```ansi\n\u001b[0;32m{:,}```".format(feHits, inline=True))
         embed.add_field(name="% of FE max", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((feHits / feMax * 100)), inline=True)
@@ -171,7 +136,7 @@ async def on_message(message):
         embed.add_field(name="PL prime sunk", value="```ansi\n\u001b[0;32m{:,} ```".format(int((plHits / plMax) * 49920)), inline=True)
         embed.add_field(name="Total hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(artigraphHits), inline=True))
         embed.add_field(name="% of max hits", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((len(artigraphHits) / 6144 * 100)), inline=True)
-        embed.add_field(name="% of max prime sunk", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((artigraphTotal / 2084520) * 100), inline=True)
+        embed.add_field(name="% of max prime sunk", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((artigraphSinkTotal / 2084520) * 100), inline=True)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
@@ -336,28 +301,6 @@ async def on_message(message):
         dfi.export(df2_styled, 'df2_styled.png')
         await message.channel.send(file=discord.File('df2_styled.png'))
         await ctx.edit(content="`Number of sets cached:`")
-
-    #sinks history, not updated for the time being
-    #if message.content.lower().startswith('.prime sink:') or message.content.lower().startswith('.prime sinks:') and message.channel.id != 1085860941935153203:
-    #    if message.content.split(":", 1)[1].isnumeric() == False:
-    #        await message.channel.send("`Usage: .prime sink:x where x is the number of days to search back for historical sink data`")
-    #        return
-    #    days = int(message.content.split(":", 1)[1])
-    #    oldBlockNumber = oldBlock(days)
-    #    artigraphTotal, artigraphHits = artigraphTimeframe(oldBlockNumber)
-    #    payloadTotal, payloadHits = payloadTimeframe(oldBlockNumber)
-
-    #    embed=discord.Embed(title=f"Sink overview for the last {days} days", color=0xDEF141)
-    #    embed.add_field(name="Artigraph Prime", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphTotal, inline=True))
-    #    embed.add_field(name="Artigraph hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(artigraphHits), inline=True))
-    #    embed.add_field(name="\u200B", value="\u200B")  # newline
-    #    embed.add_field(name="Payload Prime", value="```ansi\n\u001b[0;32m{:,}```".format(payloadTotal, inline=True))
-    #    embed.add_field(name="Payload hits", value="```ansi\n\u001b[0;32m{:,}```".format(payloadHits, inline=True))
-    #    embed.add_field(name="\u200B", value="\u200B")  # newline
-    #    embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphTotal + payloadTotal, inline=True))
-    #    embed.add_field(name="To redistribute", value="```ansi\n\u001b[0;32m{:,}```".format(int((artigraphTotal * .89) + payloadTotal), inline=True))
-    #    embed.set_footer(text="Please note this is intended as an estimate only")
-    #    await message.channel.send(embed=embed)
 
     #Snapshot.org open votes query
     if message.content.lower() == (".snapshot") and message.channel.id == 1085860941935153203:
