@@ -15,7 +15,8 @@ def pfPresale():
     "method": "alchemy_getAssetTransfers",
     "params": [
         {
-            "fromBlock": "0xF97A68",
+            "fromBlock": "0x0",
+            "toBlock": "0x119A838",
             "category": ["erc1155"],
             "fromAddress": "0x425Aea4D6a1C0B325D8f5fEBA20d9951ADF8775B"
         }
