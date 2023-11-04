@@ -464,6 +464,7 @@ async def on_message(message):
 
     #command to manually start a db update, mainly just used for testing purposes
     if message.content.lower() == '.prime dbupdate' and message.channel.id != 1085860941935153203:
+        await dbRefresh()
         await cachingDbUpdate()
         await primeDbUpdate()
 

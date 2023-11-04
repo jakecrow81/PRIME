@@ -41,6 +41,34 @@ def to_thread(func: typing.Callable) -> typing.Coroutine:
         return await asyncio.to_thread(func, *args, **kwargs)
     return wrapper
 
+#1) Connect to remote and local DB, drop tables in order to create updated ones
+@to_thread
+def dbRefresh():
+    #mysql remote db creation and update
+    HOST = WIKIDOMAIN # or "domain.com"
+    DATABASE = WIKIDBNAME
+    USER = WIKIUSER
+    PASSWORD = WIKIPW
+    remoteDbConnection = mysql.connect(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
+    remoteCrsr = remoteDbConnection.cursor() 
+    remoteCrsr.execute("DROP TABLE IF EXISTS sets, prime")
+    remoteCrsr.close()
+    
+    #LOCAL - sqlite drop sets table
+    dbconnection = sqlite3.connect("./databases/cachingPools.db")
+    crsr = dbconnection.cursor()
+    crsr.execute("DROP TABLE IF EXISTS sets")
+    crsr.close()
+    
+    #LOCAL - sqlite drop prime table
+    dbconnection = sqlite3.connect("./databases/prime.db")
+    crsr = dbconnection.cursor()
+    crsr.execute("DROP TABLE IF EXISTS prime")
+    crsr.close()
+    
+    #finished, print success message with timestamp
+    print("\u001b[33mDatabase tables (local and remote) dropped at:\u001b[0m", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
 
 #1) Connect and create db if needed, 2) create sets table if needed, 3) update sets table with fresh data, 4) upload db via ftp, 5) update local db
 @to_thread
