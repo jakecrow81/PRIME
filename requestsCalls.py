@@ -60,7 +60,7 @@ def artigraphSink():
     artigraph = requests.get(f"{echelonDataApi}v1/sunkPrime/artigraphs/?format=json").json()
     return int(artigraph['value'])
 
-#Fetch Terminal/Batteres sink data from Echelon
+#Fetch Terminal/Batteries sink data from Echelon
 def terminalCall():
     terminal = requests.get(f"{echelonDataApi}v1/sunkPrime/terminal/?format=json").json()
     return int(terminal['value'])
@@ -68,4 +68,9 @@ def terminalCall():
 #Fetch Glint sink data from Echelon
 def glintSunk():
     glint = requests.get(f"{echelonDataApi}v1/sunkPrime/glint/?format=json").json()
+    return int(glint['value'])
+
+#Fetch Cosmetic sink data from Echelon
+def cosmeticSink():
+    glint = requests.get(f"{echelonDataApi}v1/sunkPrime/cosmetic/?format=json").json()
     return int(glint['value'])

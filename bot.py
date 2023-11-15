@@ -80,7 +80,7 @@ async def on_message(message):
     #Fetch sink data from db
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
-        primeResult = await getPrimeData(["avatar", "payload", "artigraph", "terminal", "battery", "glint", "echo"])
+        primeResult = await getPrimeData(["avatar", "payload", "artigraph", "terminal", "battery", "glint", "echo", "cosmetic"])
         totalSink = totalSinkCall()
         sinkdistro = int(totalSink - (primeResult[2][3] * .11))
         embed=discord.Embed(title="Overview of Sinks", color=0xDEF141)
@@ -90,6 +90,7 @@ async def on_message(message):
         embed.add_field(name="Terminals", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[3][3]), inline=False)
         embed.add_field(name="Glints", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[5][3]), inline=False)
         embed.add_field(name="Avatars", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[0][3]), inline=False)
+        embed.add_field(name="Cosmetics", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[7][3]), inline=False)
         embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(totalSink), inline=False)
         embed.add_field(name="Total Prime to sink schedule", value="```ansi\n\u001b[0;32m{:,}```".format(sinkdistro), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")

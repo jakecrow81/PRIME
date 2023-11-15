@@ -183,6 +183,7 @@ def primeDbUpdate():
     echoPrime = echoCall()
     circulating = primeCirculating()
     holders = primeHolders()
+    cosmeticPrime = cosmeticSink()
 
     #REMOTE - mysql remote db creation and update
     HOST = WIKIDOMAIN # or "domain.com"
@@ -221,7 +222,8 @@ def primeDbUpdate():
         ("investorEmit", (751853),  0, 0, 0),
         ("dailyEmit", 1791, 0, 0, 0),
         ("holders", 0, 0, 0, holders),
-        ("studioEmit", (910370),  0, 0, 0)
+        ("studioEmit", (910370),  0, 0, 0),
+        ("cosmetic", 0, 0, cosmeticPrime, 0)
     ]
     remoteCrsr.executemany(sql_insert_into_prime, values)
     remoteDbConnection.commit()
@@ -262,7 +264,8 @@ def primeDbUpdate():
         ("investorEmit", (751853),  0, 0, 0),
         ("dailyEmit", 1791, 0, 0, 0),
         ("holders", 0, 0, 0, holders),
-        ("studioEmit", (910370),  0, 0, 0))
+        ("studioEmit", (910370),  0, 0, 0),
+        ("cosmetic", 0, 0, cosmeticPrime, 0))
     crsr.executemany(sqlite_insert_with_param, data)
     dbconnection.commit()
     crsr.close()
