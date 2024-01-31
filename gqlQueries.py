@@ -82,7 +82,7 @@ async def snapshotClosedQuery(space):
 #networkId is always 1 for now so this is hard coded
 def contractData(address, poolIds):
     transport = AIOHTTPTransport(url="https://graph.defined.fi/graphql", headers={'content_type': 'application/json', 'Authorization': DEFINEDAPI})
-    gqlclient = Client(transport=transport, fetch_schema_from_transport=True)
+    gqlclient = Client(transport=transport, fetch_schema_from_transport=False)
 
     query = gql(
         """
