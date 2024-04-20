@@ -304,160 +304,160 @@ async def on_message(message):
         await ctx.edit(content="`Number of sets cached:`")
 
     #Snapshot.org open votes query
-    if message.content.lower() == (".snapshot") and message.channel.id == 1085860941935153203:
-        result = await snapshotQuery("echelonassembly.eth")
+    # if message.content.lower() == (".snapshot") and message.channel.id == 1085860941935153203 or 987187080096522262:
+    #     result = await snapshotQuery("echelonassembly.eth")
 
-        if result['proposals'] == []:
-            await message.channel.send(f"`No active community votes found`")
-            return
+    #     if result['proposals'] == []:
+    #         await message.channel.send(f"`No active community votes found`")
+    #         return
 
-        for i in range(len(result['proposals'])):
+    #     for i in range(len(result['proposals'])):
 
-            endDate = datetime.utcfromtimestamp(result['proposals'][i]['end']).strftime('%m-%d-%Y')
+    #         endDate = datetime.utcfromtimestamp(result['proposals'][i]['end']).strftime('%m-%d-%Y')
 
-            totalScores = result['proposals'][i]['scores_total']
+    #         totalScores = result['proposals'][i]['scores_total']
 
-            quorum = result['proposals'][i]['quorum']
+    #         quorum = result['proposals'][i]['quorum']
 
-            quorumPercent = (totalScores / quorum) * 100
+    #         quorumPercent = (totalScores / quorum) * 100
 
-            votes = result['proposals'][i]['votes']
+    #         votes = result['proposals'][i]['votes']
 
-            choices = []
-            for k in range(len(result['proposals'][i]['choices'])):
-                choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
-            choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
-            joined = '\n'.join([str(choice) for choice in choices])
+    #         choices = []
+    #         for k in range(len(result['proposals'][i]['choices'])):
+    #             choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
+    #         choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
+    #         joined = '\n'.join([str(choice) for choice in choices])
 
-            embed=discord.Embed(title=f"Open community vote {i + 1} of {len(result['proposals'])}")
-            embed.add_field(name="Direct link to vote:", value="[snapshot.org](https://snapshot.org/#/echelonassembly.eth/proposal/{})".format(result['proposals'][i]['id']), inline=True)
-            embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
-            embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
-            embed.add_field(name="\u200B", value="\u200B")  # newline
-            if quorumPercent > 0 and quorumPercent < 100:
-                embed.add_field(name=f"Votes                       |       Needed votes         |     Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f}  |   {:<10,.0f}   |   {:6.2f}%```".format(totalScores, quorum, quorumPercent), inline=True)
-                embed.add_field(name="\u200B", value="\u200B")  # newline
-                embed.add_field(name="\u200B", value="\u200B")  # newline
-            if quorumPercent >= 100:
-                embed.add_field(name=f"Votes                    |       Needed votes         |          Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f} |   {:<10,.0f}    |   Quorum met!```".format(totalScores, quorum), inline=True)
-                embed.add_field(name="\u200B", value="\u200B")  # newline
-                embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name=f"Choice                                                                                   |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=False)
-            embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
-            await message.channel.send(embed=embed)
+    #         embed=discord.Embed(title=f"Open community vote {i + 1} of {len(result['proposals'])}")
+    #         embed.add_field(name="Direct link to vote:", value="[snapshot.org](https://snapshot.org/#/echelonassembly.eth/proposal/{})".format(result['proposals'][i]['id']), inline=True)
+    #         embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
+    #         embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
+    #         embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         if quorumPercent > 0 and quorumPercent < 100:
+    #             embed.add_field(name=f"Votes                       |       Needed votes         |     Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f}  |   {:<10,.0f}   |   {:6.2f}%```".format(totalScores, quorum, quorumPercent), inline=True)
+    #             embed.add_field(name="\u200B", value="\u200B")  # newline
+    #             embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         if quorumPercent >= 100:
+    #             embed.add_field(name=f"Votes                    |       Needed votes         |          Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f} |   {:<10,.0f}    |   Quorum met!```".format(totalScores, quorum), inline=True)
+    #             embed.add_field(name="\u200B", value="\u200B")  # newline
+    #             embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         embed.add_field(name=f"Choice                                                                                   |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=False)
+    #         embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
+    #         await message.channel.send(embed=embed)
 
-    #Snapshot.org open emissary votes query
-    if message.content.lower() == (".snapshot e") and message.channel.id == 1085860941935153203:
-        result = await snapshotQuery("echelon.eth")
+    # #Snapshot.org open emissary votes query
+    # if message.content.lower() == (".snapshot e") and message.channel.id == 1085860941935153203:
+    #     result = await snapshotQuery("echelon.eth")
 
-        if result['proposals'] == []:
-            await message.channel.send(f"`No active emissary votes found`")
-            return
+    #     if result['proposals'] == []:
+    #         await message.channel.send(f"`No active emissary votes found`")
+    #         return
 
-        for i in range(len(result['proposals'])):
+    #     for i in range(len(result['proposals'])):
 
-            endDate = datetime.utcfromtimestamp(result['proposals'][i]['end']).strftime('%m-%d-%Y')
+    #         endDate = datetime.utcfromtimestamp(result['proposals'][i]['end']).strftime('%m-%d-%Y')
 
-            totalScores = result['proposals'][i]['scores_total']
+    #         totalScores = result['proposals'][i]['scores_total']
 
-            quorum = result['proposals'][i]['quorum']
+    #         quorum = result['proposals'][i]['quorum']
 
-            quorumPercent = (totalScores / quorum) * 100
+    #         quorumPercent = (totalScores / quorum) * 100
 
-            votes = result['proposals'][i]['votes']
+    #         votes = result['proposals'][i]['votes']
 
-            choices = []
-            for k in range(len(result['proposals'][i]['choices'])):
-                choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
-            choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
-            joined = '\n'.join([str(choice) for choice in choices])
+    #         choices = []
+    #         for k in range(len(result['proposals'][i]['choices'])):
+    #             choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
+    #         choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
+    #         joined = '\n'.join([str(choice) for choice in choices])
 
-            embed=discord.Embed(title=f"Open emissary vote {i + 1} of {len(result['proposals'])}")
-            embed.add_field(name="Direct link to vote:", value="[snapshot.org](https://snapshot.org/#/echelon.eth/proposal/{})".format(result['proposals'][i]['id']), inline=True)
-            embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
-            embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
-            embed.add_field(name="\u200B", value="\u200B")  # newline
-            if quorumPercent > 0 and quorumPercent < 100:
-                embed.add_field(name=f"Votes                       |       Needed votes         |     Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f}  |   {:<10,.0f}   |   {:6.2f}%```".format(totalScores, quorum, quorumPercent), inline=True)
-                embed.add_field(name="\u200B", value="\u200B")  # newline
-                embed.add_field(name="\u200B", value="\u200B")  # newline
-            if quorumPercent >= 100:
-                embed.add_field(name=f"Votes                    |       Needed votes         |          Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f} |   {:<10,.0f}    |   Quorum met!```".format(totalScores, quorum), inline=True)
-                embed.add_field(name="\u200B", value="\u200B")  # newline
-                embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name=f"Choice                                                                                   |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=False)
-            embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
-            await message.channel.send(embed=embed)
+    #         embed=discord.Embed(title=f"Open emissary vote {i + 1} of {len(result['proposals'])}")
+    #         embed.add_field(name="Direct link to vote:", value="[snapshot.org](https://snapshot.org/#/echelon.eth/proposal/{})".format(result['proposals'][i]['id']), inline=True)
+    #         embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
+    #         embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
+    #         embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         if quorumPercent > 0 and quorumPercent < 100:
+    #             embed.add_field(name=f"Votes                       |       Needed votes         |     Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f}  |   {:<10,.0f}   |   {:6.2f}%```".format(totalScores, quorum, quorumPercent), inline=True)
+    #             embed.add_field(name="\u200B", value="\u200B")  # newline
+    #             embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         if quorumPercent >= 100:
+    #             embed.add_field(name=f"Votes                    |       Needed votes         |          Quorum %", value="```ansi\n\u001b[0;32m{:<10,.0f} |   {:<10,.0f}    |   Quorum met!```".format(totalScores, quorum), inline=True)
+    #             embed.add_field(name="\u200B", value="\u200B")  # newline
+    #             embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         embed.add_field(name=f"Choice                                                                                   |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=False)
+    #         embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
+    #         await message.channel.send(embed=embed)
 
-    #Snapshot.org closed votes query
-    if message.content.lower() == (".snapshot closed") and message.channel.id == 1085860941935153203:
-        result = await snapshotClosedQuery("echelonassembly.eth")
+    # #Snapshot.org closed votes query
+    # if message.content.lower() == (".snapshot closed") and message.channel.id == 1085860941935153203:
+    #     result = await snapshotClosedQuery("echelonassembly.eth")
 
-        if result['proposals'] == []:
-            await message.channel.send(f"`Error: No closed community votes found`")
-            return
+    #     if result['proposals'] == []:
+    #         await message.channel.send(f"`Error: No closed community votes found`")
+    #         return
 
-        for i in range(3):
+    #     for i in range(3):
 
-            endDate = datetime.utcfromtimestamp(result['proposals'][i]['end']).strftime('%m-%d-%Y')
+    #         endDate = datetime.utcfromtimestamp(result['proposals'][i]['end']).strftime('%m-%d-%Y')
 
-            totalScores = result['proposals'][i]['scores_total']
+    #         totalScores = result['proposals'][i]['scores_total']
 
-            votes = result['proposals'][i]['votes']
+    #         votes = result['proposals'][i]['votes']
 
-            choices = []
-            for k in range(len(result['proposals'][i]['choices'])):
-                choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
-            choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
-            joined = '\n'.join([str(choice) for choice in choices])
+    #         choices = []
+    #         for k in range(len(result['proposals'][i]['choices'])):
+    #             choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
+    #         choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
+    #         joined = '\n'.join([str(choice) for choice in choices])
 
-            embed=discord.Embed(title=f"Closed community vote {i + 1} of 3")
-            embed.add_field(name="Direct link to vote:", value="[snapshot.org](https://snapshot.org/#/echelonassembly.eth/proposal/{})".format(result['proposals'][i]['id']), inline=True)
-            embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
-            embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
-            embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name=f"Choice                                                                                  |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=False)
-            embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
-            await message.channel.send(embed=embed)
+    #         embed=discord.Embed(title=f"Closed community vote {i + 1} of 3")
+    #         embed.add_field(name="Direct link to vote:", value="[snapshot.org](https://snapshot.org/#/echelonassembly.eth/proposal/{})".format(result['proposals'][i]['id']), inline=True)
+    #         embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
+    #         embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
+    #         embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         embed.add_field(name=f"Choice                                                                                  |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=False)
+    #         embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
+    #         await message.channel.send(embed=embed)
 
-    #Snapshot.org closed emissary votes query
-    if message.content.lower() == (".snapshot e closed") and message.channel.id == 1085860941935153203:
-        result = await snapshotClosedQuery("echelon.eth")
+    # #Snapshot.org closed emissary votes query
+    # if message.content.lower() == (".snapshot e closed") and message.channel.id == 1085860941935153203:
+    #     result = await snapshotClosedQuery("echelon.eth")
 
-        if result['proposals'] == []:
-            await message.channel.send(f"`Error: No closed emissary votes found`")
-            return
+    #     if result['proposals'] == []:
+    #         await message.channel.send(f"`Error: No closed emissary votes found`")
+    #         return
 
-        for i in range(3):
+    #     for i in range(3):
 
-            endDate = datetime.utcfromtimestamp(result['proposals'][i]['end']).strftime('%m-%d-%Y')
+    #         endDate = datetime.utcfromtimestamp(result['proposals'][i]['end']).strftime('%m-%d-%Y')
 
-            totalScores = result['proposals'][i]['scores_total']
+    #         totalScores = result['proposals'][i]['scores_total']
 
-            votes = result['proposals'][i]['votes']
+    #         votes = result['proposals'][i]['votes']
 
-            choices = []
-            for k in range(len(result['proposals'][i]['choices'])):
-                choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
-            choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
-            joined = '\n'.join([str(choice) for choice in choices])
+    #         choices = []
+    #         for k in range(len(result['proposals'][i]['choices'])):
+    #             choices.append(f"{result['proposals'][i]['choices'][k]:35s} | {result['proposals'][i]['scores'][k]:6.0f} | {result['proposals'][i]['scores'][k] / totalScores * 100:6.2f}%")
+    #         choices.sort(reverse=True, key=lambda x: float(x.split("| ")[-1].split("%")[0]))
+    #         joined = '\n'.join([str(choice) for choice in choices])
 
-            embed=discord.Embed(title=f"Closed emissary vote {i + 1} of 3")
-            embed.add_field(name="Direct link to vote:", value="[snapshot.org](https://snapshot.org/#/echelon.eth/proposal/{})".format(result['proposals'][i]['id']), inline=True)
-            embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
-            embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
-            embed.add_field(name="\u200B", value="\u200B")  # newline
-            embed.add_field(name=f"Choice                                                                                  |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=False)
-            embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
-            await message.channel.send(embed=embed)
+    #         embed=discord.Embed(title=f"Closed emissary vote {i + 1} of 3")
+    #         embed.add_field(name="Direct link to vote:", value="[snapshot.org](https://snapshot.org/#/echelon.eth/proposal/{})".format(result['proposals'][i]['id']), inline=True)
+    #         embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         embed.add_field(name="Proposal Title", value="```ansi\n\u001b[0;32m{}```".format(result['proposals'][i]['title']), inline=True)
+    #         embed.add_field(name="End date", value="```ansi\n\u001b[0;32m{}```".format(endDate), inline=True)
+    #         embed.add_field(name="\u200B", value="\u200B")  # newline
+    #         embed.add_field(name=f"Choice                                                                                  |      Votes     |      Vote %", value="```ansi\n\u001b[0;32m{}```".format(joined), inline=False)
+    #         embed.add_field(name=f"Total votes", value="```ansi\n\u001b[0;32m{}```".format(votes), inline=True)
+    #         await message.channel.send(embed=embed)
 
     #Easter egg gm command, just a simple reply to user with a gm
     if message.content.lower() == 'gm' or message.content.lower() == 'gm!' or message.content.lower() == '.gm' and message.channel.id != 1085860941935153203:
@@ -470,22 +470,22 @@ async def on_message(message):
         await primeDbUpdate()
 
     #Planetfall pre-sale breakdown
-    if message.content.lower().startswith('.prime pf') and message.channel.id != 1085860941935153203:
-        ctx = await message.channel.send("`Processing, please be patient.`")
-        playerPack, collectorPack, collectorCrate, publicPlayerPack, publicCollectorPack, publicCrate, packEth = pfPresale()
-        embed=discord.Embed(title=f"Planetfall Presale", description="**PP = Player Pack**\n**CP = Collector Pack**\n**CC = Collector Crate**", color=0xDEF141)
-        embed.add_field(name="PP from manifest", value="```ansi\n\u001b[0;32m{:,}```".format(playerPack, inline=False))
-        embed.add_field(name="CP from manifest", value="```ansi\n\u001b[0;32m{:,}```".format(collectorPack, inline=False))
-        embed.add_field(name="CC from manifest", value="```ansi\n\u001b[0;32m{:,}```".format(collectorCrate, inline=False))
-        embed.add_field(name="PP from public sale", value="```ansi\n\u001b[0;32m{:,}```".format(publicPlayerPack, inline=False))
-        embed.add_field(name="CP from public sale", value="```ansi\n\u001b[0;32m{:,}```".format(publicCollectorPack, inline=False))
-        embed.add_field(name="CC from public sale", value="```ansi\n\u001b[0;32m{:,}```".format(publicCrate, inline=False))
-        embed.add_field(name="PP total / % sold", value="```ansi\n\u001b[0;32m{:,} / {:.1f}%```".format(playerPack + publicPlayerPack, (playerPack / 50000) * 100, inline=False))
-        embed.add_field(name="CP total", value="```ansi\n\u001b[0;32m{:,}```".format(collectorPack + publicCollectorPack, inline=False))
-        embed.add_field(name="CC total", value="```ansi\n\u001b[0;32m{:,}```".format(collectorCrate + publicCrate, inline=False))
-        embed.add_field(name="Collector Packs + Crates / % sold", value="```ansi\n\u001b[0;32m{:,} / {:.1f}%```".format(collectorPack + publicCollectorPack + (collectorCrate *10) + (publicCrate *10), ((collectorPack + publicCollectorPack + (collectorCrate *10) + (publicCrate *10)) / 18646) * 100,inline=True))
-        await message.channel.send(embed=embed)
-        await ctx.delete()
+    # if message.content.lower().startswith('.prime pf') and message.channel.id != 1085860941935153203:
+    #     ctx = await message.channel.send("`Processing, please be patient.`")
+    #     playerPack, collectorPack, collectorCrate, publicPlayerPack, publicCollectorPack, publicCrate, packEth = pfPresale()
+    #     embed=discord.Embed(title=f"Planetfall Presale", description="**PP = Player Pack**\n**CP = Collector Pack**\n**CC = Collector Crate**", color=0xDEF141)
+    #     embed.add_field(name="PP from manifest", value="```ansi\n\u001b[0;32m{:,}```".format(playerPack, inline=False))
+    #     embed.add_field(name="CP from manifest", value="```ansi\n\u001b[0;32m{:,}```".format(collectorPack, inline=False))
+    #     embed.add_field(name="CC from manifest", value="```ansi\n\u001b[0;32m{:,}```".format(collectorCrate, inline=False))
+    #     embed.add_field(name="PP from public sale", value="```ansi\n\u001b[0;32m{:,}```".format(publicPlayerPack, inline=False))
+    #     embed.add_field(name="CP from public sale", value="```ansi\n\u001b[0;32m{:,}```".format(publicCollectorPack, inline=False))
+    #     embed.add_field(name="CC from public sale", value="```ansi\n\u001b[0;32m{:,}```".format(publicCrate, inline=False))
+    #     embed.add_field(name="PP total / % sold", value="```ansi\n\u001b[0;32m{:,} / {:.1f}%```".format(playerPack + publicPlayerPack, (playerPack / 50000) * 100, inline=False))
+    #     embed.add_field(name="CP total", value="```ansi\n\u001b[0;32m{:,}```".format(collectorPack + publicCollectorPack, inline=False))
+    #     embed.add_field(name="CC total", value="```ansi\n\u001b[0;32m{:,}```".format(collectorCrate + publicCrate, inline=False))
+    #     embed.add_field(name="Collector Packs + Crates / % sold", value="```ansi\n\u001b[0;32m{:,} / {:.1f}%```".format(collectorPack + publicCollectorPack + (collectorCrate *10) + (publicCrate *10), ((collectorPack + publicCollectorPack + (collectorCrate *10) + (publicCrate *10)) / 18646) * 100,inline=True))
+    #     await message.channel.send(embed=embed)
+    #     await ctx.delete()
 
 #Print connection successful message to terminal after bot init completes
 @client.event
