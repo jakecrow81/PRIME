@@ -1,73 +1,58 @@
 from dotenv import load_dotenv
 import requests
 import os
+from web3 import Web3
+from decimal import Decimal
 
 #obtain api key variables from .env
 load_dotenv()
 alchemyurl = os.getenv('ALCHEMY_API')
+alchemyBaseUrl = os.getenv('ALCHEMY_BASE_URL')
 alchemyApiKey = os.getenv('ALCHEMY_API_KEY_ONLY')
 
-# Planetfall presale information
-def pfPresale():
-    payload = {
+#Wayfinder mainnet caching
+def cachedPrimeMainnet():
+    jsonpayload = {
     "id": 1,
     "jsonrpc": "2.0",
-    "method": "alchemy_getAssetTransfers",
-    "params": [
-        {
-            "fromBlock": "0x0",
-            "toBlock": "0x119A838",
-            "category": ["erc1155"],
-            "fromAddress": "0x425Aea4D6a1C0B325D8f5fEBA20d9951ADF8775B"
-        }
-    ]
+    "method": "alchemy_getTokenBalances",
+    "params": ["0x4a3826bD2e8a31956Ad0397A49efDE5e0d825238"]
     }
     headers = {
-        "accept": "application/json",
-        "content-type": "application/json"
+    "accept": "application/json",
+    "content-type": "application/json"
     }
-    playerPack = 0
-    collectorPack = 0
-    collectorCrate = 0
-    publicPlayerPack = 0
-    publicCollectorPack = 0
-    publicCrate = 0
-    packEth = 0
-    # could also potentially look at cardbacks included to know if the sale is for collector pack or crate?
-    # 0x05f8ee41 = 100200001 = collector pack
-    # 0x05f8ee42 = 100200002 = collector crate
-    # 0x05f8ee43 = 100200003 = player pack
-    # 0x05f8ee45 = 100200005 = all out war, collector pack cb
-    # 0x05f8ee46 = 100200006 = armada of one, collector crate cb
-    while True:
-        response = requests.post(alchemyurl, json=payload, headers=headers).json()
-        for i in range(len(response["result"]["transfers"])):
-            if int(response["result"]["transfers"][i]["blockNum"], 16) < 18443470:
-                for j in range(len(response["result"]["transfers"][i]["erc1155Metadata"])):
-                    if int(response["result"]["transfers"][i]["erc1155Metadata"][j]['tokenId'], 16) == 100200003:
-                        playerPack = playerPack + int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16)
-                        packEth = packEth + (int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16) * .018)
-                    if int(response["result"]["transfers"][i]["erc1155Metadata"][j]['tokenId'], 16) == 100200001:
-                        collectorPack = collectorPack + int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16)
-                        packEth = packEth + (int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16) * .18)
-                    if int(response["result"]["transfers"][i]["erc1155Metadata"][j]['tokenId'], 16) == 100200002:
-                        collectorCrate = collectorCrate + int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16)
-                        packEth = packEth + (int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16) * 1.6)
-            else:
-                for j in range(len(response["result"]["transfers"][i]["erc1155Metadata"])):
-                    if int(response["result"]["transfers"][i]["erc1155Metadata"][j]['tokenId'], 16) == 100200003:
-                        publicPlayerPack = publicPlayerPack + int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16)
-                        packEth = packEth + (int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16) * .018)
-                    if int(response["result"]["transfers"][i]["erc1155Metadata"][j]['tokenId'], 16) == 100200001:
-                        publicCollectorPack = publicCollectorPack + int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16)
-                        packEth = packEth + (int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16) * .18)
-                    if int(response["result"]["transfers"][i]["erc1155Metadata"][j]['tokenId'], 16) == 100200002:
-                        publicCrate = publicCrate + int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16)
-                        packEth = packEth + (int(response["result"]["transfers"][i]["erc1155Metadata"][j]['value'], 16) * 1.6)
-        if not 'pageKey' in response["result"]:
-                break
-        payload["params"][0]["pageKey"] = response["result"]["pageKey"]
-    return playerPack, collectorPack, collectorCrate, publicPlayerPack, publicCollectorPack, publicCrate, packEth
+    
+    response = requests.post(alchemyurl, json=jsonpayload, headers=headers).json()    
+    
+    for i in range(len(response["result"]["tokenBalances"])):
+        if response["result"]["tokenBalances"][i]["contractAddress"] == "0xb23d80f5fefcddaa212212f028021b41ded428cf":
+            mainnetCachedPrime = int(response["result"]["tokenBalances"][i]["tokenBalance"], 0)
+    mainnetCachedPrime = Web3.fromWei(Decimal(mainnetCachedPrime), 'ether')
+    return mainnetCachedPrime
+
+
+#Wayfinder base caching
+def cachedPrimeBase():
+    jsonpayload = {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "alchemy_getTokenBalances",
+    "params": ["0x75a44A70cCb0E886E25084Be14bD45af57915451"]
+    }
+    headers = {
+    "accept": "application/json",
+    "content-type": "application/json"
+    }
+    
+    response = requests.post(alchemyBaseUrl, json=jsonpayload, headers=headers).json()
+    
+    for i in range(len(response["result"]["tokenBalances"])):
+        if response["result"]["tokenBalances"][i]["contractAddress"] == "0xfa980ced6895ac314e7de34ef1bfae90a5add21b":
+            baseCachedPrime = int(response["result"]["tokenBalances"][i]["tokenBalance"], 0)
+    baseCachedPrime = Web3.fromWei(Decimal(baseCachedPrime), 'ether')
+    return baseCachedPrime
+
 
 #Payload sink information
 def Payloadcall():
@@ -226,147 +211,155 @@ def payloadTimeframe(block="0x0"):
 
 #Prime Key claim information
 def primeKeyClaim():
-    payload = {
-    "id": 1,
-    "jsonrpc": "2.0",
-    "method": "alchemy_getAssetTransfers",
-    "params": [
-        {
-            "category": ["erc20"],
-            "fromAddress": "0x3399eff96D4b6Bae8a56F4852EB55736c9C2b041",
-        }
-    ]
-    }
-    headers = {
-    "accept": "application/json",
-    "content-type": "application/json"
-    }
+    # payload = {
+    # "id": 1,
+    # "jsonrpc": "2.0",
+    # "method": "alchemy_getAssetTransfers",
+    # "params": [
+    #     {
+    #         "category": ["erc20"],
+    #         "fromAddress": "0x3399eff96D4b6Bae8a56F4852EB55736c9C2b041",
+    #     }
+    # ]
+    # }
+    # headers = {
+    # "accept": "application/json",
+    # "content-type": "application/json"
+    # }
+    # currenttotal = 0
+    # total = 0
+    # while True:
+    #     response = requests.post(alchemyurl, json=payload, headers=headers).json()
+    #     for i in range(len(response["result"]["transfers"])):
+    #         total = round(total + float(response["result"]["transfers"][i]["value"]), 3)
+    #     if not 'pageKey' in response["result"]:
+    #         time.sleep(1)
+    #         break
+    #     payload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    #     time.sleep(1)
+    # currenttotal = currenttotal + total
     currenttotal = 0
-    total = 0
-    while True:
-        response = requests.post(alchemyurl, json=payload, headers=headers).json()
-        for i in range(len(response["result"]["transfers"])):
-            total = round(total + float(response["result"]["transfers"][i]["value"]), 3)
-        if not 'pageKey' in response["result"]:
-            break
-        payload["params"][0]["pageKey"] = response["result"]["pageKey"]
-    currenttotal = currenttotal + total
     return currenttotal
 
 #Prime Set claim information
 def primeSetClaim():
-    payload = {
-    "id": 1,
-    "jsonrpc": "2.0",
-    "method": "alchemy_getAssetTransfers",
-    "params": [
-        {
-            "category": ["erc20"],
-            "fromAddress": "0xECa9D81a4dC7119A40481CFF4e7E24DD0aaF56bD",
-        }
-    ]
-    }
-    headers = {
-    "accept": "application/json",
-    "content-type": "application/json"
-    }
+    # payload = {
+    # "id": 1,
+    # "jsonrpc": "2.0",
+    # "method": "alchemy_getAssetTransfers",
+    # "params": [
+    #     {
+    #         "category": ["erc20"],
+    #         "fromAddress": "0xECa9D81a4dC7119A40481CFF4e7E24DD0aaF56bD",
+    #     }
+    # ]
+    # }
+    # headers = {
+    # "accept": "application/json",
+    # "content-type": "application/json"
+    # }
+    # currenttotal = 0
+    # total = 0
+    # while True:
+    #     response = requests.post(alchemyurl, json=payload, headers=headers).json()
+    #     for i in range(len(response["result"]["transfers"])):
+    #         total = round(total + float(response["result"]["transfers"][i]["value"]), 3)
+    #     if not 'pageKey' in response["result"]:
+    #         break
+    #     payload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    #     time.sleep(1)
+    # currenttotal = currenttotal + total
     currenttotal = 0
-    total = 0
-    while True:
-        response = requests.post(alchemyurl, json=payload, headers=headers).json()
-        for i in range(len(response["result"]["transfers"])):
-            total = round(total + float(response["result"]["transfers"][i]["value"]), 3)
-        if not 'pageKey' in response["result"]:
-            break
-        payload["params"][0]["pageKey"] = response["result"]["pageKey"]
-    currenttotal = currenttotal + total
     return currenttotal
 
 #CD claim information
 def primeCDClaim():
-    payload = {
-    "id": 1,
-    "jsonrpc": "2.0",
-    "method": "alchemy_getAssetTransfers",
-    "params": [
-        {
-            "category": ["erc20"],
-            "fromAddress": "0xc44C50C4162058494b542bBfAB5946ac6d6eBAB6",
-        }
-    ]
-    }
-    headers = {
-    "accept": "application/json",
-    "content-type": "application/json"
-    }
+    # payload = {
+    # "id": 1,
+    # "jsonrpc": "2.0",
+    # "method": "alchemy_getAssetTransfers",
+    # "params": [
+    #     {
+    #         "category": ["erc20"],
+    #         "fromAddress": "0xc44C50C4162058494b542bBfAB5946ac6d6eBAB6",
+    #     }
+    # ]
+    # }
+    # headers = {
+    # "accept": "application/json",
+    # "content-type": "application/json"
+    # }
+    # currenttotal = 0
+    # total = 0
+    # while True:
+    #     response = requests.post(alchemyurl, json=payload, headers=headers).json()
+    #     for i in range(len(response["result"]["transfers"])):
+    #         total = round(total + float(response["result"]["transfers"][i]["value"]), 3)
+    #     if not 'pageKey' in response["result"]:
+    #         break
+    #     payload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    # currenttotal = currenttotal + total
     currenttotal = 0
-    total = 0
-    while True:
-        response = requests.post(alchemyurl, json=payload, headers=headers).json()
-        for i in range(len(response["result"]["transfers"])):
-            total = round(total + float(response["result"]["transfers"][i]["value"]), 3)
-        if not 'pageKey' in response["result"]:
-            break
-        payload["params"][0]["pageKey"] = response["result"]["pageKey"]
-    currenttotal = currenttotal + total
     return currenttotal
 
 #Core claim information
 def primeCoreClaim():
-    payload = {
-    "id": 1,
-    "jsonrpc": "2.0",
-    "method": "alchemy_getAssetTransfers",
-    "params": [
-        {
-            "category": ["erc20"],
-            "fromAddress": "0xa0Cd986F53cBF8B8Fb7bF6fB14791e31aeB9E449",
-        }
-    ]
-    }
-    headers = {
-    "accept": "application/json",
-    "content-type": "application/json"
-    }
+    # payload = {
+    # "id": 1,
+    # "jsonrpc": "2.0",
+    # "method": "alchemy_getAssetTransfers",
+    # "params": [
+    #     {
+    #         "category": ["erc20"],
+    #         "fromAddress": "0xa0Cd986F53cBF8B8Fb7bF6fB14791e31aeB9E449",
+    #     }
+    # ]
+    # }
+    # headers = {
+    # "accept": "application/json",
+    # "content-type": "application/json"
+    # }
+    # currenttotal = 0
+    # total = 0
+    # while True:
+    #     response = requests.post(alchemyurl, json=payload, headers=headers).json()
+    #     for i in range(len(response["result"]["transfers"])):
+    #         total = round(total + float(response["result"]["transfers"][i]["value"]), 3)
+    #     if not 'pageKey' in response["result"]:
+    #         break
+    #     payload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    # currenttotal = currenttotal + total
     currenttotal = 0
-    total = 0
-    while True:
-        response = requests.post(alchemyurl, json=payload, headers=headers).json()
-        for i in range(len(response["result"]["transfers"])):
-            total = round(total + float(response["result"]["transfers"][i]["value"]), 3)
-        if not 'pageKey' in response["result"]:
-            break
-        payload["params"][0]["pageKey"] = response["result"]["pageKey"]
-    currenttotal = currenttotal + total
     return currenttotal
 
 #MP claim information
 def primeMPClaim():
-    payload = {
-    "id": 1,
-    "jsonrpc": "2.0",
-    "method": "alchemy_getAssetTransfers",
-    "params": [
-        {
-            "category": ["erc20"],
-            "fromAddress": "0x89Bb49d06610B4b18e355504551809Be5177f3D0",
-        }
-    ]
-    }
-    headers = {
-    "accept": "application/json",
-    "content-type": "application/json"
-    }
+    # payload = {
+    # "id": 1,
+    # "jsonrpc": "2.0",
+    # "method": "alchemy_getAssetTransfers",
+    # "params": [
+    #     {
+    #         "category": ["erc20"],
+    #         "fromAddress": "0x89Bb49d06610B4b18e355504551809Be5177f3D0",
+    #     }
+    # ]
+    # }
+    # headers = {
+    # "accept": "application/json",
+    # "content-type": "application/json"
+    # }
+    # currenttotal = 0
+    # total = 0
+    # while True:
+    #     response = requests.post(alchemyurl, json=payload, headers=headers).json()
+    #     for i in range(len(response["result"]["transfers"])):
+    #         total = round(total + float(response["result"]["transfers"][i]["value"]), 3)
+    #     if not 'pageKey' in response["result"]:
+    #         break
+    #     payload["params"][0]["pageKey"] = response["result"]["pageKey"]
+    # currenttotal = currenttotal + total
     currenttotal = 0
-    total = 0
-    while True:
-        response = requests.post(alchemyurl, json=payload, headers=headers).json()
-        for i in range(len(response["result"]["transfers"])):
-            total = round(total + float(response["result"]["transfers"][i]["value"]), 3)
-        if not 'pageKey' in response["result"]:
-            break
-        payload["params"][0]["pageKey"] = response["result"]["pageKey"]
-    currenttotal = currenttotal + total
     return currenttotal
 
 #cached MP count
