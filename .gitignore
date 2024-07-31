@@ -369,3 +369,5 @@ FodyWeavers.xsd
 /df2_styled.png
 /contractCalls_noLongerUsed.py
 /noLongerUsed.py
+/databases/cachingPools.db
+/databases/prime.db

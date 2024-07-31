@@ -8,7 +8,6 @@ from ftplib import FTP
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-import mysql.connector as mysql
 from gqlQueries import contractData
 from alchemy import *
 from requestsCalls import *
@@ -19,10 +18,6 @@ import typing
 #More variables here for wiki ftp upload
 load_dotenv()
 DEFINEDAPI = os.getenv('DEFINED_API')
-WIKIDOMAIN = os.getenv('WIKI_DOMAIN')
-WIKIDBNAME = os.getenv('WIKI_DB_NAME')
-WIKIUSER = os.getenv('WIKI_USER')
-WIKIPW = os.getenv('WIKI_PW')
 
 #same dictionary that is in fetchFromDb.py
 poolDict = {"0": "PD2", "1": "PD3", "2": "PD1", "3": "PD1 Art", "4": "PD1 CB"
@@ -44,15 +39,6 @@ def to_thread(func: typing.Callable) -> typing.Coroutine:
 #1) Connect to remote and local DB, drop tables in order to create updated ones
 @to_thread
 def dbRefresh():
-    #mysql remote db creation and update
-    HOST = WIKIDOMAIN # or "domain.com"
-    DATABASE = WIKIDBNAME
-    USER = WIKIUSER
-    PASSWORD = WIKIPW
-    remoteDbConnection = mysql.connect(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
-    remoteCrsr = remoteDbConnection.cursor() 
-    remoteCrsr.execute("DROP TABLE IF EXISTS sets, prime")
-    remoteCrsr.close()
     
     #LOCAL - sqlite drop sets table
     dbconnection = sqlite3.connect("./databases/cachingPools.db")
@@ -67,7 +53,7 @@ def dbRefresh():
     crsr.close()
     
     #finished, print success message with timestamp
-    print("\u001b[33mDatabase tables (local and remote) dropped at:\u001b[0m", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    print("\u001b[33mDatabase tables dropped at:\u001b[0m", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
 #1) Connect and create db if needed, 2) create sets table if needed, 3) update sets table with fresh data, 4) upload db via ftp, 5) update local db
@@ -82,48 +68,6 @@ def cachingDbUpdate():
     coreInfo = contractData("0xa0Cd986F53cBF8B8Fb7bF6fB14791e31aeB9E449", ["0"])
     mpInfo = contractData("0x89Bb49d06610B4b18e355504551809Be5177f3D0", ["0"])
     pdInfo = contractData("0xC4a21c88C3fA5654F51a2975494b752557DDaC2c", ["0"])
-
-    #mysql remote db creation and update
-    HOST = WIKIDOMAIN # or "domain.com"
-    DATABASE = WIKIDBNAME
-    USER = WIKIUSER
-    PASSWORD = WIKIPW
-    remoteDbConnection = mysql.connect(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
-    remoteCrsr = remoteDbConnection.cursor()
-
-    #REMOTE - create sets table if it does not already exist
-    sql_create_sets_table = """ CREATE TABLE IF NOT EXISTS sets (
-                                            poolId varchar(255) PRIMARY KEY NOT NULL,
-                                            cached int NOT NULL,
-                                            dailyPrime DECIMAL(7,3) NOT NULL,
-                                            name varchar(255)
-                                        ); """
-    remoteCrsr.execute(sql_create_sets_table)
-
-    #add in row for each set pool. read id from poolDict to get set name.
-    for i in range(len(setInfo)):
-            for key, value in poolDict.items():
-                if setInfo[i]['poolId'] == key:
-                    name = value
-            sql_insert_into_sets = """REPLACE INTO sets
-                                (poolId, cached, dailyPrime, name)
-                                VALUES (%s, %s, %s, %s)"""
-            values = (int(setInfo[i]['poolId']), int(setInfo[i]['totalSupply']), round(int(setInfo[i]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), name)
-            remoteCrsr.execute(sql_insert_into_sets, values)
-            remoteDbConnection.commit()
-
-    #add rows for specific assets, commit REMOTE updates
-    sql_insert_into_sets = "REPLACE INTO sets (poolId, cached, dailyPrime, name) VALUES (%s, %s, %s, %s)"
-    values = [
-        ("pk", int(pkInfo[0]['totalSupply']), round(int(pkInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['pk']),
-        ("cd", int(cdInfo[0]['totalSupply']),  round(int(cdInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['cd']),
-        ("core", int(coreInfo[0]['totalSupply']),  round(int(coreInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['core']),
-        ("mp", int(mpInfo[0]['totalSupply']),  round(int(mpInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['mp']),
-        ("pd", int(pdInfo[0]['totalSupply']),  round(int(pdInfo[0]['calcData']['sharePrimePerDay']) / 1000000000000000000, 3), poolDict['pd'])
-    ]
-    remoteCrsr.executemany(sql_insert_into_sets, values)
-    remoteDbConnection.commit()
-    remoteCrsr.close()
 
     #LOCAL - sqlite local db creation and update
     dbconnection = sqlite3.connect("./databases/cachingPools.db")
@@ -164,70 +108,19 @@ def cachingDbUpdate():
     crsr.close()
 
     #finished, print success message with timestamp
-    print("\u001b[33mCaching databases (local and remote) updated at:\u001b[0m", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    print("\u001b[33mCaching databases updated at:\u001b[0m", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 #much the same as previous db creation/update, but this utilizes calls to Alchemy for sink data
 @to_thread
 def primeDbUpdate():
-    primeKeyClaimTotal = primeKeyClaim()
-    primeSetClaimTotal = primeSetClaim()
-    primeCDClaimTotal = primeCDClaim()
-    primeCoreClaimTotal = primeCoreClaim()
-    primeMPClaimTotal = primeMPClaim()
-    currentPeClaim, totalpkprimeemitted, currentCornerstoneEmitted, currentSetCachingEmitted, launchPartners = emitCall()
-    avatarPrime = avatarCall()
-    payloadTotal = payloadSink()
-    artigraphTotal = artigraphSink()
-    terminalTotal = terminalCall()
-    glintPrime = glintSunk()
-    echoPrime = echoCall()
+    shardRefine = shardRefineSink()
+    payload = payloadSink()
+    artigraph = artigraphSink()
+    glints = glintsSink()
+    echo = echoSink()
+    cosmetics = cosmeticsSink()    
     circulating = primeCirculating()
     holders = primeHolders()
-    cosmeticPrime = cosmeticSink()
-
-    #REMOTE - mysql remote db creation and update
-    HOST = WIKIDOMAIN # or "domain.com"
-    DATABASE = WIKIDBNAME
-    USER = WIKIUSER
-    PASSWORD = WIKIPW
-    remoteDbConnection = mysql.connect(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
-    remoteCrsr = remoteDbConnection.cursor()
-
-    #create prime table if it does not already exist
-    sql_create_prime_table = """ CREATE TABLE IF NOT EXISTS prime (
-                                            name varchar(255) PRIMARY KEY NOT NULL,
-                                            emitted int,
-                                            claimed int,
-                                            sunk int,
-                                            data int
-                                        ); """
-    remoteCrsr.execute(sql_create_prime_table)
-
-    #add rows for specific assets, commit REMOTE db
-    sql_insert_into_prime = "REPLACE INTO prime (name, emitted, claimed, sunk, data) VALUES (%s, %s, %s, %s, %s)"
-    values = [
-        ("primeEvent", 7894941, 7894941, 0, 0),
-        ("primeKey", 12222222, primeKeyClaimTotal, 0, 0),
-        ("primeSet", 2222222, primeSetClaimTotal, 0, 0),
-        ("cornerstone", 1222222, primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal, 0, 0),
-        ("launchPartners", 3150000, 0, 0, 0),
-        ("avatar", 0, 0, avatarPrime, 0),
-        ("payload", 0, 0, payloadTotal, 0),
-        ("artigraph", 0, 0, artigraphTotal, 0),
-        ("terminal", 0, 0, terminalTotal, 0),
-        ("battery", 0, 0, 0, 0),
-        ("glint", 0, 0, glintPrime, 0),
-        ("echo", 0, 0, echoPrime, 0),
-        ("circSupply", 0, 0, 0, circulating),
-        ("investorEmit", (751853),  0, 0, 0),
-        ("dailyEmit", 1791, 0, 0, 0),
-        ("holders", 0, 0, 0, holders),
-        ("studioEmit", (910370),  0, 0, 0),
-        ("cosmetic", 0, 0, cosmeticPrime, 0)
-    ]
-    remoteCrsr.executemany(sql_insert_into_prime, values)
-    remoteDbConnection.commit()
-    remoteCrsr.close()
 
     #LOCAL - sqlite local db creation and update
     dbconnection = sqlite3.connect("./databases/prime.db")
@@ -236,8 +129,6 @@ def primeDbUpdate():
     #create sets table if it does not exist yet
     sql_create_prime_table = """ CREATE TABLE IF NOT EXISTS prime (
                                             name varchar(255) PRIMARY KEY NOT NULL,
-                                            emitted int,
-                                            claimed int,
                                             sunk int,
                                             data int
                                         ); """
@@ -245,30 +136,23 @@ def primeDbUpdate():
 
     #add rows for specific assets, commit LOCAL db
     sqlite_insert_with_param = """INSERT OR REPLACE INTO prime
-                                (name, emitted, claimed, sunk, data)
-                                VALUES (?, ?, ?, ?, ?);"""
-    data = (("primeEvent", 7894941, 7894941, 0, 0),
-    ("primeEvent", 7894941, 7894941, 0, 0),
-        ("primeKey", 12222222, primeKeyClaimTotal, 0, 0),
-        ("primeSet", 2222222, primeSetClaimTotal, 0, 0),
-        ("cornerstone", 1222222, primeCDClaimTotal + primeCoreClaimTotal + primeMPClaimTotal, 0, 0),
-        ("launchPartners", 3150000, 0, 0, 0),
-        ("avatar", 0, 0, avatarPrime, 0),
-        ("payload", 0, 0, payloadTotal, 0),
-        ("artigraph", 0, 0, artigraphTotal, 0),
-        ("terminal", 0, 0, terminalTotal, 0),
-        ("battery", 0, 0, 0, 0),
-        ("glint", 0, 0, glintPrime, 0),
-        ("echo", 0, 0, echoPrime, 0),
-        ("circSupply", 0, 0, 0, circulating),
-        ("investorEmit", (751853),  0, 0, 0),
-        ("dailyEmit", 1791, 0, 0, 0),
-        ("holders", 0, 0, 0, holders),
-        ("studioEmit", (910370),  0, 0, 0),
-        ("cosmetic", 0, 0, cosmeticPrime, 0))
+                                (name, sunk, data)
+                                VALUES (?, ?, ?);"""
+    data = (("shardRefine", shardRefine, 0),
+    ("payload", payload, 0),
+        ("artigraph", artigraph, 0),
+        ("glints", glints, 0),
+        ("echo", echo, 0),
+        ("cosmetics", cosmetics, 0),
+        ("circSupply", 0, circulating),
+        ("holders", 0, holders), 
+        ("launchPartners", 0, 3150000),
+        ("investorEmit", 0, 751853),        
+        ("studioEmit", 0, 8193330)
+        )
     crsr.executemany(sqlite_insert_with_param, data)
     dbconnection.commit()
     crsr.close()
 
     #finished, print success message with timestamp
-    print("\u001b[33mPrime databases (local and remote) updated at:\u001b[0m", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    print("\u001b[33mPrime databases updated at:\u001b[0m", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))

@@ -53,23 +53,22 @@ async def on_message(message):
         #await message.channel.send(f"``Daily emissions for sets: 1,791``") #Normal sets total per day:  1721.8728405848442 Art sets total per day:  68.87491362339375 Total:  1790.747754208238. Set numbers are <for any set except art> number cached * daily amount * number of types for that set (aka  100 pd1se sets * 1 daily prime * 7 different se sets). Art set bucket == the output of any other single pool
 
     #Fetch caching, sink, circulating, unlock data from db
+    
     if message.content.lower() == '.prime' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
-        primeResult = await getPrimeData(["primeEvent", "primeKey", "primeSet", "cornerstone", "launchPartners", "avatar", "payload", "artigraph", "terminal", "battery", "glint", "echo", "circSupply", "investorEmit", "dailyEmit", "holders", "studioEmit"])
-        claimTotal = round(primeResult[0][2] + primeResult[1][2] + primeResult[2][2] + primeResult[3][2], 3)
-        emitTotal = primeResult[0][1] + primeResult[1][1] + primeResult[3][1] + primeResult[2][1]
-        totalsink = totalSinkCall()
-        #percentSunk = round(totalsink / (claimTotal + primeResult[4][1]) * 100, 2)
+        primeResult = await getPrimeData(["shardRefine", "payload", "artigraph", "glints", "echo", "cosmetics", "circSupply", "holders", "launchPartners", "investorEmit", "studioEmit"])
+        totalsink = primeResult[0][1] + primeResult[1][1] + primeResult[2][1] + primeResult[3][1] + primeResult[4][1] + primeResult[5][1]
         investorMonths = unlockInvestor()
         studioMonths = unlockStudio()
         mainnetPrime = cachedPrimeMainnet()
         basePrime = cachedPrimeBase()
         embed=discord.Embed(title="Overview of Prime", color=0xDEF141)
-        embed.add_field(name="Prime holders", value="```ansi\n\u001b[0;32mUnique holders: {:,}```".format(primeResult[15][4]), inline=False)
+        embed.add_field(name="Prime holders", value="```ansi\n\u001b[0;32mUnique wallets: {:,}```".format(primeResult[7][2]), inline=False)
         embed.add_field(name="Prime cached with Wayfinder", value="```ansi\n\u001b[0;32mTotal cached: {:,}```".format(mainnetPrime + basePrime), inline=False)
-        embed.add_field(name="Misc emissions", value="```ansi\n\u001b[0;32mLaunch Partners: {:,}\nInvestors: {:,}\nStudio: {:,}```".format(primeResult[4][1], primeResult[13][1] * investorMonths, primeResult[16][1] * studioMonths), inline=False)        
-        embed.add_field(name="Sinks", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(totalsink), inline=False)
-        embed.add_field(name="Circulating", value="```ansi\n\u001b[0;32mCirculating supply: {:,}```".format(primeResult[12][4]), inline=False)
+        #hardcoding studio token amount for now
+        embed.add_field(name="Misc emissions", value="```ansi\n\u001b[0;32mLaunch Partners: {:,}\nInvestors: {:,}\nStudio: {:,}```".format(primeResult[8][2], primeResult[9][2] * investorMonths, primeResult[10][2]), inline=False)        
+        embed.add_field(name="Sinks", value="```ansi\n\u001b[0;32mPrime sunk: {:,.2f}```".format(totalsink), inline=False)
+        embed.add_field(name="Circulating", value="```ansi\n\u001b[0;32mCirculating supply: {:,}```".format(primeResult[6][2]), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
         await ctx.delete()
@@ -77,68 +76,21 @@ async def on_message(message):
     #Fetch sink data from db
     if message.content.lower() == '.prime sinks' or message.content.lower() == '.prime sink' and message.channel.id != 1085860941935153203:
         ctx = await message.channel.send("`Processing, please be patient.`")
-        primeResult = await getPrimeData(["avatar", "payload", "artigraph", "terminal", "battery", "glint", "echo", "cosmetic"])
-        totalSink = totalSinkCall()
-        sinkdistro = int(totalSink - (primeResult[2][3] * .11))
+        primeResult = await getPrimeData(["shardRefine", "payload", "artigraph", "glints", "echo", "cosmetics"])
+        totalSink = primeResult[0][1] + primeResult[1][1] + primeResult[2][1] + primeResult[3][1] + primeResult[4][1] + primeResult[5][1]
         embed=discord.Embed(title="Overview of Sinks", color=0xDEF141)
-        embed.add_field(name="Payload", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[1][3]), inline=False)
-        embed.add_field(name="Echos", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[6][3]), inline=False)
-        embed.add_field(name="Artigraph", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[2][3]), inline=False)
-        embed.add_field(name="Terminals", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[3][3]), inline=False)
-        embed.add_field(name="Glints", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[5][3]), inline=False)
-        embed.add_field(name="Avatars", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[0][3]), inline=False)
-        embed.add_field(name="Cosmetics", value="```ansi\n\u001b[0;32mPrime sunk: {:,}```".format(primeResult[7][3]), inline=False)
-        embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(totalSink), inline=False)
-        embed.add_field(name="Total Prime to sink schedule", value="```ansi\n\u001b[0;32m{:,}```".format(sinkdistro), inline=False)
+        embed.add_field(name="Payload", value="```ansi\n\u001b[0;32m{:,.2f}```".format(primeResult[1][1]), inline=False)
+        embed.add_field(name="Echos", value="```ansi\n\u001b[0;32m{:,.2f}```".format(primeResult[4][1]), inline=False)
+        embed.add_field(name="Artigraph", value="```ansi\n\u001b[0;32m{:,.2f}```".format(primeResult[2][1]), inline=False)
+        embed.add_field(name="Shard Refining", value="```ansi\n\u001b[0;32m{:,.2f}```".format(primeResult[0][1]), inline=False)
+        embed.add_field(name="Glints", value="```ansi\n\u001b[0;32m{:,.2f}```".format(primeResult[3][1]), inline=False)
+        embed.add_field(name="Cosmetics", value="```ansi\n\u001b[0;32m{:,.2f}```".format(primeResult[5][1]), inline=False)
+        embed.add_field(name="Total Prime sunk", value="```ansi\n\u001b[0;32m{:,.2f}```".format(totalSink), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
         await ctx.delete()
 
-    #Payload breakdown, data fetched from Alchemy
-    if message.content.lower() == '.prime payload' and message.channel.id != 1085860941935153203:
-        ctx = await message.channel.send("`Processing, please be patient.`")
-        payloadTotal, payloadHits, payloadUnique = Payloadcall()
-        payloadSinkTotal = payloadSink()
-        embed=discord.Embed(title="Overview of Payload", color=0xDEF141)
-        embed.add_field(name="Payload Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(payloadSinkTotal), inline=False)
-        embed.add_field(name="Total Payload hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(payloadHits)), inline=False)
-        embed.add_field(name="Average Payload hit", value="```ansi\n\u001b[0;32m{:.2f}```".format(payloadSinkTotal / len(payloadHits)), inline=False)
-        embed.add_field(name="Unique wallets used", value="```ansi\n\u001b[0;32m{:,}```".format(len(payloadUnique)), inline=False)
-        embed.set_footer(text="Please note this is intended as an estimate only")
-        await message.channel.send(embed=embed)
-        await ctx.delete()
-
-    #Artigraph breakdown, data fetched from Alchemy
-    if message.content.lower() == '.prime artigraph' and message.channel.id != 1085860941935153203:
-        artigraphTotal, artigraphHits, artigraphUnique, feHits, seHits, plHits = Artigraphcall()
-        artigraphSinkTotal = artigraphSink()
-        artigraphsinkdistro = int(artigraphSinkTotal * .89)
-        feMax = 4556
-        seMax = 1484
-        plMax = 104
-        embed=discord.Embed(title="Artigraph overview", color=0xDEF141)
-        embed.add_field(name="Prime sunk", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphSinkTotal, inline=True))
-        embed.add_field(name="Sink redistribution", value="```ansi\n\u001b[0;32m{:,}```".format(artigraphsinkdistro), inline=True)
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="Unique wallets", value="```ansi\n\u001b[0;32m{:,}```".format(len(artigraphUnique)), inline=True)
-        embed.add_field(name="Avg spent per wallet", value="```ansi\n\u001b[0;32m{:,}```".format(int(artigraphSinkTotal / len(artigraphUnique))), inline=True)
-        embed.add_field(name="\u200B", value="\u200B")  # newline
-        embed.add_field(name="FE hits", value="```ansi\n\u001b[0;32m{:,}```".format(feHits, inline=True))
-        embed.add_field(name="% of FE max", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((feHits / feMax * 100)), inline=True)
-        embed.add_field(name="FE prime sunk", value="```ansi\n\u001b[0;32m{:,} ```".format(int((feHits / feMax) * 1366800)), inline=True)
-        embed.add_field(name="SE hits", value="```ansi\n\u001b[0;32m{:,}```".format(seHits, inline=True))
-        embed.add_field(name="% of SE max", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((seHits / seMax * 100)), inline=True)
-        embed.add_field(name="SE prime sunk", value="```ansi\n\u001b[0;32m{:,} ```".format(int((seHits / seMax) * 667800)), inline=True)
-        embed.add_field(name="PL hits", value="```ansi\n\u001b[0;32m{:,}```".format(plHits, inline=True))
-        embed.add_field(name="% of PL max", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((plHits / plMax * 100)), inline=True)
-        embed.add_field(name="PL prime sunk", value="```ansi\n\u001b[0;32m{:,} ```".format(int((plHits / plMax) * 49920)), inline=True)
-        embed.add_field(name="Total hits", value="```ansi\n\u001b[0;32m{:,}```".format(len(artigraphHits), inline=True))
-        embed.add_field(name="% of max hits", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((len(artigraphHits) / 6144 * 100)), inline=True)
-        embed.add_field(name="% of max prime sunk", value="```ansi\n\u001b[0;32m{:.2f}% ```".format((artigraphSinkTotal / 2084520) * 100), inline=True)
-        embed.set_footer(text="Please note this is intended as an estimate only")
-        await message.channel.send(embed=embed)
-
-    #Cornerstone breakdown, data fetched from db
+        #Cornerstone breakdown, data fetched from db
     if message.content.lower() == '.prime mp' or message.content.lower() == '.prime cd' or message.content.lower() == '.prime core' and message.channel.id != 1085860941935153203:
         setResult = await getSetData(["cd", "mp", "core"])
         mpCount = primeMpCached()
@@ -146,29 +98,6 @@ async def on_message(message):
         embed.add_field(name="Catalyst Drive", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(setResult[0][1], 0), inline=False)
         embed.add_field(name="Masterpiece", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(mpCount, 0), inline=False)
         embed.add_field(name="The Core", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(setResult[2][1], 0), inline=False)
-        embed.set_footer(text="Please note this is intended as an estimate only")
-        await message.channel.send(embed=embed)
-
-    #PK breakdown, used to determine date and PK emissions based on time from start but that is no longer relevant. Data fetched from db
-    if message.content.lower() == '.prime pk' and message.channel.id != 1085860941935153203:
-        result = await getSetData("pk")
-        cachestartdate = date(2022, 7, 18)
-        currentdate = date.today()
-        dayspassed = currentdate - cachestartdate
-        totalpkprime = 12222222
-        if dayspassed.days < 365:
-            dayspassedpercentage = float(dayspassed.days / 365)
-        else:
-            dayspassedpercentage = 1
-        totalpkprimeemitted = round((totalpkprime * dayspassedpercentage), 1)
-        pkprimeleft = round((totalpkprime - totalpkprimeemitted), 1)
-        pkpercentageleft = 100 - (round((dayspassedpercentage * 100), 1))
-        embed=discord.Embed(title="PK overview", color=0xDEF141)
-        embed.add_field(name="Cached    |    Daily emissions", value="```ansi\n\u001b[0;32m{:,}  |  {} ```".format(result[0][1], 0), inline=False)
-        embed.add_field(name="Total Prime in PK pool", value="```ansi\n\u001b[0;32m{:,}```".format(totalpkprime), inline=False)
-        embed.add_field(name="Prime emitted to date", value="```ansi\n\u001b[0;32m{:,}  |  {}% ```".format(int(totalpkprimeemitted), round((dayspassedpercentage * 100), 1)), inline=False)
-        embed.add_field(name="Prime left in pool", value="```ansi\n\u001b[0;32m{:,}  |  {:.2f}%```".format(int(pkprimeleft), pkpercentageleft), inline=False)
-        embed.add_field(name="Prime per PK (at currently cached #)", value="```ansi\n\u001b[0;32m{:,}```".format(int(pkprimeleft / result[0][1])), inline=False)
         embed.set_footer(text="Please note this is intended as an estimate only")
         await message.channel.send(embed=embed)
 
@@ -466,24 +395,6 @@ async def on_message(message):
         await cachingDbUpdate()
         await primeDbUpdate()
 
-    #Planetfall pre-sale breakdown
-    # if message.content.lower().startswith('.prime pf') and message.channel.id != 1085860941935153203:
-    #     ctx = await message.channel.send("`Processing, please be patient.`")
-    #     playerPack, collectorPack, collectorCrate, publicPlayerPack, publicCollectorPack, publicCrate, packEth = pfPresale()
-    #     embed=discord.Embed(title=f"Planetfall Presale", description="**PP = Player Pack**\n**CP = Collector Pack**\n**CC = Collector Crate**", color=0xDEF141)
-    #     embed.add_field(name="PP from manifest", value="```ansi\n\u001b[0;32m{:,}```".format(playerPack, inline=False))
-    #     embed.add_field(name="CP from manifest", value="```ansi\n\u001b[0;32m{:,}```".format(collectorPack, inline=False))
-    #     embed.add_field(name="CC from manifest", value="```ansi\n\u001b[0;32m{:,}```".format(collectorCrate, inline=False))
-    #     embed.add_field(name="PP from public sale", value="```ansi\n\u001b[0;32m{:,}```".format(publicPlayerPack, inline=False))
-    #     embed.add_field(name="CP from public sale", value="```ansi\n\u001b[0;32m{:,}```".format(publicCollectorPack, inline=False))
-    #     embed.add_field(name="CC from public sale", value="```ansi\n\u001b[0;32m{:,}```".format(publicCrate, inline=False))
-    #     embed.add_field(name="PP total / % sold", value="```ansi\n\u001b[0;32m{:,} / {:.1f}%```".format(playerPack + publicPlayerPack, (playerPack / 50000) * 100, inline=False))
-    #     embed.add_field(name="CP total", value="```ansi\n\u001b[0;32m{:,}```".format(collectorPack + publicCollectorPack, inline=False))
-    #     embed.add_field(name="CC total", value="```ansi\n\u001b[0;32m{:,}```".format(collectorCrate + publicCrate, inline=False))
-    #     embed.add_field(name="Collector Packs + Crates / % sold", value="```ansi\n\u001b[0;32m{:,} / {:.1f}%```".format(collectorPack + publicCollectorPack + (collectorCrate *10) + (publicCrate *10), ((collectorPack + publicCollectorPack + (collectorCrate *10) + (publicCrate *10)) / 18646) * 100,inline=True))
-    #     await message.channel.send(embed=embed)
-    #     await ctx.delete()
-
 #Print connection successful message to terminal after bot init completes
 @client.event
 async def on_ready():
@@ -493,8 +404,8 @@ async def on_ready():
 async def main():
     try:
         sched = AsyncIOScheduler() #select async scheduler so we don't block Discord thread
-        sched.add_job(cachingDbUpdate, 'interval', minutes=120) #task function to add and how often to run it
-        sched.add_job(primeDbUpdate, 'interval', minutes=120) #task function to add and how often to run it
+        sched.add_job(cachingDbUpdate, 'interval', minutes=240) #task function to add and how often to run it
+        sched.add_job(primeDbUpdate, 'interval', minutes=240) #task function to add and how often to run it
         sched.start() #start scheduled tasks
         discord.utils.setup_logging(root = False) #turn on logging so we see connect success and heartbeat messages
         await client.start(TOKEN) #async discord init
